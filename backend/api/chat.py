@@ -1,337 +1,164 @@
+import re
+
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from decision_engine.engine import decision_engine
-from services.electricity_maps import (
-    get_latest_carbon,
-    get_carbon_forecast
-)
+from services.decision_service import run_decision_pipeline
 
-router = APIRouter(prefix="/api/chat", tags=["AI Assistant"])
+
+router = APIRouter(
+    prefix="/api/chat",
+    tags=["Chat"]
+)
 
 
 class ChatRequest(BaseModel):
     message: str
+    carbon_budget: float = 100
     simulate_grid_failure: bool = False
-    carbon_budget: float = 120
 
 
-LOCATION_ZONES = {
-    "Germany": "DE",
-    "France": "FR",
-    "Belgium": "BE",
-    "Netherlands": "NL",
-    "Denmark": "DK"
-}
+def detect_workload_type(message: str):
+    text = message.lower()
 
-
-# These are demo infrastructure parameters.
-# Carbon intensity comes from live Electricity Maps data.
-LOCATION_DETAILS = {
-    "Germany": {
-        "latency": 30,
-        "gpu_available": True,
-        "grid_available": True,
-        "energy_kwh": 0.8
-    },
-    "France": {
-        "latency": 90,
-        "gpu_available": True,
-        "grid_available": True,
-        "energy_kwh": 0.5
-    },
-    "Belgium": {
-        "latency": 70,
-        "gpu_available": True,
-        "grid_available": True,
-        "energy_kwh": 0.6
-    },
-    "Netherlands": {
-        "latency": 60,
-        "gpu_available": True,
-        "grid_available": True,
-        "energy_kwh": 0.55
-    },
-    "Denmark": {
-        "latency": 120,
-        "gpu_available": True,
-        "grid_available": True,
-        "energy_kwh": 0.45
-    }
-}
-
-
-def detect_workload_type(message):
-    message = message.lower()
-
-    if any(
-        word in message
-        for word in [
-            "summarise",
-            "summarize",
-            "summary",
-            "analyse",
-            "analyze",
-            "process",
-            "records",
-            "dataset"
-        ]
-    ):
-        return "batch"
-
-    if any(
-        word in message
-        for word in [
-            "predict",
-            "prediction",
-            "inference",
-            "classify",
-            "classification"
-        ]
-    ):
-        return "inference"
-
-    if any(
-        word in message
-        for word in [
-            "train",
-            "training",
-            "model"
-        ]
-    ):
+    if "training" in text or "train" in text:
         return "training"
 
+    if "inference" in text:
+        return "inference"
+
     return "batch"
+
+
+def extract_workload_values(message: str):
+
+    text = message.lower()
+
+    runtime_match = re.search(
+        r"(\d+(?:\.\d+)?)\s*(?:hours?|hrs?)",
+        text
+    )
+
+    deadline_match = re.search(
+        r"deadline\s*(?:of|is|:)?\s*"
+        r"(\d+(?:\.\d+)?)\s*(?:hours?|hrs?)",
+        text
+    )
+
+    runtime_hours = (
+        float(runtime_match.group(1))
+        if runtime_match
+        else None
+    )
+
+    deadline_hours = (
+        float(deadline_match.group(1))
+        if deadline_match
+        else None
+    )
+
+    return runtime_hours, deadline_hours
 
 
 @router.post("")
 async def chat(request: ChatRequest):
 
-    if not request.message.strip():
-        raise HTTPException(
-            status_code=400,
-            detail="Please enter a workload description."
-        )
-
-    # ---------------------------------------------------------
-    # VALIDATE CARBON BUDGET
-    # ---------------------------------------------------------
-
-    if request.carbon_budget <= 0:
-        raise HTTPException(
-            status_code=400,
-            detail="Carbon budget must be greater than 0."
-        )
-
     workload_type = detect_workload_type(
         request.message
     )
 
-    # ---------------------------------------------------------
-    # WORKLOAD PARAMETERS
-    # ---------------------------------------------------------
+    runtime_hours, deadline_hours = (
+        extract_workload_values(
+            request.message
+        )
+    )
+
+    if runtime_hours is None:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Please specify the workload runtime "
+                "in hours."
+            )
+        )
+
+    if deadline_hours is None:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Please specify the deadline "
+                "in hours."
+            )
+        )
 
     workload = {
         "workload_type": workload_type,
-        "runtime_hours": 2,
-        "deadline_hours": 24,
+        "runtime_hours": runtime_hours,
+        "deadline_hours": deadline_hours,
         "latency_tolerance": 150,
         "carbon_budget": request.carbon_budget,
-        "priority": "normal"
+        "priority": "normal",
+        "workload_size": 100
     }
 
-    current_location = "Germany"
-
-    locations = []
-
-    # ---------------------------------------------------------
-    # GET LIVE CARBON DATA
-    # ---------------------------------------------------------
-
     try:
 
-        for location_name, zone in LOCATION_ZONES.items():
-
-            carbon_data = await get_latest_carbon(zone)
-
-            live_carbon = carbon_data["carbonIntensity"]
-
-            details = LOCATION_DETAILS[
-                location_name
-            ]
-
-            locations.append({
-                "name": location_name,
-                "zone": zone,
-                "carbon_intensity": live_carbon,
-                "latency": details["latency"],
-                "gpu_available": details["gpu_available"],
-                "grid_available": details["grid_available"],
-                "energy_kwh": details["energy_kwh"],
-                "carbon_data_is_live": True
-            })
-
-    except Exception as e:
-
-        raise HTTPException(
-            status_code=500,
-            detail=(
-                "Unable to retrieve live "
-                f"Electricity Maps data: {str(e)}"
-            )
-        )
-
-    # ---------------------------------------------------------
-    # SIMULATE GRID FAILURE
-    # ---------------------------------------------------------
-
-    if request.simulate_grid_failure:
-
-        for location in locations:
-
-            if location["name"] == current_location:
-
-                location["grid_available"] = False
-
-    # ---------------------------------------------------------
-    # GET CARBON FORECAST
-    # ---------------------------------------------------------
-
-    try:
-
-        forecast_data = await get_carbon_forecast(
-            LOCATION_ZONES[current_location],
-            workload["deadline_hours"]
-        )
-
-        print(
-            "DEBUG FORECAST:",
-            forecast_data
-        )
-
-    except Exception as e:
-
-        raise HTTPException(
-            status_code=500,
-            detail=(
-                "Unable to retrieve Electricity Maps "
-                f"forecast: {str(e)}"
-            )
-        )
-
-    # ---------------------------------------------------------
-    # MARK CURRENT LOCATION
-    # ---------------------------------------------------------
-
-    for location in locations:
-
-        location["current"] = (
-            location["name"] == current_location
-        )
-
-    # ---------------------------------------------------------
-    # RUN DECISION ENGINE
-    # ---------------------------------------------------------
-
-    try:
-
-        result = decision_engine(
+        result = await run_decision_pipeline(
             workload,
-            locations,
-            forecast_data
+            simulate_grid_failure=(
+                request.simulate_grid_failure
+            )
         )
+
+        decision = result["result"]
+
+        if decision["decision"] == "REROUTE":
+
+            assistant_message = (
+                "GreenPulse recommends rerouting "
+                f"the workload to {decision['region']} "
+                "because it has lower predicted "
+                "carbon emissions."
+            )
+
+        elif decision["decision"] == "WAIT":
+
+            assistant_message = (
+                "GreenPulse recommends waiting for "
+                "a cleaner execution window."
+            )
+
+        elif decision["decision"] == "RUN":
+
+            assistant_message = (
+                "GreenPulse recommends running "
+                "the workload now."
+            )
+
+        else:
+
+            assistant_message = (
+                "GreenPulse could not find a feasible "
+                "execution plan within the given "
+                "constraints."
+            )
+
+        return {
+            "success": True,
+            "message": assistant_message,
+            "workload": workload,
+            "decision": decision,
+            "ml_predictions": result[
+                "ml_predictions"
+            ],
+            "regions_evaluated": result[
+                "regions_evaluated"
+            ]
+        }
 
     except Exception as e:
 
         raise HTTPException(
             status_code=500,
-            detail=(
-                f"Decision engine error: {str(e)}"
-            )
+            detail=str(e)
         )
-
-    decision = result.get("decision")
-
-    # ---------------------------------------------------------
-    # BUILD ASSISTANT MESSAGE
-    # ---------------------------------------------------------
-
-    if decision == "RUN":
-
-        assistant_message = (
-            "🌱 GreenPulse recommends RUN.\n\n"
-            f"Execution location: "
-            f"{result['region']}\n"
-            f"Estimated carbon: "
-            f"{result['estimated_carbon_g']:.1f} gCO2e\n"
-            f"Carbon saved: "
-            f"{result.get('carbon_saved_g', 0):.1f} gCO2e\n\n"
-            f"Reason: {result['reason']}"
-        )
-
-    elif decision == "WAIT":
-
-        assistant_message = (
-            "🌱 GreenPulse recommends WAIT.\n\n"
-            f"Execution location: "
-            f"{result['region']}\n"
-            f"Estimated carbon after waiting: "
-            f"{result['estimated_carbon_g']:.1f} gCO2e\n"
-            f"Carbon if run now: "
-            f"{result.get('run_now_carbon_g', 0):.1f} gCO2e\n"
-            f"Carbon saved: "
-            f"{result.get('carbon_saved_g', 0):.1f} gCO2e\n"
-            f"Start in: "
-            f"{result.get('start_in_minutes', 0)} minutes\n\n"
-            f"Reason: {result['reason']}"
-        )
-
-    elif decision == "REROUTE":
-
-        assistant_message = (
-            "🌱 GreenPulse recommends REROUTE.\n\n"
-            f"New execution location: "
-            f"{result['region']}\n"
-            f"Estimated carbon: "
-            f"{result.get('estimated_carbon_g', 0):.1f} gCO2e\n"
-            f"Carbon if run in current region: "
-            f"{result.get('run_now_carbon_g', 0):.1f} gCO2e\n"
-            f"Carbon saved: "
-            f"{result.get('carbon_saved_g', 0):.1f} gCO2e\n\n"
-            f"Reason: {result['reason']}"
-        )
-
-    else:
-
-        assistant_message = (
-            "⚠️ GreenPulse could not find "
-            "a feasible green execution plan.\n\n"
-            f"Reason: {result['reason']}"
-        )
-
-    # ---------------------------------------------------------
-    # RETURN RESPONSE
-    # ---------------------------------------------------------
-
-    return {
-        "success": True,
-        "message": request.message,
-        "carbon_source": "Electricity Maps",
-        "carbon_data_status": "LIVE",
-        "infrastructure_data_status": "SIMULATED_DEMO",
-        "current_location": current_location,
-        "grid_failure_simulated": (
-            request.simulate_grid_failure
-        ),
-        "locations_evaluated": [
-            location["name"]
-            for location in locations
-        ],
-        "live_carbon_intensity": {
-            location["name"]: location["carbon_intensity"]
-            for location in locations
-        },
-        "workload": workload,
-        "result": result,
-        "assistant_message": assistant_message
-    }
