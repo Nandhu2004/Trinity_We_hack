@@ -2,7 +2,7 @@ import os
 import httpx
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv("backend/.env")
 
 API_KEY = os.getenv("ELECTRICITY_MAPS_API_KEY")
 

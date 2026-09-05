@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 
 from decision_engine.engine import decision_engine
-from services.electricity_maps import get_latest_carbon
+from services.electricity_maps import get_latest_carbon, get_carbon_forecast
 
 
 router = APIRouter(
@@ -25,6 +25,7 @@ async def make_decision():
     try:
         # Get live carbon intensity from Electricity Maps
         carbon_data = await get_latest_carbon("DE")
+        forecast_data = await get_carbon_forecast("DE")
 
         live_carbon = carbon_data["carbonIntensity"]
 
@@ -59,7 +60,7 @@ async def make_decision():
         ]
 
         # Send workload and regions to Person 3's decision engine
-        result = decision_engine(workload, regions)
+        result = decision_engine(workload, regions, forecast_data)
 
         return {
             "success": True,

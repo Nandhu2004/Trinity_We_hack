@@ -1,9 +1,36 @@
 from decision_engine.carbon import calculate_carbon
 from decision_engine.constraints import is_feasible
 
+def find_best_window(forecast_data, runtime_hours, deadline_hours):
+    forecast = forecast_data["forecast"]
 
-def decision_engine(workload, regions):
+    max_start_index = deadline_hours - runtime_hours
 
+    best_window = None
+    best_carbon = float("inf")
+
+    for i in range(max_start_index + 1):
+        window = forecast[i:i + runtime_hours]
+
+        if len(window) < runtime_hours:
+            continue
+
+        average_carbon = sum(
+            item["carbonIntensity"] for item in window
+        ) / runtime_hours
+
+        if average_carbon < best_carbon:
+            best_carbon = average_carbon
+            best_window = window
+
+    return best_window, best_carbon
+def decision_engine(workload, regions, forecast_data):
+    best_window, forecast_carbon = find_best_window(
+        forecast_data,
+        workload["runtime_hours"],
+        workload["deadline_hours"]
+    )
+    
     feasible_regions = []
 
     # Check which regions can handle the workload
@@ -30,6 +57,14 @@ def decision_engine(workload, regions):
         best_region["energy_kwh"],
         best_region["carbon_intensity"]
     )
+    current_carbon = best_region["carbon_intensity"]
+
+    if forecast_carbon < current_carbon:
+        decision = "WAIT"
+        reason = "A cleaner forecast window is available within the deadline."
+    else:
+        decision = "RUN"
+        reason = "Running now is cleaner than waiting."    
 
     # Check carbon budget
     if estimated_carbon > workload["carbon_budget"]:
@@ -41,12 +76,12 @@ def decision_engine(workload, regions):
         }
 
     return {
-        "decision": "RUN",
+        "decision": decision,
         "region": best_region["name"],
         "estimated_carbon_g": estimated_carbon,
         "carbon_budget_met": True,
         "deadline_met": True,
-        "reason": "Selected the feasible region with the lowest carbon intensity."
+        "reason": reason
     }
 if __name__ == "__main__":
 
@@ -57,6 +92,14 @@ if __name__ == "__main__":
         "latency_tolerance": 150,
         "carbon_budget": 100
     }
+    forecast_data = {
+        "forecast": [
+            {"carbonIntensity": 151},
+            {"carbonIntensity": 198},
+            {"carbonIntensity": 211},
+            {"carbonIntensity": 224}
+        ]
+    }    
 
     regions = [
         {
@@ -76,6 +119,7 @@ if __name__ == "__main__":
             "energy_kwh": 0.5
         },
         {
+        {
             "name": "Region C",
             "carbon_intensity": 90,
             "latency": 140,
@@ -83,8 +127,13 @@ if __name__ == "__main__":
             "grid_available": True,
             "energy_kwh": 0.4
         }
+            "latency": 140,
+            "gpu_available": True,
+            "grid_available": True,
+            "energy_kwh": 0.4
+        }
     ]
 
-    result = decision_engine(workload, regions)
+    result = decision_engine(workload, regions, forecast_data)
 
     print(result)
