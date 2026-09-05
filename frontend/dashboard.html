@@ -1,307 +1,2063 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+```
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    GreenPulse - Carbon-Aware AI Workload Orchestration
+</title>
+
+<meta
+    name="description"
+    content="GreenPulse - Carbon-aware and resilience-aware AI workload orchestration dashboard"
+>
+
+<meta
+    name="author"
+    content="GreenPulse Team"
+>
+
+<link
+    rel="icon"
+    type="image/png"
+    href="assets/images/favicon.ico"
+>
+
+<!-- =====================================================
+     LOCAL LIBRARIES
+====================================================== -->
+
+<link
+    rel="stylesheet"
+    href="assets/libs/bootstrap/css/bootstrap.min.css"
+>
+
+<link
+    rel="stylesheet"
+    href="assets/libs/bootstrap-icons/bootstrap-icons.css"
+>
+
+<link
+    rel="stylesheet"
+    href="assets/libs/apexcharts/apexcharts.css"
+>
+
+<link
+    rel="stylesheet"
+    href="assets/libs/flatpickr/flatpickr.min.css"
+>
+
+<!-- =====================================================
+     GREENPULSE STYLES
+====================================================== -->
+
+<link
+    rel="stylesheet"
+    href="assets/css/main.css"
+>
+```
+
+</head>
+
+<body>
+
+<!-- =====================================================
+     SIDEBAR
+====================================================== -->
+
+<div
+    class="sidebar-wrapper"
+    id="sidebar"
+>
+
+```
+<a
+    href="dashboard.html"
+    class="sidebar-brand"
+>
+
+    <i class="bi bi-asterisk"></i>
+
+    <span>
+        GreenPulse
+    </span>
+
+</a>
+
+
+<div class="flex-grow-1 overflow-y-auto">
+
+
+    <!-- MENU -->
+
+    <div class="sidebar-menu-section">
+
+        <div class="sidebar-menu-title">
+            Menu
+        </div>
+
+        <ul class="sidebar-menu-list">
+
+            <li class="sidebar-menu-item">
+
+                <a
+                    href="dashboard.html"
+                    class="sidebar-menu-link active"
+                >
+
+                    <i class="bi bi-grid-fill"></i>
+
+                    <span>
+                        Dashboard
+                    </span>
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- GREENPULSE -->
+
+    <div class="sidebar-menu-section">
+
+        <div class="sidebar-menu-title">
+            GreenPulse
+        </div>
+
+        <ul class="sidebar-menu-list">
+
+
+            <li class="sidebar-menu-item">
+
+                <a
+                    href="#regions"
+                    class="sidebar-menu-link"
+                >
+
+                    <i class="bi bi-globe2"></i>
+
+                    <span>
+                        Regions
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <li class="sidebar-menu-item">
+
+                <a
+                    href="#carbon"
+                    class="sidebar-menu-link"
+                >
+
+                    <i class="bi bi-cloud-sun"></i>
+
+                    <span>
+                        Carbon Intensity
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <li class="sidebar-menu-item">
+
+                <a
+                    href="#forecast"
+                    class="sidebar-menu-link"
+                >
+
+                    <i class="bi bi-graph-up"></i>
+
+                    <span>
+                        Forecast
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <li class="sidebar-menu-item">
+
+                <a
+                    href="#decision"
+                    class="sidebar-menu-link"
+                >
+
+                    <i class="bi bi-cpu"></i>
+
+                    <span>
+                        Decision Engine
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <!-- AI ASSISTANT -->
+
+            <li class="sidebar-menu-item">
+
+                <a
+                    href="#ai-assistant"
+                    class="sidebar-menu-link"
+                    id="ai-assistant-link"
+                >
+
+                    <i class="bi bi-stars"></i>
+
+                    <span>
+                        AI Assistant
+                    </span>
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- SYSTEM -->
+
+    <div class="sidebar-menu-section">
+
+        <div class="sidebar-menu-title">
+            System
+        </div>
+
+        <ul class="sidebar-menu-list">
+
+            <li class="sidebar-menu-item">
+
+                <a
+                    href="#health"
+                    class="sidebar-menu-link"
+                >
+
+                    <i class="bi bi-heart-pulse"></i>
+
+                    <span>
+                        Backend Health
+                    </span>
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+
+<!-- PROFILE -->
+
+<div class="sidebar-profile">
+
+    <img
+        src="assets/images/avatar.png"
+        alt="Administrator"
+        class="sidebar-profile-img"
+    >
+
+    <div class="sidebar-profile-info">
+
+        <div class="sidebar-profile-name">
+            GreenPulse Admin
+        </div>
+
+        <div class="sidebar-profile-email">
+            Green AI Dashboard
+        </div>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+<!-- =====================================================
+     MAIN CONTENT
+====================================================== -->
+
+<div class="main-wrapper">
+
+```
+<!-- =================================================
+     NAVBAR
+================================================== -->
+
+<header class="navbar-custom">
+
+
+    <div class="navbar-left">
+
+
+        <button
+            class="btn-desktop-toggle d-none d-xl-flex align-items-center justify-content-center me-3"
+            id="desktop-sidebar-toggle"
+            aria-label="Minimize Sidebar"
+        >
+
+            <i class="bi bi-chevron-bar-left"></i>
+
+        </button>
+
+
+        <button
+            class="sidebar-toggle-btn me-2"
+            id="sidebar-toggle"
+            aria-label="Toggle Navigation"
+        >
+
+            <i class="bi bi-list"></i>
+
+        </button>
+
+
+        <!-- RUN DECISION -->
+
+        <button
+            class="btn-quick-action"
+            id="btn-run-decision"
+            type="button"
+        >
+
+            <i class="bi bi-play-fill"></i>
+
+            <span>
+                Run Decision
+            </span>
+
+        </button>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="navbar-search-wrapper">
+
+        <input
+            type="text"
+            class="navbar-search-input"
+            placeholder="Search regions..."
+            id="main-search"
+        >
+
+        <button
+            class="navbar-search-btn"
+            aria-label="Search"
+            type="button"
+        >
+
+            <i class="bi bi-search"></i>
+
+        </button>
+
+    </div>
+
+
+    <!-- RIGHT -->
+
+    <div class="navbar-actions">
+
+
+        <button
+            class="navbar-action-btn me-1"
+            id="btn-fullscreen"
+            aria-label="Toggle Fullscreen"
+            type="button"
+        >
+
+            <i class="bi bi-arrows-fullscreen"></i>
+
+        </button>
+
+
+        <button
+            class="navbar-action-btn"
+            id="btn-refresh-all"
+            aria-label="Refresh Dashboard"
+            type="button"
+        >
+
+            <i class="bi bi-arrow-clockwise"></i>
+
+        </button>
+
+
+        <div class="dropdown ms-2">
+
+            <button
+                class="navbar-profile-btn dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+            >
+
+                <img
+                    src="assets/images/avatar.png"
+                    alt="Profile"
+                    class="navbar-profile-img"
+                >
+
+                <span
+                    class="navbar-profile-name d-none d-md-inline"
+                >
+                    Administrator
+                </span>
+
+                <i
+                    class="bi bi-chevron-down navbar-profile-caret"
+                ></i>
+
+            </button>
+
+
+            <ul
+                class="dropdown-menu dropdown-menu-end dropdown-menu-profile"
+            >
+
+                <li class="dropdown-header">
+                    GreenPulse
+                </li>
+
+                <li>
+
+                    <a
+                        class="dropdown-item"
+                        href="#"
+                    >
+
+                        <i class="bi bi-person"></i>
+
+                        Administrator
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a
+                        class="dropdown-item"
+                        href="#"
+                    >
+
+                        <i class="bi bi-gear"></i>
+
+                        Settings
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =================================================
+     PAGE HEADER
+================================================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h1 class="page-title">
+            GreenPulse Dashboard
+        </h1>
+
+        <p class="page-subtitle">
+            Carbon-aware and resilience-aware AI workload orchestration.
+        </p>
+
+    </div>
+
+
+    <div class="d-flex align-items-center gap-2">
+
+        <span
+            class="badge bg-secondary"
+            id="backend-status"
+        >
+            Checking backend...
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     TOP STAT CARDS
+================================================== -->
+
+<div class="row g-4">
+
+
+    <!-- DECISION -->
+
+    <div class="col-xl-4 col-md-6">
+
+        <div class="card alert-green-card">
+
+            <div class="position-relative z-dashboard-2">
+
+                <span
+                    class="alert-green-badge"
+                    id="decision-status-badge"
+                >
+                    No Decision
+                </span>
+
+
+                <div
+                    class="alert-green-date"
+                    id="decision-status-date"
+                >
+                    Waiting
+                </div>
+
+
+                <div
+                    class="alert-green-text"
+                    id="decision-status-text"
+                >
+                    Run the decision engine to find the
+                    most carbon-efficient region.
+                </div>
+
+            </div>
+
+
+            <button
+                class="alert-green-link z-dashboard-2"
+                id="btn-run-decision-alert"
+                type="button"
+            >
+
+                <span>
+                    Run Decision Now
+                </span>
+
+                <i class="bi bi-arrow-right"></i>
+
+            </button>
+
+
+            <svg
+                class="alert-green-bg-shape"
+                viewBox="0 0 100 100"
+                fill="none"
+            >
+
+                <g transform="translate(50,50)">
+
+                    <rect
+                        x="-6"
+                        y="-45"
+                        width="12"
+                        height="90"
+                        rx="6"
+                        fill="#B4F105"
+                    />
+
+                    <rect
+                        x="-6"
+                        y="-45"
+                        width="12"
+                        height="90"
+                        rx="6"
+                        fill="#B4F105"
+                        transform="rotate(60)"
+                    />
+
+                    <rect
+                        x="-6"
+                        y="-45"
+                        width="12"
+                        height="90"
+                        rx="6"
+                        fill="#B4F105"
+                        transform="rotate(120)"
+                    />
+
+                </g>
+
+            </svg>
+
+        </div>
+
+    </div>
+
+
+    <!-- CARBON -->
+
+    <div class="col-xl-4 col-md-6">
+
+        <div
+            class="card card-stat h-100"
+            id="carbon"
+        >
+
+            <div class="card-header">
+
+                <span class="stat-label">
+                    Live Carbon Intensity
+                </span>
+
+                <button
+                    class="card-more-btn"
+                    id="btn-refresh-carbon"
+                    type="button"
+                >
+
+                    <i class="bi bi-arrow-repeat"></i>
+
+                </button>
+
+            </div>
+
+
+            <div
+                class="stat-value"
+                id="stat-carbon-value"
+            >
+                Loading...
+            </div>
+
+
+            <div
+                class="trend-badge"
+                id="stat-carbon-zone"
+            >
+
+                <i class="bi bi-geo-alt"></i>
+
+                <span>
+                    Zone: DE
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BEST REGION -->
+
+    <div class="col-xl-4 col-md-6">
+
+        <div class="card card-stat h-100">
+
+            <div class="card-header">
+
+                <span class="stat-label">
+                    Best Region
+                </span>
+
+                <button
+                    class="card-more-btn"
+                    id="btn-run-decision-menu"
+                    type="button"
+                >
+
+                    <i class="bi bi-play-fill"></i>
+
+                </button>
+
+            </div>
+
+
+            <div
+                class="stat-value"
+                id="stat-best-region"
+            >
+                —
+            </div>
+
+
+            <div
+                class="trend-badge"
+                id="stat-best-region-detail"
+            >
+                Run a decision to populate this
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     SECOND ROW
+================================================== -->
+
+<div class="row g-4 mt-1">
+
+
+    <!-- LIVE REGIONS -->
+
+    <div class="col-xl-7">
+
+        <div
+            class="card h-100"
+            id="regions"
+        >
+
+            <div class="card-header">
+
+                <h2 class="card-title">
+                    Live Regions
+                </h2>
+
+
+                <button
+                    class="card-more-btn"
+                    id="btn-refresh-regions"
+                    type="button"
+                >
+
+                    <i class="bi bi-arrow-repeat"></i>
+
+                </button>
+
+            </div>
+
+
+            <div
+                class="transaction-list"
+                id="regions-list"
+            >
+
+                <div class="transaction-item">
+
+                    <div
+                        class="transaction-icon bg-forest-light text-lime"
+                    >
+
+                        <i class="bi bi-hourglass-split"></i>
+
+                    </div>
+
+
+                    <div class="transaction-info">
+
+                        <div class="transaction-name">
+                            Loading regions...
+                        </div>
+
+                        <div class="transaction-date">
+                            Fetching /api/regions
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SYSTEM STATUS -->
+
+    <div class="col-xl-5">
+
+        <div
+            class="card h-100"
+            id="health"
+        >
+
+            <div class="card-header">
+
+                <h2 class="card-title">
+                    System Status
+                </h2>
+
+            </div>
+
+
+            <div class="progress-container">
+
+                <div class="progress-label-row">
+
+                    <span class="progress-label">
+                        Backend API
+                    </span>
+
+                    <span
+                        class="progress-value"
+                        id="health-api"
+                    >
+                        Checking...
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="progress-container">
+
+                <div class="progress-label-row">
+
+                    <span class="progress-label">
+                        Regions API
+                    </span>
+
+                    <span
+                        class="progress-value"
+                        id="health-regions"
+                    >
+                        Checking...
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="progress-container">
+
+                <div class="progress-label-row">
+
+                    <span class="progress-label">
+                        Electricity Maps
+                    </span>
+
+                    <span
+                        class="progress-value"
+                        id="health-electricity"
+                    >
+                        Checking...
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="progress-container">
+
+                <div class="progress-label-row">
+
+                    <span class="progress-label">
+                        Decision Engine
+                    </span>
+
+                    <span
+                        class="progress-value"
+                        id="health-decision"
+                    >
+                        Ready
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="mt-4">
+
+                <div class="trend-badge">
+
+                    <i class="bi bi-shield-check"></i>
+
+                    <span>
+                        GreenPulse backend connected
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     CARBON FORECAST
+================================================== -->
+
+<div
+    class="row g-4 mt-1"
+    id="forecast"
+>
+
+    <div class="col-12">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2 class="card-title">
+                        Carbon Intensity Forecast
+                    </h2>
+
+                    <small class="text-muted">
+                        24-hour carbon forecast
+                    </small>
+
+                </div>
+
+
+                <div class="d-flex gap-2">
+
+                    <span
+                        class="trend-badge"
+                        id="forecast-zone"
+                    >
+                        Zone: DE
+                    </span>
+
+
+                    <button
+                        class="card-more-btn"
+                        id="btn-refresh-forecast"
+                        type="button"
+                    >
+
+                        <i class="bi bi-arrow-repeat"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="carbon-forecast-chart"
+                style="min-height: 300px;"
+            ></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     DECISION ENGINE
+================================================== -->
+
+<div
+    class="row g-4 mt-1"
+    id="decision"
+>
+
+    <div class="col-12">
+
+        <div class="promo-banner-card">
+
+
+            <svg
+                class="promo-banner-bg-shape"
+                viewBox="0 0 100 100"
+                fill="none"
+            >
+
+                <g transform="translate(50,50)">
+
+                    <rect
+                        x="-6"
+                        y="-45"
+                        width="12"
+                        height="90"
+                        rx="6"
+                        fill="#B4F105"
+                    />
+
+                    <rect
+                        x="-6"
+                        y="-45"
+                        width="12"
+                        height="90"
+                        rx="6"
+                        fill="#B4F105"
+                        transform="rotate(60)"
+                    />
+
+                    <rect
+                        x="-6"
+                        y="-45"
+                        width="12"
+                        height="90"
+                        rx="6"
+                        fill="#B4F105"
+                        transform="rotate(120)"
+                    />
+
+                </g>
+
+            </svg>
+
+
+            <h3 class="promo-title">
+                Carbon-Aware Decision Engine
+            </h3>
+
+
+            <p class="promo-desc">
+
+                GreenPulse evaluates available regions using
+                live carbon intensity and region characteristics
+                to recommend where your workload should run.
+
+            </p>
+
+
+            <button
+                class="btn-promo"
+                id="btn-run-decision-bottom"
+                type="button"
+            >
+
+                <i class="bi bi-cpu"></i>
+
+                Run Decision
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     FOOTER
+================================================== -->
+
+<footer class="footer-custom">
+
+    <div class="footer-left">
+
+        <span class="footer-logo">
+
+            <i class="bi bi-asterisk"></i>
+
+            GreenPulse
+
+        </span>
+
+
+        <span class="footer-separator">
+            |
+        </span>
+
+
+        <span class="footer-copy">
+
+            © 2026 GreenPulse —
+            Carbon-aware AI workload orchestration
+
+        </span>
+
+    </div>
+
+
+    <div class="footer-right">
+
+        <ul class="footer-links">
+
+            <li>
+
+                <a
+                    href="#regions"
+                    class="footer-link"
+                >
+                    Regions
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a
+                    href="#carbon"
+                    class="footer-link"
+                >
+                    Carbon
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a
+                    href="#forecast"
+                    class="footer-link"
+                >
+                    Forecast
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a
+                    href="#health"
+                    class="footer-link"
+                >
+
+                    Backend Status
+
+                    <span
+                        class="status-dot"
+                        id="backend-status-dot"
+                    ></span>
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+</footer>
+```
+
+</div>
+
+<!-- =====================================================
+     AI ASSISTANT PANEL
+====================================================== -->
+
+<div
+    id="ai-assistant-panel"
+    class="ai-assistant-panel"
+>
+
+```
+<div class="ai-assistant-header">
+
+    <div>
+
+        <div class="ai-assistant-title">
+
+            <i class="bi bi-stars"></i>
+
+            GreenPulse AI Assistant
+
+        </div>
+
+
+        <div class="ai-assistant-subtitle">
+
+            Carbon-aware workload assistant
+
+        </div>
+
+    </div>
+
+
+    <button
+        id="close-ai-assistant"
+        type="button"
+        aria-label="Close AI Assistant"
+    >
+
+        <i class="bi bi-x-lg"></i>
+
+    </button>
+
+</div>
+
+
+<div
+    id="ai-chat-messages"
+    class="ai-chat-messages"
+>
+
+    <div class="ai-message">
+
+        Hi! I'm GreenPulse AI Assistant.
+
+        <br><br>
+
+        Tell me what AI workload you want to run,
+        and I'll help find a greener execution plan.
+
+        <br><br>
+
+        <strong>Example:</strong>
+
+        <br>
+
+        "Summarise the past 5 years of call records."
+
+    </div>
+
+</div>
+
+
+<div class="ai-chat-input-area">
+
+    <input
+        type="text"
+        id="ai-chat-input"
+        placeholder="Describe your workload..."
+        autocomplete="off"
+    >
+
+
+    <button
+        id="ai-chat-send"
+        type="button"
+        aria-label="Send message"
+    >
+
+        <i class="bi bi-send-fill"></i>
+
+    </button>
+
+</div>
+```
+
+</div>
+
+<!-- =====================================================
+     AI ASSISTANT STYLES
+====================================================== -->
+
+<style>
+
+.ai-assistant-panel {
+
+    position: fixed;
+
+    bottom: 25px;
+
+    right: 25px;
+
+    width: 380px;
+
+    height: 520px;
+
+    background: white;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 15px 45px rgba(0, 0, 0, 0.20);
+
+    z-index: 9999;
+
+    display: none;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+}
+
+
+.ai-assistant-header {
+
+    background: #218c82;
+
+    color: white;
+
+    padding: 18px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+}
+
+
+.ai-assistant-title {
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+}
+
+
+.ai-assistant-title i {
+
+    margin-right: 7px;
+
+}
+
+
+.ai-assistant-subtitle {
+
+    font-size: 12px;
+
+    opacity: 0.8;
+
+    margin-top: 3px;
+
+}
+
+
+#close-ai-assistant {
+
+    border: none;
+
+    background: transparent;
+
+    color: white;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+}
+
+
+.ai-chat-messages {
+
+    flex: 1;
+
+    padding: 18px;
+
+    overflow-y: auto;
+
+    background: #f6f8f7;
+
+}
+
+
+.ai-message {
+
+    background: white;
+
+    padding: 13px;
+
+    border-radius: 12px;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    margin-bottom: 12px;
+
+    max-width: 90%;
+
+    word-wrap: break-word;
+
+}
+
+
+.ai-user-message {
+
+    background: #218c82;
+
+    color: white;
+
+    margin-left: auto;
+
+}
+
+
+.ai-chat-input-area {
+
+    display: flex;
+
+    padding: 12px;
+
+    border-top: 1px solid #e5e5e5;
+
+    background: white;
+
+}
+
+
+#ai-chat-input {
+
+    flex: 1;
+
+    border: 1px solid #ddd;
+
+    border-radius: 10px;
+
+    padding: 10px;
+
+    outline: none;
+
+    font-size: 14px;
+
+}
+
+
+#ai-chat-input:focus {
+
+    border-color: #218c82;
+
+}
+
+
+#ai-chat-send {
+
+    margin-left: 8px;
+
+    width: 42px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #218c82;
+
+    color: white;
+
+    cursor: pointer;
+
+}
+
+
+#ai-chat-send:disabled {
+
+    opacity: 0.6;
+
+    cursor: not-allowed;
+
+}
+
+
+#ai-chat-send:hover:not(:disabled) {
+
+    opacity: 0.9;
+
+}
+
+
+@media (max-width: 576px) {
+
+    .ai-assistant-panel {
+
+        right: 10px;
+
+        bottom: 10px;
+
+        width: calc(100% - 20px);
+
+        height: 500px;
+
+    }
+
+}
+
+</style>
+
+<!-- =====================================================
+     JAVASCRIPT LIBRARIES
+====================================================== -->
+
+<script
+    src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"
+></script>
+
+<!-- ApexCharts -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/apexcharts"
+></script>
+
+<!-- Flatpickr -->
+
+<script
+    src="assets/libs/flatpickr/flatpickr.min.js"
+></script>
+
+<!-- =====================================================
+     DASHBOARD UI
+====================================================== -->
+
+<script
+    src="assets/js/dashboard.js"
+></script>
+
+<!-- =====================================================
+     GREENPULSE API CONFIGURATION
+====================================================== -->
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+window.GREENPULSE_API_BASE =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+        ? "http://localhost:8000"
+        : "https://trinitywehack-production.up.railway.app";
+</script>
 
-    const aiButton = document.querySelector('a[href="#ai-assistant"]');
-    const aiPanel = document.getElementById("ai-assistant-panel");
-    const closeButton = document.getElementById("close-ai-assistant");
-    const input = document.getElementById("ai-chat-input");
-    const sendButton = document.getElementById("ai-chat-send");
-    const messages = document.getElementById("ai-chat-messages");
+<script
+    src="assets/js/greenpulse-api.js"
+></script>
 
-    const API_BASE =
-        window.GREENPULSE_API_BASE ||
-        "http://localhost:8000";
+<!-- =====================================================
+     AI ASSISTANT JAVASCRIPT
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
 
-    // ---------------------------------------------------------
-    // OPEN AI ASSISTANT
-    // ---------------------------------------------------------
+        /* =================================================
+           ELEMENTS
+        ================================================= */
 
-    function openAssistant(event) {
+        const aiButton =
+            document.getElementById(
+                "ai-assistant-link"
+            );
 
-        if (event) {
-            event.preventDefault();
+
+        const aiPanel =
+            document.getElementById(
+                "ai-assistant-panel"
+            );
+
+
+        const closeButton =
+            document.getElementById(
+                "close-ai-assistant"
+            );
+
+
+        const input =
+            document.getElementById(
+                "ai-chat-input"
+            );
+
+
+        const sendButton =
+            document.getElementById(
+                "ai-chat-send"
+            );
+
+
+        const messages =
+            document.getElementById(
+                "ai-chat-messages"
+            );
+
+
+        const API_BASE=
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+        ? "http://localhost:8000"
+        : "https://trinitywehack-production.up.railway.app";
+
+        /* =================================================
+           OPEN ASSISTANT
+        ================================================= */
+
+        function openAssistant(event) {
+
+            if (event) {
+
+                event.preventDefault();
+
+            }
+
+
+            if (aiPanel) {
+
+                aiPanel.style.display =
+                    "flex";
+
+            }
+
+
+            if (input) {
+
+                setTimeout(
+                    function () {
+
+                        input.focus();
+
+                    },
+                    100
+                );
+
+            }
+
         }
 
-        if (aiPanel) {
-            aiPanel.style.display = "flex";
+
+        /* =================================================
+           CLOSE ASSISTANT
+        ================================================= */
+
+        function closeAssistant() {
+
+            if (aiPanel) {
+
+                aiPanel.style.display =
+                    "none";
+
+            }
+
         }
+
+
+        /* =================================================
+           ADD MESSAGE
+        ================================================= */
+
+        function addMessage(
+            text,
+            isUser
+        ) {
+
+            if (!messages) {
+
+                return;
+
+            }
+
+
+            const message =
+                document.createElement(
+                    "div"
+                );
+
+
+            message.className =
+                isUser
+                    ? "ai-message ai-user-message"
+                    : "ai-message";
+
+
+            message.textContent =
+                text;
+
+
+            messages.appendChild(
+                message
+            );
+
+
+            messages.scrollTop =
+                messages.scrollHeight;
+
+        }
+
+
+        /* =================================================
+           LOADING MESSAGE
+        ================================================= */
+
+        function addLoadingMessage() {
+
+            if (!messages) {
+
+                return;
+
+            }
+
+
+            removeLoadingMessage();
+
+
+            const message =
+                document.createElement(
+                    "div"
+                );
+
+
+            message.className =
+                "ai-message";
+
+
+            message.id =
+                "ai-loading-message";
+
+
+            message.textContent =
+                "GreenPulse is analysing your workload...";
+
+
+            messages.appendChild(
+                message
+            );
+
+
+            messages.scrollTop =
+                messages.scrollHeight;
+
+        }
+
+
+        /* =================================================
+           REMOVE LOADING MESSAGE
+        ================================================= */
+
+        function removeLoadingMessage() {
+
+            const loadingMessage =
+                document.getElementById(
+                    "ai-loading-message"
+                );
+
+
+            if (loadingMessage) {
+
+                loadingMessage.remove();
+
+            }
+
+        }
+
+
+        /* =================================================
+           SEND MESSAGE
+        ================================================= */
+
+        async function sendMessage() {
+
+            if (
+                !input ||
+                !messages ||
+                !sendButton
+            ) {
+
+                return;
+
+            }
+
+
+            const text =
+                input.value.trim();
+
+
+            if (!text) {
+
+                return;
+
+            }
+
+
+            /* USER MESSAGE */
+
+            addMessage(
+                text,
+                true
+            );
+
+
+            /* CLEAR INPUT */
+
+            input.value = "";
+
+
+            /* LOADING */
+
+            addLoadingMessage();
+
+
+            /* DISABLE SEND */
+
+            sendButton.disabled =
+                true;
+
+
+            try {
+
+
+                const response =
+                    await fetch(
+                        `${API_BASE}/api/chat`,
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json",
+
+                                "Accept":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    message:
+                                        text,
+
+                                    simulate_grid_failure:
+                                        false,
+
+                                    carbon_budget:
+                                        120
+
+                                })
+
+                        }
+                    );
+
+
+                /* ==========================================
+                   READ RESPONSE
+                ========================================== */
+
+                let data;
+
+
+                try {
+
+                    data =
+                        await response.json();
+
+                }
+
+                catch (jsonError) {
+
+                    data = {};
+
+                }
+
+
+                removeLoadingMessage();
+
+
+                /* ==========================================
+                   BACKEND ERROR
+                ========================================== */
+
+                if (!response.ok) {
+
+                    const errorMessage =
+                        data.detail ||
+                        data.message ||
+                        "GreenPulse backend returned an error.";
+
+
+                    addMessage(
+                        "Error: " +
+                        errorMessage,
+                        false
+                    );
+
+
+                    return;
+
+                }
+
+
+                /* ==========================================
+                   SUCCESS
+                ========================================== */
+
+                if (
+                    data.assistant_message
+                ) {
+
+                    addMessage(
+                        data.assistant_message,
+                        false
+                    );
+
+                }
+
+                else if (
+                    data.message
+                ) {
+
+                    addMessage(
+                        data.message,
+                        false
+                    );
+
+                }
+
+                else {
+
+                    addMessage(
+                        "GreenPulse returned an unexpected response.",
+                        false
+                    );
+
+                }
+
+
+            }
+
+            catch (error) {
+
+
+                removeLoadingMessage();
+
+
+                console.error(
+                    "GreenPulse API error:",
+                    error
+                );
+
+
+                addMessage(
+                    "I couldn't connect to the GreenPulse backend. Please make sure the FastAPI server is running.",
+                    false
+                );
+
+
+            }
+
+            finally {
+
+
+                sendButton.disabled =
+                    false;
+
+
+                if (input) {
+
+                    input.focus();
+
+                }
+
+            }
+
+        }
+
+
+        /* =================================================
+           EVENT LISTENERS
+        ================================================= */
+
+        if (
+            aiButton &&
+            aiPanel
+        ) {
+
+            aiButton.addEventListener(
+                "click",
+                openAssistant
+            );
+
+        }
+
+
+        if (closeButton) {
+
+            closeButton.addEventListener(
+                "click",
+                closeAssistant
+            );
+
+        }
+
+
+        if (sendButton) {
+
+            sendButton.addEventListener(
+                "click",
+                sendMessage
+            );
+
+        }
+
 
         if (input) {
-            setTimeout(function () {
-                input.focus();
-            }, 100);
-        }
-    }
 
+            input.addEventListener(
+                "keydown",
+                function (event) {
 
-    // ---------------------------------------------------------
-    // CLOSE AI ASSISTANT
-    // ---------------------------------------------------------
+                    if (
+                        event.key ===
+                        "Enter"
+                    ) {
 
-    function closeAssistant() {
+                        event.preventDefault();
 
-        if (aiPanel) {
-            aiPanel.style.display = "none";
-        }
-    }
+                        sendMessage();
 
+                    }
 
-    // ---------------------------------------------------------
-    // ADD MESSAGE
-    // ---------------------------------------------------------
-
-    function addMessage(text, isUser) {
-
-        if (!messages) {
-            return;
-        }
-
-        const message = document.createElement("div");
-
-        if (isUser) {
-            message.className = "ai-message ai-user-message";
-        } else {
-            message.className = "ai-message";
-        }
-
-        message.textContent = text;
-
-        messages.appendChild(message);
-
-        messages.scrollTop = messages.scrollHeight;
-    }
-
-
-    // ---------------------------------------------------------
-    // SHOW LOADING MESSAGE
-    // ---------------------------------------------------------
-
-    function addLoadingMessage() {
-
-        if (!messages) {
-            return;
-        }
-
-        const message = document.createElement("div");
-
-        message.className = "ai-message";
-        message.id = "ai-loading-message";
-
-        message.textContent =
-            "🌱 GreenPulse is analysing your workload...";
-
-        messages.appendChild(message);
-
-        messages.scrollTop = messages.scrollHeight;
-    }
-
-
-    // ---------------------------------------------------------
-    // REMOVE LOADING MESSAGE
-    // ---------------------------------------------------------
-
-    function removeLoadingMessage() {
-
-        const loadingMessage =
-            document.getElementById("ai-loading-message");
-
-        if (loadingMessage) {
-            loadingMessage.remove();
-        }
-    }
-
-
-    // ---------------------------------------------------------
-    // SEND MESSAGE TO FASTAPI BACKEND
-    // ---------------------------------------------------------
-
-    async function sendMessage() {
-
-        if (!input || !messages) {
-            return;
-        }
-
-        const text = input.value.trim();
-
-        if (!text) {
-            return;
-        }
-
-
-        // Show user's message
-        addMessage(text, true);
-
-        // Clear input
-        input.value = "";
-
-        // Show loading
-        addLoadingMessage();
-
-        // Disable button while processing
-        if (sendButton) {
-            sendButton.disabled = true;
-        }
-
-
-        try {
-
-            const response = await fetch(
-                `${API_BASE}/api/chat`,
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json"
-                    },
-
-                    body: JSON.stringify({
-
-                        message: text,
-
-                        /*
-                         * Normal mode.
-                         * Grid failure simulation will be
-                         * connected to a UI button later.
-                         */
-                        simulate_grid_failure: false,
-
-                        /*
-                         * Default carbon budget.
-                         */
-                        carbon_budget: 120
-                    })
                 }
             );
 
-
-            // Try to read backend response
-            const data = await response.json();
-
-            // Remove loading message
-            removeLoadingMessage();
-
-
-            // -------------------------------------------------
-            // BACKEND ERROR
-            // -------------------------------------------------
-
-            if (!response.ok) {
-
-                const errorMessage =
-                    data.detail ||
-                    "GreenPulse backend returned an error.";
-
-                addMessage(
-                    "⚠️ " + errorMessage,
-                    false
-                );
-
-                return;
-            }
-
-
-            // -------------------------------------------------
-            // SUCCESS
-            // -------------------------------------------------
-
-            if (data.assistant_message) {
-
-                addMessage(
-                    data.assistant_message,
-                    false
-                );
-
-            } else {
-
-                addMessage(
-                    "⚠️ GreenPulse returned an unexpected response.",
-                    false
-                );
-            }
-
-
-        } catch (error) {
-
-            // Remove loading
-            removeLoadingMessage();
-
-            console.error(
-                "GreenPulse API error:",
-                error
-            );
-
-
-            // Connection error
-            addMessage(
-                "⚠️ I couldn't connect to the GreenPulse backend. " +
-                "Please make sure the FastAPI server is running on " +
-                "http://localhost:8000.",
-                false
-            );
-
-        } finally {
-
-            // Re-enable send button
-            if (sendButton) {
-                sendButton.disabled = false;
-            }
-
-            // Focus input again
-            if (input) {
-                input.focus();
-            }
         }
-    }
 
 
-    // ---------------------------------------------------------
-    // EVENT LISTENERS
-    // ---------------------------------------------------------
+        /* =================================================
+           ESCAPE TO CLOSE
+        ================================================= */
 
-    if (aiButton && aiPanel) {
-
-        aiButton.addEventListener(
-            "click",
-            openAssistant
-        );
-    }
-
-
-    if (closeButton) {
-
-        closeButton.addEventListener(
-            "click",
-            closeAssistant
-        );
-    }
-
-
-    if (sendButton) {
-
-        sendButton.addEventListener(
-            "click",
-            sendMessage
-        );
-    }
-
-
-    if (input) {
-
-        input.addEventListener(
+        document.addEventListener(
             "keydown",
             function (event) {
 
-                if (event.key === "Enter") {
+                if (
+                    event.key === "Escape" &&
+                    aiPanel &&
+                    aiPanel.style.display === "flex"
+                ) {
 
-                    event.preventDefault();
+                    closeAssistant();
 
-                    sendMessage();
                 }
+
             }
         );
+
+
     }
 
-});
+);
+
 </script>
+
+</body>
+
+</html>
