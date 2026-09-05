@@ -168,7 +168,7 @@ rect.legend-mouseover-inactive,
   flex-direction: column;
   padding: 2px 0;
   white-space: nowrap;
-  z-index: 12;
+  z-dashboard: 12;
   transition: opacity .12s ease
 }
 
@@ -434,7 +434,7 @@ rect.legend-mouseover-inactive,
   text-align: center;
   border-radius: 6px;
   position: absolute;
-  z-index: 10;
+  z-dashboard: 10;
   background: var(--apx-axt-bg);
   border: 1px solid var(--apx-axt-border);
   box-shadow: var(--apx-axt-shadow)
@@ -714,7 +714,7 @@ rect.legend-mouseover-inactive,
 
 .apexcharts-toolbar {
   position: absolute;
-  z-index: 11;
+  z-dashboard: 11;
   display: inline-flex;
   align-items: center;
   gap: 1px;
@@ -920,7 +920,7 @@ rect.legend-mouseover-inactive,
 
 .apexcharts-breadcrumb {
   position: absolute;
-  z-index: 11;
+  z-dashboard: 11;
   display: inline-flex;
   align-items: center;
   gap: 2px;

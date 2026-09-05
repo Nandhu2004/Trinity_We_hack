@@ -1,12 +1,12 @@
 /* 
 ========================================================================
-   BOOTSTRAP 5 ADMIN TEMPLATE - SPARK ADMIN
+   BOOTSTRAP 5 ADMIN TEMPLATE - GreenPulse
    AUTHENTICATION MODULE JAVASCRIPT
    Developed with premium UI/UX standards
 
-   Template Name: Spark Admin
+   Template Name: GreenPulse
    Version: 1.0 
-   Author: Spark Admin Team 
+   Author: GreenPulse Team 
    Email: hello.sparkadmin@gmail.com
    URL: https://sparkadmin.web.id
 ========================================================================

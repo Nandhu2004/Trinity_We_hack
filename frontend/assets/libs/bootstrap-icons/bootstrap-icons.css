@@ -793,10 +793,10 @@ url("./fonts/bootstrap-icons.woff?e34853135f9e39acf64315236852cd5a") format("wof
 .bi-grip-horizontal::before { content: "\f3fd"; }
 .bi-grip-vertical::before { content: "\f3fe"; }
 .bi-hammer::before { content: "\f3ff"; }
-.bi-hand-index-fill::before { content: "\f400"; }
-.bi-hand-index-thumb-fill::before { content: "\f401"; }
-.bi-hand-index-thumb::before { content: "\f402"; }
-.bi-hand-index::before { content: "\f403"; }
+.bi-hand-dashboard-fill::before { content: "\f400"; }
+.bi-hand-dashboard-thumb-fill::before { content: "\f401"; }
+.bi-hand-dashboard-thumb::before { content: "\f402"; }
+.bi-hand-dashboard::before { content: "\f403"; }
 .bi-hand-thumbs-down-fill::before { content: "\f404"; }
 .bi-hand-thumbs-down::before { content: "\f405"; }
 .bi-hand-thumbs-up-fill::before { content: "\f406"; }

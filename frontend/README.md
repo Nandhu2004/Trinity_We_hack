@@ -15,11 +15,11 @@ git clone https://github.com/themewagon/spark-admin.git
 
 ## Author 
 ```
-Design and code is completely written by Spark Admin Dev and development team. 
+Design and code is completely written by GreenPulse Dev and development team. 
 ```
 
 ## License
 
- - Design and Code is Copyright &copy; <a href="https://sparkadminpro.gumroad.com/" target="_blank">Spark Admin Dev</a>
+ - Design and Code is Copyright &copy; <a href="https://sparkadminpro.gumroad.com/" target="_blank">GreenPulse Dev</a>
  - Licensed cover under [MIT]
  - Distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a>

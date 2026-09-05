@@ -1,638 +1,488 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spark Admin - Premium Bootstrap 5 Admin Dashboard Template</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GreenPulse — Carbon-Aware AI Orchestration</title>
+  <!--
+  Adapted from TemplateMo 622 Clearwave (https://templatemo.com/tm-622-clearwave)
+  Content rewritten for GreenPulse — Team Trinity
+  Keep the original templatemo-622-clearwave.css / .js and images/ folder
+  alongside this file, or update the links/paths below to match your own assets.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet" />
 
-  <!-- SEO Optimization -->
-  <meta name="description" content="Spark Admin - Premium Bootstrap 5 Admin Dashboard Template">
-  <meta name="author" content="Spark Admin Team">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="assets/images/favicon.ico">
-
-  <!-- Local Third-Party Libraries (100% Offline Compatible) -->
-  <link rel="stylesheet" href="assets/libs/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="assets/libs/bootstrap-icons/bootstrap-icons.css">
-  <link rel="stylesheet" href="assets/libs/apexcharts/apexcharts.css">
-  <link rel="stylesheet" href="assets/libs/flatpickr/flatpickr.min.css">
-
-  <!-- Main Design System & Custom Stylesheet -->
-  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="templatemo-622-clearwave.css" />
 </head>
-
 <body>
 
-  <!-- ==========================================
-         START: Sidebar Component
-         Highly polished, dark-green sticky navigation
-         ========================================== -->
-  <div class="sidebar-wrapper" id="sidebar">
-    <!-- Brand Logo / Identity -->
-    <a href="index.html" class="sidebar-brand">
-      <i class="bi bi-asterisk"></i>
-      <span>Spark Admin</span>
-    </a>
-
-    <!-- Navigation Menu -->
-    <div class="flex-grow-1 overflow-y-auto">
-      <!-- Group: Menu -->
-      <div class="sidebar-menu-section">
-        <div class="sidebar-menu-title">Menu</div>
-        <ul class="sidebar-menu-list">
-          <li class="sidebar-menu-item">
-            <a href="index.html" class="sidebar-menu-link active" id="menu-overview" title="Overview">
-              <i class="bi bi-grid-fill"></i>
-              <span>Dashboard</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Group: Components -->
-      <div class="sidebar-menu-section">
-        <div class="sidebar-menu-title">Components</div>
-        <ul class="sidebar-menu-list">
-          <li class="sidebar-menu-item">
-            <a href="tables-basic.html" class="sidebar-menu-link" id="menu-basictables" title="Basic Tables">
-              <i class="bi bi-table"></i>
-              <span>Basic Tables</span>
-            </a>
-          </li>
-          <li class="sidebar-menu-item">
-            <a href="ui-forms.html" class="sidebar-menu-link" id="menu-uiforms" title="Forms and Input">
-              <i class="bi bi-input-cursor-text"></i>
-              <span>Forms & Input</span>
-            </a>
-          </li>
-          <li class="sidebar-menu-item">
-            <a href="ui-buttons.html" class="sidebar-menu-link" id="menu-uibuttons" title="Buttons">
-              <i class="bi bi-menu-button-wide-fill"></i>
-              <span>Buttons & Alerts</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Group: Pages -->
-      <div class="sidebar-menu-section">
-        <div class="sidebar-menu-title">Pages</div>
-        <ul class="sidebar-menu-list">
-          <li class="sidebar-menu-item">
-            <a href="page-blank.html" class="sidebar-menu-link" id="menu-blankpage" title="Blank Page">
-              <i class="bi bi-file-earmark"></i>
-              <span>Blank Page</span>
-            </a>
-          </li>
-          <li class="sidebar-menu-item">
-            <a href="page-login.html" class="sidebar-menu-link" id="menu-loginpage" title="Login Page">
-              <i class="bi bi-box-arrow-in-right"></i>
-              <span>Login Screen</span>
-            </a>
-          </li>
-          <li class="sidebar-menu-item">
-            <a href="page-404.html" class="sidebar-menu-link" id="menu-404" title="404 Page">
-              <i class="bi bi-slash-circle"></i>
-              <span>Error 404</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Sidebar Profile Card (Dynamic Footer) -->
-    <div class="sidebar-profile">
-      <img src="assets/images/avatar.png" alt="Administrator" class="sidebar-profile-img"
-        onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop'">
-      <div class="sidebar-profile-info">
-        <div class="sidebar-profile-name">Administrator</div>
-        <div class="sidebar-profile-email">admin@email.com</div>
-      </div>
-    </div>
+  <!-- ── MOBILE MENU ── -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Navigation">
+    <a href="#screens">Engine</a>
+    <a href="#features">Features</a>
+    <a href="#get-started">Get Started</a>
+    <a href="#integrations">Integrations</a>
+    <a href="dashboard.html" class="mobile-cta btn-primary">Go to Dashboard</a>
   </div>
-  <!-- ==========================================
-         END: Sidebar Component
-         ========================================== -->
 
-
-  <!-- ==========================================
-         START: Main Content Area
-         ========================================== -->
-  <div class="main-wrapper">
-
-    <!-- START: Top Navbar Component -->
-    <header class="navbar-custom">
-      <div class="navbar-left">
-        <!-- Desktop sidebar toggle (visible on large screens only) -->
-        <button class="btn-desktop-toggle d-none d-xl-flex align-items-center justify-content-center me-3"
-          id="desktop-sidebar-toggle" aria-label="Minimize Sidebar">
-          <i class="bi bi-chevron-bar-left"></i>
-        </button>
-        <!-- Mobile sidebar toggle -->
-        <button class="sidebar-toggle-btn me-2" id="sidebar-toggle" aria-label="Toggle Navigation">
-          <i class="bi bi-list"></i>
-        </button>
-
-        <!-- Quick Actions Dropdown -->
-        <div class="dropdown ms-2">
-          <button class="btn-quick-action dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-            id="quick-actions-dropdown">
-            <i class="bi bi-plus-lg"></i>
-            <span>Create</span>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-quick-action" aria-labelledby="quick-actions-dropdown">
-            <li class="dropdown-header">Quick Action Shortcuts</li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-plus"></i> New Invoice</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-person-plus"></i> New User</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-box-seam"></i> New Product</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> System Settings</a></li>
-          </ul>
-        </div>
+  <!-- ── 1. NAV ── -->
+  <nav class="nav" id="mainNav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">green<span>pulse</span></a>
+      <ul class="nav-links" role="list">
+        <li><a href="#screens">Engine</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#get-started">Get Started</a></li>
+        <li><a href="#integrations">Integrations</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="dashboard.html" class="btn-primary">Go to Dashboard</a>
       </div>
-
-      <!-- Mid navbar: search pill -->
-      <div class="navbar-search-wrapper">
-        <input type="text" class="navbar-search-input" placeholder="Search anything in Spark..." id="main-search">
-        <button class="navbar-search-btn" aria-label="Search">
-          <i class="bi bi-search"></i>
-        </button>
-      </div>
-
-      <!-- Right actions -->
-      <div class="navbar-actions">
-        <!-- Fullscreen Toggle -->
-        <button class="navbar-action-btn me-1" aria-label="Toggle Fullscreen" id="btn-fullscreen">
-          <i class="bi bi-arrows-fullscreen"></i>
-        </button>
-        <div class="dropdown">
-          <button class="navbar-action-btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
-            aria-expanded="false" id="btn-notifications" data-bs-auto-close="outside">
-            <i class="bi bi-bell"></i>
-            <span class="navbar-action-badge"></span>
-          </button>
-          <div class="dropdown-menu dropdown-menu-end dropdown-menu-notification p-0"
-            aria-labelledby="btn-notifications">
-            <div class="notification-header">
-              <h6 class="notification-title">Notifications</h6>
-              <button class="btn-clear-all" type="button">Mark all read</button>
-            </div>
-            <div class="notification-list">
-              <!-- Sale Notification -->
-              <a href="#" class="notification-item">
-                <div class="notification-icon bg-success text-white">
-                  <i class="bi bi-wallet2"></i>
-                </div>
-                <div class="notification-content">
-                  <p class="notification-text">New sale received: <strong>$150.00</strong></p>
-                  <span class="notification-time">2 mins ago</span>
-                </div>
-                <span class="notification-unread-dot"></span>
-              </a>
-              <!-- User Registration Notification -->
-              <a href="#" class="notification-item">
-                <div class="notification-icon bg-primary text-white">
-                  <i class="bi bi-person-plus-fill"></i>
-                </div>
-                <div class="notification-content">
-                  <p class="notification-text">New user registered: <strong>John Doe</strong></p>
-                  <span class="notification-time">1 hour ago</span>
-                </div>
-                <span class="notification-unread-dot"></span>
-              </a>
-              <!-- Low Stock Notification -->
-              <a href="#" class="notification-item">
-                <div class="notification-icon bg-warning text-dark">
-                  <i class="bi bi-box-seam-fill"></i>
-                </div>
-                <div class="notification-content">
-                  <p class="notification-text">Stock running low: <strong>Hoodie</strong></p>
-                  <span class="notification-time">3 hours ago</span>
-                </div>
-              </a>
-            </div>
-            <a href="#" class="notification-footer">View All Notifications</a>
-          </div>
-        </div>
-
-        <!-- Profile Dropdown -->
-        <div class="dropdown ms-2">
-          <button class="navbar-profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
-            aria-expanded="false" id="profile-dropdown">
-            <img src="assets/images/avatar.png" alt="Profile Image" class="navbar-profile-img">
-            <span class="navbar-profile-name d-none d-md-inline">Administrator</span>
-            <i class="bi bi-chevron-down navbar-profile-caret"></i>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-profile" aria-labelledby="profile-dropdown">
-            <li class="dropdown-header">Welcome !</li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> My Account</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Settings</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-lock"></i> Lock Screen</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item text-danger" href="page-login.html"><i class="bi bi-box-arrow-right"></i>
-                Logout</a></li>
-          </ul>
-        </div>
-      </div>
-    </header>
-    <!-- END: Top Navbar Component -->
-
-    <!-- START: Dashboard Header Banner -->
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">Dashboard</h1>
-        <p class="page-subtitle">An easy way to manage sales with care and precision.</p>
-      </div>
-      <button class="btn-date-picker" type="button" id="date-picker-trigger">
-        <i class="bi bi-calendar4-event"></i>
-        <span id="selected-date-range">January 12, 2026 - January 23, 2026</span>
-        <i class="bi bi-chevron-down ms-1"></i>
+      <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
       </button>
     </div>
-    <!-- END: Dashboard Header Banner -->
+  </nav>
 
-    <!-- START: Main Layout Grid (2 Columns: Dashboard + Performance Pane) -->
-    <div class="row g-4">
-
-      <!-- TOP AREA: Quick Info Stat Cards Row (Full Width) -->
-      <div class="col-12">
-        <div class="row g-4">
-          <!-- Stat Card 1: Green Alert Banner -->
-          <div class="col-md-4">
-            <div class="card alert-green-card">
-              <div class="position-relative z-index-2">
-                <span class="alert-green-badge">Update</span>
-                <div class="alert-green-date">Feb 14th 2026</div>
-                <div class="alert-green-text">Sales revenue increased 40% in 1 week</div>
-              </div>
-              <a href="#" class="alert-green-link z-index-2" id="alert-link-statistics">
-                <span>See Statistics</span>
-                <i class="bi bi-arrow-right"></i>
-              </a>
-
-              <!-- Inline SVG geometric decoration (Lime green 6-pointed star/asterisk with rounded caps) -->
-              <svg class="alert-green-bg-shape" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g transform="translate(50,50)">
-                  <rect x="-6" y="-45" width="12" height="90" rx="6" ry="6" fill="#B4F105" />
-                  <rect x="-6" y="-45" width="12" height="90" rx="6" ry="6" fill="#B4F105" transform="rotate(60)" />
-                  <rect x="-6" y="-45" width="12" height="90" rx="6" ry="6" fill="#B4F105" transform="rotate(120)" />
-                </g>
-              </svg>
-            </div>
+  <!-- ── 2. HERO ── -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-content">
+          <div class="hero-badge reveal">
+            <div class="hero-badge-dot">✦</div>
+            <span>Decisions made in <strong>under 5ms</strong>, before a single GPU cycle runs</span>
           </div>
-
-          <!-- Stat Card 2: Net Income -->
-          <div class="col-md-4">
-            <div class="card card-stat d-flex flex-column justify-content-between">
-              <div>
-                <div class="card-header">
-                  <span class="stat-label">Net Income</span>
-                  <div class="dropdown">
-                    <button class="card-more-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                      aria-label="More Options" id="btn-more-income">
-                      <i class="bi bi-three-dots"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom">
-                      <li><a class="dropdown-item" href="#"><i class="bi bi-arrow-repeat"></i> Refresh</a></li>
-                      <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-arrow-down"></i> Export
-                          Report</a></li>
-                      <li>
-                        <hr class="dropdown-divider">
-                      </li>
-                      <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-eye-slash"></i> Hide Details</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="stat-value">$196.000</div>
-                <div class="trend-badge trend-up">
-                  <i class="bi bi-arrow-up-right"></i>
-                  <span>+35% from last month</span>
-                </div>
-              </div>
-              <div class="sparkline-container sparkline-card-footer">
-                <div id="income-sparkline"></div>
-              </div>
-            </div>
+          <h1 class="hero-title reveal reveal-delay-1">
+            Your AI workloads,<br><em>finally carbon-aware.</em>
+          </h1>
+          <p class="hero-sub reveal reveal-delay-2">
+            GreenPulse is an automated carbon-aware orchestration engine for high-compute AI workloads. Instead of running tasks the moment they're submitted, it reads live power grid data, compute resource specs, and operational constraints to decide when and where each job should run — cutting emissions without ever missing a deadline.
+          </p>
+          <div class="hero-actions reveal reveal-delay-3">
+            <a href="dashboard.html" class="btn-primary-lg">
+              Go to Dashboard
+              <span class="btn-arrow">→</span>
+            </a>
+            <a href="#screens" class="btn-outline-lg">
+              <span>▶</span> See it in action
+            </a>
           </div>
-
-          <!-- Stat Card 3: Total Return -->
-          <div class="col-md-4">
-            <div class="card card-stat d-flex flex-column justify-content-between">
-              <div>
-                <div class="card-header">
-                  <span class="stat-label">Total Return</span>
-                  <div class="dropdown">
-                    <button class="card-more-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                      aria-label="More Options" id="btn-more-return">
-                      <i class="bi bi-three-dots"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom">
-                      <li><a class="dropdown-item" href="#"><i class="bi bi-arrow-repeat"></i> Refresh</a></li>
-                      <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-arrow-down"></i> Export
-                          Report</a></li>
-                      <li>
-                        <hr class="dropdown-divider">
-                      </li>
-                      <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-eye-slash"></i> Hide Details</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="stat-value">$32.000</div>
-                <div class="trend-badge trend-down">
-                  <i class="bi bi-arrow-down-left"></i>
-                  <span>-24% from last month</span>
-                </div>
-              </div>
-              <div class="sparkline-container sparkline-card-footer">
-                <div id="return-sparkline"></div>
-              </div>
+          <div class="hero-trust reveal reveal-delay-4">
+            <div class="trust-item">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              Grid-Data Verified
+            </div>
+            <div class="trust-divider"></div>
+            <div class="trust-item">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              &lt;5ms Decision Latency
+            </div>
+            <div class="trust-divider"></div>
+            <div class="trust-item">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              RUN · WAIT · REROUTE
             </div>
           </div>
         </div>
-      </div>
-      <!-- END: TOP AREA -->
-
-      <!-- LEFT AREA: Primary Dashboard Stats & Tables -->
-      <div class="col-xl-9 col-lg-8">
-
-        <!-- START: Details Area (Transactions + Performance Charts) -->
-        <div class="row g-4">
-          <!-- Column: Revenue Chart (Full Width / Wider) -->
-          <div class="col-12">
-            <div class="card mb-0">
-              <div class="card-header mb-2">
-                <h2 class="card-title">Revenue</h2>
-                <!-- Custom Static Legends -->
-                <div class="d-flex gap-3 align-items-center">
-                  <div class="chart-legend-item">
-                    <span class="legend-dot bg-forest-medium"></span>
-                    <span class="chart-legend-label">Income</span>
-                  </div>
-                  <div class="chart-legend-item">
-                    <span class="legend-dot bg-lime-accent"></span>
-                    <span class="chart-legend-label">Expenses</span>
-                  </div>
-                </div>
-              </div>
-              <div class="d-flex align-items-baseline gap-2 mb-3">
-                <span class="stat-value-amount">$196.000</span>
-                <span class="trend-badge trend-up fs-xs">+35% from last month</span>
-              </div>
-              <div id="revenue-chart"></div>
+        <div class="hero-visual reveal reveal-delay-2">
+          <div class="hero-dashboard">
+            <div class="dashboard-bar">
+              <div class="db-dot"></div><div class="db-dot"></div><div class="db-dot"></div>
             </div>
-          </div>
-
-          <!-- Column: Transaction List -->
-          <div class="col-md-7 d-flex flex-column">
-            <div class="card h-100 flex-grow-1">
-              <div class="card-header">
-                <h2 class="card-title">Transaction</h2>
-                <div class="dropdown">
-                  <button class="card-more-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                    aria-label="More Options" id="btn-more-transaction">
-                    <i class="bi bi-three-dots"></i>
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom">
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-funnel"></i> Filter Status</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-arrow-down"></i> Export CSV</a>
-                    </li>
-                  </ul>
-                </div>
+            <div class="dashboard-body">
+              <div class="db-header">
+                <div class="db-title">Grid Carbon Intensity</div>
+                <div class="db-tag">Live</div>
               </div>
-
-              <!-- Transaction Items List -->
-              <div class="transaction-list">
-                <div class="transaction-item">
-                  <div class="transaction-icon bg-forest-light text-lime">
-                    <i class="bi bi-spotify"></i>
-                  </div>
-                  <div class="transaction-info">
-                    <div class="transaction-name">Spotify Subscription</div>
-                    <div class="transaction-date">Feb 14, 2026 • 12:40 PM</div>
-                  </div>
-                  <div class="transaction-amount text-main">-$15.00</div>
-                </div>
-
-                <div class="transaction-item">
-                  <div class="transaction-icon bg-forest-light text-lime">
-                    <i class="bi bi-paypal"></i>
-                  </div>
-                  <div class="transaction-info">
-                    <div class="transaction-name">Paypal Transfer</div>
-                    <div class="transaction-date">Feb 13, 2026 • 08:15 AM</div>
-                  </div>
-                  <div class="transaction-amount text-success">+$1,250.00</div>
-                </div>
-
-                <div class="transaction-item">
-                  <div class="transaction-icon bg-forest-light text-lime">
-                    <i class="bi bi-stripe"></i>
-                  </div>
-                  <div class="transaction-info">
-                    <div class="transaction-name">Stripe Payout</div>
-                    <div class="transaction-date">Feb 11, 2026 • 04:30 PM</div>
-                  </div>
-                  <div class="transaction-amount text-success">+$3,400.00</div>
-                </div>
-
-                <div class="transaction-item">
-                  <div class="transaction-icon bg-forest-light text-lime">
-                    <i class="bi bi-slack"></i>
-                  </div>
-                  <div class="transaction-info">
-                    <div class="transaction-name">Slack Pro Workspace</div>
-                    <div class="transaction-date">Feb 09, 2026 • 09:20 AM</div>
-                  </div>
-                  <div class="transaction-amount text-main">-$45.00</div>
-                </div>
+              <div class="db-chart">
+                <div class="db-bar" style="height:35%"></div>
+                <div class="db-bar" style="height:55%"></div>
+                <div class="db-bar" style="height:42%"></div>
+                <div class="db-bar active" style="height:75%"></div>
+                <div class="db-bar" style="height:60%"></div>
+                <div class="db-bar active" style="height:88%"></div>
+                <div class="db-bar" style="height:70%"></div>
+                <div class="db-bar active" style="height:92%"></div>
               </div>
-
-            </div>
-          </div>
-
-          <!-- Column: Product Overview Progress -->
-          <div class="col-md-5 d-flex flex-column">
-            <div class="card h-100 flex-grow-1">
-              <div class="card-header">
-                <h2 class="card-title">Product Overview</h2>
-                <div class="dropdown">
-                  <button class="card-more-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                    aria-label="More Options" id="btn-more-products">
-                    <i class="bi bi-three-dots"></i>
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom">
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-plus-lg"></i> Add Product</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Manage</a></li>
-                  </ul>
+              <div class="db-stats">
+                <div class="db-stat">
+                  <div class="db-stat-val">38<span style="font-size:.9rem;color:var(--accent)">%</span></div>
+                  <div class="db-stat-label">Carbon Saved</div>
+                  <div class="db-stat-change">+12%</div>
                 </div>
-              </div>
-
-              <div class="progress-container">
-                <div class="progress-label-row">
-                  <span class="progress-label">Product Launched</span>
-                  <span class="progress-value">233</span>
+                <div class="db-stat">
+                  <div class="db-stat-val">1.2<span style="font-size:.9rem;color:var(--accent)">k</span></div>
+                  <div class="db-stat-label">Jobs Routed</div>
+                  <div class="db-stat-change">+8%</div>
                 </div>
-                <div class="progress" role="progressbar" aria-label="Product Launched Progress" aria-valuenow="65"
-                  aria-valuemin="0" aria-valuemax="100">
-                  <div class="progress-bar bg-lime-accent w-65"></div>
+                <div class="db-stat">
+                  <div class="db-stat-val">18<span style="font-size:.9rem;color:var(--accent)">h</span></div>
+                  <div class="db-stat-label">Shifted / week</div>
+                  <div class="db-stat-change">+24%</div>
                 </div>
-              </div>
-
-              <div class="progress-container">
-                <div class="progress-label-row">
-                  <span class="progress-label">Ongoing Product</span>
-                  <span class="progress-value">23</span>
-                </div>
-                <div class="progress" role="progressbar" aria-label="Ongoing Product Progress" aria-valuenow="20"
-                  aria-valuemin="0" aria-valuemax="100">
-                  <div class="progress-bar bg-lime-accent opacity-50 w-50"></div>
-                </div>
-              </div>
-
-              <div class="progress-container">
-                <div class="progress-label-row">
-                  <span class="progress-label">Product Sold</span>
-                  <span class="progress-value">482</span>
-                </div>
-                <div class="progress" role="progressbar" aria-label="Product Sold Progress" aria-valuenow="85"
-                  aria-valuemin="0" aria-valuemax="100">
-                  <div class="progress-bar bg-lime-accent w-85"></div>
-                </div>
-              </div>
-
-              <div class="progress-container">
-                <div class="progress-label-row">
-                  <span class="progress-label">Product Returned</span>
-                  <span class="progress-value">8</span>
-                </div>
-                <div class="progress" role="progressbar" aria-label="Product Returned Progress" aria-valuenow="10"
-                  aria-valuemin="0" aria-valuemax="100">
-                  <div class="progress-bar bg-brand-orange w-38"></div>
-                </div>
-              </div>
-
-              <div class="progress-container">
-                <div class="progress-label-row">
-                  <span class="progress-label">Product In Stock</span>
-                  <span class="progress-value">1,420</span>
-                </div>
-                <div class="progress" role="progressbar" aria-label="Product In Stock Progress" aria-valuenow="75"
-                  aria-valuemin="0" aria-valuemax="100">
-                  <div class="progress-bar bg-lime-accent w-75"></div>
-                </div>
-              </div>
-
-              <div class="progress-container">
-                <div class="progress-label-row">
-                  <span class="progress-label">Pending Shipment</span>
-                  <span class="progress-value">64</span>
-                </div>
-                <div class="progress" role="progressbar" aria-label="Pending Shipment Progress" aria-valuenow="45"
-                  aria-valuemin="0" aria-valuemax="100">
-                  <div class="progress-bar bg-lime-accent opacity-50 w-45"></div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-        <!-- END: Details Area -->
-
-      </div>
-
-      <!-- RIGHT AREA: Performance Details Sidebar Panel -->
-      <div class="col-xl-3 col-lg-4">
-        <div class="right-panel-wrapper d-flex flex-column gap-4 h-100">
-
-          <!-- Performance Donut Chart card -->
-          <div class="card flex-grow-1 d-flex flex-column justify-content-between mb-0">
-            <div class="card-header mb-1">
-              <h2 class="card-title">Total View Performance</h2>
-            </div>
-
-            <div id="views-chart"></div>
-
-            <!-- Custom Legends below the chart -->
-            <div class="chart-legends-container">
-              <div class="chart-legend-item">
-                <span class="legend-dot bg-lime-accent"></span>
-                <span class="text-muted-green">View Count</span>
-              </div>
-              <div class="chart-legend-item">
-                <span class="legend-dot bg-forest-medium"></span>
-                <span class="text-muted-green">Percentage</span>
-              </div>
-              <div class="chart-legend-item">
-                <span class="legend-dot bg-brand-orange"></span>
-                <span class="text-muted-green">Sales</span>
               </div>
             </div>
           </div>
-
-          <!-- Level Up Promotion CTA banner -->
-          <div class="promo-banner-card">
-            <!-- Inline SVG geometric decoration (Lime green 6-pointed star/asterisk with rounded caps) -->
-            <svg class="promo-banner-bg-shape" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g transform="translate(50,50)">
-                <rect x="-6" y="-45" width="12" height="90" rx="6" ry="6" fill="#B4F105" />
-                <rect x="-6" y="-45" width="12" height="90" rx="6" ry="6" fill="#B4F105" transform="rotate(60)" />
-                <rect x="-6" y="-45" width="12" height="90" rx="6" ry="6" fill="#B4F105" transform="rotate(120)" />
-              </g>
-            </svg>
-
-            <h3 class="promo-title">Level up your sales managing to the next level.</h3>
-            <p class="promo-desc">An easy way to manage sales with care and precision.</p>
-            <button class="btn-promo" id="btn-promo-action">Check the updates now</button>
+          <div class="hero-float-badge">
+            <div class="float-badge-icon">✦</div>
+            <div class="float-badge-text">
+              <strong>Decision made</strong>
+              <span>REROUTE → us-west-2 · just now</span>
+            </div>
+          </div>
+          <div class="hero-float-badge-2">
+            <div class="float-badge-2-val">↓ 34%</div>
+            <div class="float-badge-2-label">Emissions this week</div>
           </div>
         </div>
       </div>
-      <!-- END: RIGHT AREA -->
-
     </div>
-    <!-- END: Main Layout Grid -->
+  </section>
 
-    <!-- START: Footer Component -->
-    <footer class="footer-custom">
-      <div class="footer-left">
-        <span class="footer-logo">
-          <i class="bi bi-asterisk"></i> Spark Admin
-        </span>
-        <span class="footer-separator">|</span>
-        <span class="footer-copy">&copy; 2026 Made with <i class="bi bi-heart-fill text-danger footer-heart"></i> by<a
-            href="https://sparkadminpro.gumroad.com/" target="_blank">Spark Admin</a>• Distributed by <a
-            href="https://www.themewagon.com/" target="_blank">ThemeWagon</a> </span>
-      </div>
-      <div class="footer-right">
-        <ul class="footer-links">
-          <li><a href="#" class="footer-link">Overview</a></li>
-          <li><a href="#" class="footer-link">Statistics</a></li>
-          <li><a href="#" class="footer-link">Help & Documentation</a></li>
-          <li><a href="#" class="footer-link">Status <span class="status-dot"></span></a></li>
-        </ul>
-      </div>
-    </footer>
-    <!-- END: Footer Component -->
-
+  <!-- ── 3. DATA SOURCE ── -->
+  <div class="ticker-section">
+    <div class="ticker-label">Powered by real-time signals from Electricity Maps</div>
   </div>
-  <!-- ==========================================
-         END: Main Content Area
-         ========================================== -->
 
-  <!-- Local Third-Party Libraries Script dependencies -->
-  <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
-  <script src="assets/libs/flatpickr/flatpickr.min.js"></script>
+  <!-- ── 5. 3D PHONE CAROUSEL ── -->
+  <section class="carousel-section" id="screens">
+    <div class="container">
+      <div class="carousel-header">
+        <h2 class="section-title reveal reveal-delay-1">Every decision,<br><em>visualized</em></h2>
+        <p class="section-sub reveal reveal-delay-2">See exactly why GreenPulse chose RUN, WAIT, or REROUTE for every job — grid data, carbon forecasts, and SLA math laid out in real time.</p>
+      </div>
+    </div>
+    <div class="container">
+      <div class="gp-screens-grid">
 
-  <!-- Local dashboard interactions controller -->
-  <script src="assets/js/dashboard.js"></script>
+        <div class="gp-screen-card reveal">
+          <div class="gp-screen-icon">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12h4l3 8 4-16 3 8h4"/></svg>
+          </div>
+          <h3 class="gp-screen-title">Grid Carbon Intensity</h3>
+          <p class="gp-screen-desc">A live read on how clean the grid is right now, region by region — the single number every RUN, WAIT, or REROUTE decision starts from.</p>
+        </div>
+
+        <div class="gp-screen-card reveal reveal-delay-1">
+          <div class="gp-screen-icon">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17V9m3 8V5m3 12v-6M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          </div>
+          <h3 class="gp-screen-title">Active Job Queue</h3>
+          <p class="gp-screen-desc">Every workload waiting to run, with its deadline, hardware needs, and priority laid out side by side — nothing gets scheduled blind.</p>
+        </div>
+
+        <div class="gp-screen-card reveal reveal-delay-2">
+          <div class="gp-screen-icon">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+          </div>
+          <h3 class="gp-screen-title">RUN / WAIT / REROUTE Log</h3>
+          <p class="gp-screen-desc">A transparent, timestamped record of every decision GreenPulse makes and why — so you can trust the call without digging through raw logs.</p>
+        </div>
+
+        <div class="gp-screen-card reveal reveal-delay-3">
+          <div class="gp-screen-icon">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          </div>
+          <h3 class="gp-screen-title">Carbon Forecast by Region</h3>
+          <p class="gp-screen-desc">LightGBM/XGBoost models trained on historical grid patterns, projecting the next clean-energy window hours ahead for every monitored region.</p>
+        </div>
+
+        <div class="gp-screen-card reveal">
+          <div class="gp-screen-icon">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+          </div>
+          <h3 class="gp-screen-title">Impact Report</h3>
+          <p class="gp-screen-desc">Total emissions avoided, compute-hours shifted, and SLA compliance — rolled up into a report you can hand straight to your sustainability team.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <style>
+      .gp-screens-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;margin-top:48px;}
+      .gp-screen-card{background:var(--surface,#fff);border:1px solid var(--border,rgba(0,0,0,.08));border-radius:14px;padding:28px 24px;display:flex;flex-direction:column;gap:12px;}
+      .gp-screen-icon{width:40px;height:40px;border-radius:10px;background:var(--bg-alt,rgba(0,0,0,.04));color:var(--accent,#2f6f4e);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+      .gp-screen-title{font-size:1.05rem;font-weight:600;margin:0;color:var(--text,inherit);}
+      .gp-screen-desc{font-size:.92rem;line-height:1.55;color:var(--text-2,rgba(0,0,0,.65));margin:0;}
+    </style>
+  </section>
+
+  <!-- ── 4. FEATURES ── -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <div class="features-header">
+        <h2 class="section-title reveal reveal-delay-1">Three questions,<br>answered <em>automatically</em></h2>
+        <p class="section-sub reveal reveal-delay-2">Every scheduling decision GreenPulse makes answers where, when, and how a job should run — before a single GPU cycle is spent.</p>
+      </div>
+
+      <!-- Feature 1 -->
+      <div class="feature-row">
+        <div class="feature-content reveal">
+          <div class="feature-number">01 — Where</div>
+          <h3 class="feature-title">Spatial optimization across regions</h3>
+          <p class="feature-desc">GreenPulse continuously compares carbon intensity, latency, and available capacity across every region your workload can run in — then picks the cleanest one that still meets your constraints.</p>
+          <div class="feature-checklist">
+            <div class="feature-check"><div class="check-icon">✓</div><span>Live carbon-intensity comparison across regions</span></div>
+            <div class="feature-check"><div class="check-icon">✓</div><span>Real-time grid, cost, and latency feeds</span></div>
+            <div class="feature-check"><div class="check-icon">✓</div><span>Hardware and capacity matching per region</span></div>
+          </div>
+        </div>
+        <div class="feature-visual reveal reveal-delay-1">
+          <div class="feature-visual-inner">
+            <div class="fv-row">
+              <div class="fv-card">
+                <div class="fv-card-label">Grid Carbon Intensity</div>
+                <div class="fv-card-val">212 g</div>
+                <div class="fv-card-bar"><div class="fv-card-bar-fill" style="width:42%"></div></div>
+              </div>
+              <div class="fv-card">
+                <div class="fv-card-label">Regions Monitored</div>
+                <div class="fv-card-val">18</div>
+                <div class="fv-card-bar"><div class="fv-card-bar-fill" style="width:88%"></div></div>
+              </div>
+            </div>
+            <div class="fv-card">
+              <div class="fv-card-label">Recent Decisions</div>
+              <div class="fv-list" style="margin-top:8px">
+                <div class="fv-list-item"><span class="fv-list-name">batch-train-047 → us-west-2</span><span class="fv-pill green">RUN</span></div>
+                <div class="fv-list-item"><span class="fv-list-name">batch-train-052 → holding</span><span class="fv-pill blue">WAIT</span></div>
+                <div class="fv-list-item"><span class="fv-list-name">inference-job-19 → re-routed</span><span class="fv-pill dim">REROUTE</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="feature-row reverse">
+        <div class="feature-content reveal">
+          <div class="feature-number">02 — When</div>
+          <h3 class="feature-title">Temporal shifting to<br><em>peak renewables</em></h3>
+          <p class="feature-desc">Jobs without a hard deadline don't have to run right now. GreenPulse forecasts the grid's renewable mix hours ahead and holds non-urgent workloads until the cleanest window — automatically, with zero manual scheduling.</p>
+          <div class="feature-checklist">
+            <div class="feature-check"><div class="check-icon">✓</div><span>ML-based carbon forecasting (LightGBM/XGBoost)</span></div>
+            <div class="feature-check"><div class="check-icon">✓</div><span>Deadline-aware WAIT windows</span></div>
+            <div class="feature-check"><div class="check-icon">✓</div><span>Full audit trail for every RUN / WAIT / REROUTE</span></div>
+          </div>
+        </div>
+        <div class="feature-visual reveal reveal-delay-1">
+          <div class="feature-visual-inner">
+            <div class="fv-card">
+              <div class="fv-card-label">Active Jobs</div>
+              <div class="fv-list" style="margin-top:8px">
+                <div class="fv-list-item"><span class="fv-list-name">batch-train-047 → RUN</span><span class="fv-pill green">Running</span></div>
+                <div class="fv-list-item"><span class="fv-list-name">inference-job-12 → RUN</span><span class="fv-pill green">Running</span></div>
+                <div class="fv-list-item"><span class="fv-list-name">nightly-report-03 → WAIT</span><span class="fv-pill blue">Holding</span></div>
+                <div class="fv-list-item"><span class="fv-list-name">batch-train-052 → grid spike</span><span class="fv-pill dim">Paused</span></div>
+              </div>
+            </div>
+            <div class="fv-row">
+              <div class="fv-card fv-wide">
+                <div class="fv-card-label">Compute-Hours Shifted</div>
+                <div class="fv-card-val">148h</div>
+                <div class="fv-card-bar"><div class="fv-card-bar-fill" style="width:91%"></div></div>
+              </div>
+              <div class="fv-card">
+                <div class="fv-card-label">Policies</div>
+                <div class="fv-card-val">24</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="feature-row">
+        <div class="feature-content reveal">
+          <div class="feature-number">03 — How</div>
+          <h3 class="feature-title">Hardware and SLA<br>feasibility <em>matching</em></h3>
+          <p class="feature-desc">Every decision checks the job against real hardware constraints and SLA deadlines before it's ever deferred. GreenPulse will never choose a cleaner window at the cost of a missed deadline.</p>
+          <div class="feature-checklist">
+            <div class="feature-check"><div class="check-icon">✓</div><span>GPU/TPU capacity matching per job</span></div>
+            <div class="feature-check"><div class="check-icon">✓</div><span>Hard-deadline detection and override</span></div>
+            <div class="feature-check"><div class="check-icon">✓</div><span>&lt;5ms scheduling decision, zero runtime overhead</span></div>
+          </div>
+        </div>
+        <div class="feature-visual reveal reveal-delay-1">
+          <div class="feature-visual-inner">
+            <div class="fv-row">
+              <div class="fv-card fv-wide">
+                <div class="fv-card-label">Clusters Online</div>
+                <div style="display:flex;gap:-4px;margin-top:6px">
+                  <div style="width:28px;height:28px;border-radius:50%;background:var(--accent);border:2px solid var(--surface);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff">US</div>
+                  <div style="width:28px;height:28px;border-radius:50%;background:var(--accent-mid);border:2px solid var(--surface);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;margin-left:-6px">EU</div>
+                  <div style="width:28px;height:28px;border-radius:50%;background:#5A6B66;border:2px solid var(--surface);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;margin-left:-6px">AP</div>
+                  <div style="width:28px;height:28px;border-radius:50%;background:var(--bg-alt);border:2px solid var(--surface);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--text-2);margin-left:-6px">+5</div>
+                </div>
+              </div>
+              <div class="fv-card">
+                <div class="fv-card-label">Jobs In Queue</div>
+                <div class="fv-card-val">37</div>
+              </div>
+            </div>
+            <div class="fv-card">
+              <div class="fv-card-label">SLA Checks</div>
+              <div class="fv-list" style="margin-top:8px">
+                <div class="fv-list-item"><span class="fv-list-name">job-2291 → deadline met</span><span class="fv-pill green">Passed</span></div>
+                <div class="fv-list-item"><span class="fv-list-name">job-2294 → deadline in 2h</span><span class="fv-pill blue">Watch</span></div>
+                <div class="fv-list-item"><span class="fv-list-name">job-2287 → rerouted safely</span><span class="fv-pill green">Passed</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 6. STATS ── -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card reveal">
+          <div class="stat-rule"></div>
+          <div class="stat-value"><span class="stat-num" data-target="34">0</span><span class="stat-suffix">%</span></div>
+          <div class="stat-label">Avg. Carbon Reduction</div>
+          <div class="stat-sublabel">Measured across simulated workloads</div>
+        </div>
+        <div class="stat-card reveal reveal-delay-1">
+          <div class="stat-rule"></div>
+          <div class="stat-value"><span class="stat-num" data-target="5">0</span><span class="stat-suffix">ms</span></div>
+          <div class="stat-label">Decision Latency</div>
+          <div class="stat-sublabel">Per scheduling decision, end-to-end</div>
+        </div>
+        <div class="stat-card reveal reveal-delay-2">
+          <div class="stat-rule"></div>
+          <div class="stat-value"><span class="stat-num" data-target="99" data-decimal="9">0</span><span class="stat-suffix">%</span></div>
+          <div class="stat-label">SLA Feasibility Rate</div>
+          <div class="stat-sublabel">Deadlines matched before any WAIT/REROUTE</div>
+        </div>
+        <div class="stat-card reveal reveal-delay-3">
+          <div class="stat-rule"></div>
+          <div class="stat-value"><span class="stat-num" data-target="18">0</span><span class="stat-suffix">h</span></div>
+          <div class="stat-label">Compute Shifted Weekly</div>
+          <div class="stat-sublabel">Moved to peak-renewable windows</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 7. GET STARTED ── -->
+  <section class="pricing-section" id="get-started">
+    <div class="container">
+      <div class="pricing-header">
+        <h2 class="section-title reveal reveal-delay-1">See <em>GreenPulse</em> in action</h2>
+        <p class="section-sub reveal reveal-delay-2">One dashboard for every RUN, WAIT, and REROUTE decision your workloads make.</p>
+      </div>
+      <div style="display:flex;justify-content:center;margin-top:32px;">
+        <a href="dashboard.html" class="pricing-cta" style="max-width:280px;">Go to Dashboard</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── 9. INTEGRATIONS ── -->
+  <section class="integrations-section" id="integrations">
+    <div class="container">
+      <div class="integrations-header">
+        <h2 class="section-title reveal reveal-delay-1">Powered by<br><em>real grid data</em></h2>
+        <p class="section-sub reveal reveal-delay-2">GreenPulse pulls live carbon-intensity data straight from Electricity Maps to make every RUN / WAIT / REROUTE decision.</p>
+      </div>
+      <div class="integrations-grid">
+        <a href="https://app.electricitymaps.com/map/live/fifteen_minutes" target="_blank" rel="noopener" class="integration-tile reveal" style="text-decoration:none;color:inherit;"><div class="integration-name">Electricity Maps</div></a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── 11. CTA BANNER ── -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-inner reveal">
+        <div class="cta-content">
+          <div class="cta-label">✦ Get Started Today</div>
+          <h2 class="cta-title">Ready to make your<br><em>compute carbon-aware?</em></h2>
+          <p class="cta-sub">Plug GreenPulse into your pipeline and start seeing RUN / WAIT / REROUTE decisions within a day.</p>
+        </div>
+        <div class="cta-actions">
+          <a href="dashboard.html" class="btn-cta-primary">
+            Go to Dashboard
+            <span>→</span>
+          </a>
+          <a href="#" class="btn-cta-ghost">Schedule a demo</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 12. FOOTER ── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="nav-logo">green<span style="color:var(--accent-light)">pulse</span></a>
+          <p class="footer-brand-desc">The carbon-aware orchestration engine for AI workloads that don't run blindly — building sustainable compute, one decision at a time.</p>
+          <div class="footer-socials">
+            <a href="#" class="social-btn" aria-label="Twitter / X">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="LinkedIn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="YouTube">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="GitHub">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.98 5.24.98 11.5c0 4.97 3.22 9.19 7.69 10.68.56.1.77-.24.77-.54 0-.27-.01-1.15-.02-2.09-3.13.68-3.79-1.34-3.79-1.34-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.72 1.16 1.72 1.16 1 1.72 2.63 1.22 3.27.93.1-.73.39-1.22.71-1.5-2.5-.28-5.13-1.25-5.13-5.56 0-1.23.44-2.23 1.16-3.02-.12-.29-.5-1.44.11-3 0 0 .95-.3 3.12 1.15.9-.25 1.87-.38 2.83-.38.96 0 1.93.13 2.83.38 2.17-1.45 3.12-1.15 3.12-1.15.61 1.56.23 2.71.11 3 .72.79 1.16 1.79 1.16 3.02 0 4.32-2.63 5.28-5.14 5.56.4.35.76 1.03.76 2.08 0 1.5-.01 2.71-.01 3.08 0 .3.2.65.78.54C19.78 20.68 23 16.46 23 11.5 23 5.24 18.27.5 12 .5z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-label">Product</div>
+          <div class="footer-links">
+            <a href="#features">Features</a>
+            <a href="#screens">Live Dashboard</a>
+            <a href="#get-started">Get Started</a>
+            <a href="#integrations">Integrations</a>
+            <a href="#">Changelog</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-label">Company</div>
+          <div class="footer-links">
+            <a href="#">About</a>
+            <a href="#">Meet Team Trinity</a>
+            <a href="#">Blog</a>
+            <a href="#">Careers</a>
+            <a href="#">Status</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-label">Support</div>
+          <div class="footer-links">
+            <a href="#">Help Center</a>
+            <a href="#">Documentation</a>
+            <a href="#">Security</a>
+            <a href="#">Contact</a>
+            <a href="#">Community</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">
+          © 2026 GreenPulse — Built by Team Trinity (Meghna Patra, Aruni Shajith, Nandhana Sasikumar)
+        </div>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="templatemo-622-clearwave.js"></script>
 </body>
-
 </html>
