@@ -1,5 +1,5 @@
-from carbon import calculate_carbon
-from constraints import is_feasible
+from decision_engine.carbon import calculate_carbon
+from decision_engine.constraints import is_feasible
 
 
 def decision_engine(workload, regions):
