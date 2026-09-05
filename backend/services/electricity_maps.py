@@ -106,9 +106,7 @@ async def get_carbon_forecast(
     url = f"{BASE_URL}/carbon-intensity/forecast"
 
     params = {
-        "zone": zone,
-        "horizonHours": horizon_hours,
-        "temporalGranularity": "hourly"
+        "zone": zone
     }
 
     return await _get_electricity_maps_data(
