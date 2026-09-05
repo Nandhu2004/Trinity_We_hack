@@ -5,14 +5,20 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from fastapi import FastAPI
+
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine
+
 from app import models
 
 from api.electricity import router as electricity_router
+
 from api.regions import router as regions_router
+
 from api.decision import router as decision_router
+
+from api.chat import router as chat_router
 
 # Authentication routers
 from api.auth import (
@@ -28,6 +34,7 @@ from api.auth import (
 # =========================================================
 
 # Create all SQLAlchemy tables if they do not already exist
+
 Base.metadata.create_all(bind=engine)
 
 
@@ -48,12 +55,16 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
+
     allow_origins=[
         "http://127.0.0.1:5500",
         "http://localhost:5500"
     ],
+
     allow_credentials=True,
+
     allow_methods=["*"],
+
     allow_headers=["*"],
 )
 
@@ -63,8 +74,12 @@ app.add_middleware(
 # =========================================================
 
 app.include_router(electricity_router)
+
 app.include_router(regions_router)
+
 app.include_router(decision_router)
+
+app.include_router(chat_router)
 
 
 # =========================================================
@@ -72,8 +87,11 @@ app.include_router(decision_router)
 # =========================================================
 
 app.include_router(login_router)
+
 app.include_router(signup_router)
+
 app.include_router(verify_otp_router)
+
 app.include_router(resend_otp_router)
 
 
@@ -83,6 +101,7 @@ app.include_router(resend_otp_router)
 
 @app.get("/")
 def root():
+
     return {
         "message": "GreenPulse API is running"
     }
@@ -90,6 +109,7 @@ def root():
 
 @app.get("/api/health")
 def health():
+
     return {
         "status": "healthy",
         "service": "GreenPulse Backend"
