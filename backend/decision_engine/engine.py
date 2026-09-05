@@ -1,6 +1,7 @@
 from decision_engine.carbon import calculate_carbon
 from decision_engine.constraints import is_feasible
 
+
 def find_best_window(forecast_data, runtime_hours, deadline_hours):
     forecast = forecast_data["forecast"]
 
@@ -24,20 +25,41 @@ def find_best_window(forecast_data, runtime_hours, deadline_hours):
             best_window = window
 
     return best_window, best_carbon
+
+
 def decision_engine(workload, regions, forecast_data):
+    current_region = regions[0]
     best_window, forecast_carbon = find_best_window(
         forecast_data,
         workload["runtime_hours"],
         workload["deadline_hours"]
     )
-    
+
     feasible_regions = []
 
     # Check which regions can handle the workload
     for region in regions:
         if is_feasible(region, workload):
             feasible_regions.append(region)
+    # Reroute if the current region is unavailable
+    if not is_feasible(current_region, workload):
+        if feasible_regions:
+            reroute_region = min(
+                feasible_regions,
+                key=lambda region: region["carbon_intensity"]
+            )
 
+            return {
+                "decision": "REROUTE",
+                "region": reroute_region["name"],
+                "estimated_carbon_g": calculate_carbon(
+                    reroute_region["energy_kwh"],
+                    reroute_region["carbon_intensity"]
+                ),
+                "carbon_budget_met": True,
+                "deadline_met": True,
+                "reason": "Current region is unavailable. Rerouting to the best feasible region."
+            }
     # No region can handle the workload
     if not feasible_regions:
         return {
@@ -57,14 +79,16 @@ def decision_engine(workload, regions, forecast_data):
         best_region["energy_kwh"],
         best_region["carbon_intensity"]
     )
+
     current_carbon = best_region["carbon_intensity"]
 
+    # Decide whether to run now or wait
     if forecast_carbon < current_carbon:
         decision = "WAIT"
         reason = "A cleaner forecast window is available within the deadline."
     else:
         decision = "RUN"
-        reason = "Running now is cleaner than waiting."    
+        reason = "Running now is cleaner than waiting."
 
     # Check carbon budget
     if estimated_carbon > workload["carbon_budget"]:
@@ -83,6 +107,8 @@ def decision_engine(workload, regions, forecast_data):
         "deadline_met": True,
         "reason": reason
     }
+
+
 if __name__ == "__main__":
 
     workload = {
@@ -92,6 +118,7 @@ if __name__ == "__main__":
         "latency_tolerance": 150,
         "carbon_budget": 100
     }
+
     forecast_data = {
         "forecast": [
             {"carbonIntensity": 151},
@@ -99,7 +126,7 @@ if __name__ == "__main__":
             {"carbonIntensity": 211},
             {"carbonIntensity": 224}
         ]
-    }    
+    }
 
     regions = [
         {
@@ -119,14 +146,8 @@ if __name__ == "__main__":
             "energy_kwh": 0.5
         },
         {
-        {
             "name": "Region C",
             "carbon_intensity": 90,
-            "latency": 140,
-            "gpu_available": True,
-            "grid_available": True,
-            "energy_kwh": 0.4
-        }
             "latency": 140,
             "gpu_available": True,
             "grid_available": True,
