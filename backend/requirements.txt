@@ -13,3 +13,5 @@ python-jose[cryptography]
 azure-communication-email
 httpx
 pandas
+sklearn
+sqlalchemy
