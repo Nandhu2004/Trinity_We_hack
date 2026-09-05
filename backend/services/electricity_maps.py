@@ -1,43 +1,109 @@
 import os
+import asyncio
 import httpx
 from dotenv import load_dotenv
 
-load_dotenv("backend/.env")
+
+# --------------------------------------------------
+# LOAD .ENV FILE
+# --------------------------------------------------
+
+BASE_DIR = os.path.dirname(
+    os.path.dirname(
+        os.path.abspath(__file__)
+    )
+)
+
+ENV_PATH = os.path.join(
+    BASE_DIR,
+    ".env"
+)
+
+load_dotenv(ENV_PATH)
+
+
+# --------------------------------------------------
+# ELECTRICITY MAPS CONFIGURATION
+# --------------------------------------------------
 
 API_KEY = os.getenv("ELECTRICITY_MAPS_API_KEY")
 
 BASE_URL = "https://api.electricitymaps.com/v4"
 
 
-async def get_latest_carbon(zone: str):
-    url = f"{BASE_URL}/carbon-intensity/latest"
+# --------------------------------------------------
+# COMMON REQUEST HELPER
+# --------------------------------------------------
+
+async def _get_electricity_maps_data(url, params):
 
     headers = {
         "auth-token": API_KEY
     }
+
+    last_error = None
+
+    for attempt in range(3):
+
+        try:
+
+            async with httpx.AsyncClient(
+                timeout=20.0
+            ) as client:
+
+                response = await client.get(
+                    url,
+                    headers=headers,
+                    params=params
+                )
+
+                response.raise_for_status()
+
+                return response.json()
+
+        except (
+            httpx.ConnectError,
+            httpx.ReadError,
+            httpx.RemoteProtocolError,
+            httpx.TimeoutException
+        ) as e:
+
+            last_error = e
+
+            if attempt < 2:
+                await asyncio.sleep(1)
+
+    raise last_error
+
+
+# --------------------------------------------------
+# GET LATEST CARBON INTENSITY
+# --------------------------------------------------
+
+async def get_latest_carbon(zone: str):
+
+    url = f"{BASE_URL}/carbon-intensity/latest"
 
     params = {
         "zone": zone
     }
 
-    async with httpx.AsyncClient() as client:
-        response = await client.get(
-            url,
-            headers=headers,
-            params=params,
-            timeout=10
-        )
+    return await _get_electricity_maps_data(
+        url,
+        params
+    )
 
-    response.raise_for_status()
 
-    return response.json()
+# --------------------------------------------------
+# GET CARBON FORECAST
+# --------------------------------------------------
 
-async def get_carbon_forecast(zone: str, horizon_hours: int = 24):
+async def get_carbon_forecast(
+    zone: str,
+    horizon_hours: int = 24
+):
+
     url = f"{BASE_URL}/carbon-intensity/forecast"
-
-    headers = {
-        "auth-token": API_KEY
-    }
 
     params = {
         "zone": zone,
@@ -45,38 +111,32 @@ async def get_carbon_forecast(zone: str, horizon_hours: int = 24):
         "temporalGranularity": "hourly"
     }
 
-    async with httpx.AsyncClient() as client:
-        response = await client.get(
-            url,
-            headers=headers,
-            params=params,
-            timeout=10
-        )
+    return await _get_electricity_maps_data(
+        url,
+        params
+    )
 
-    response.raise_for_status()
 
-    return response.json()
-async def get_carbon_forecast(zone: str, horizon_hours: int = 24):
-    url = f"{BASE_URL}/carbon-intensity/forecast"
+# --------------------------------------------------
+# GET CARBON FOR MULTIPLE REAL LOCATIONS
+# --------------------------------------------------
 
-    headers = {
-        "auth-token": API_KEY
-    }
+async def get_multiple_zone_carbon(zones):
 
-    params = {
-        "zone": zone,
-        "horizonHours": horizon_hours,
-        "temporalGranularity": "hourly"
-    }
+    results = {}
 
-    async with httpx.AsyncClient() as client:
-        response = await client.get(
-            url,
-            headers=headers,
-            params=params,
-            timeout=10
-        )
+    for zone in zones:
 
-    response.raise_for_status()
+        try:
 
-    return response.json()
+            data = await get_latest_carbon(zone)
+
+            results[zone] = data
+
+        except Exception as e:
+
+            results[zone] = {
+                "error": str(e)
+            }
+
+    return results

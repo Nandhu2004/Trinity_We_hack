@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from api.electricity import router as electricity_router
 from api.regions import router as regions_router
 from api.decision import router as decision_router
+from api.chat import router as chat_router
 
 
 app = FastAPI(
@@ -12,16 +13,19 @@ app = FastAPI(
     version="1.0.0"
 )
 
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # tighten this to your actual frontend origin later
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+
 app.include_router(electricity_router)
 app.include_router(regions_router)
 app.include_router(decision_router)
+app.include_router(chat_router)
 
 
 @app.get("/")

@@ -3,171 +3,446 @@ from decision_engine.constraints import is_feasible
 
 
 def find_best_window(forecast_data, runtime_hours, deadline_hours):
-    forecast = forecast_data["forecast"]
+    """
+    Find the cleanest consecutive execution window within
+    the workload deadline.
 
-    max_start_index = deadline_hours - runtime_hours
+    The forecast contains hourly carbon-intensity values.
+    Only windows that fit completely inside the deadline
+    are considered.
+    """
+
+    forecast = forecast_data.get("forecast", [])
+
+    if not forecast:
+        return None, None, 0
+
+    runtime_hours = max(1, int(runtime_hours))
+    deadline_hours = max(runtime_hours, int(deadline_hours))
+
+    # Only consider forecast hours that fall within
+    # the workload's allowed deadline.
+    available_forecast = forecast[:deadline_hours]
+
+    if len(available_forecast) < runtime_hours:
+        return None, None, 0
 
     best_window = None
     best_carbon = float("inf")
     best_start_index = 0
 
-    for i in range(max_start_index + 1):
-        window = forecast[i:i + runtime_hours]
+    max_start_index = (
+        len(available_forecast) - runtime_hours
+    )
 
-        if len(window) < runtime_hours:
+    for start_index in range(max_start_index + 1):
+
+        window = available_forecast[
+            start_index:start_index + runtime_hours
+        ]
+
+        carbon_values = []
+
+        for item in window:
+
+            carbon_value = item.get("carbonIntensity")
+
+            if carbon_value is not None:
+                carbon_values.append(
+                    float(carbon_value)
+                )
+
+        if len(carbon_values) != runtime_hours:
             continue
 
-        average_carbon = sum(
-            item["carbonIntensity"] for item in window
-        ) / runtime_hours
+        average_carbon = (
+            sum(carbon_values) / runtime_hours
+        )
 
         if average_carbon < best_carbon:
+
             best_carbon = average_carbon
             best_window = window
-            best_start_index = i
+            best_start_index = start_index
 
-    return best_window, best_carbon, best_start_index
+    return (
+        best_window,
+        best_carbon,
+        best_start_index
+    )
 
 
 def decision_engine(workload, regions, forecast_data):
-    current_region = regions[0]
-    best_window, forecast_carbon, best_start_index = find_best_window(
-        forecast_data,
-        workload["runtime_hours"],
-        workload["deadline_hours"]
-    )
+    """
+    GreenPulse carbon-aware workload allocation engine.
 
-    feasible_regions = []
+    RUN:
+        Current region is available and running now is feasible.
 
-    # Check which regions can handle the workload
-    for region in regions:
-        if is_feasible(region, workload):
-            feasible_regions.append(region)
-    # Reroute if the current region is unavailable
-    if not is_feasible(current_region, workload):
-        if feasible_regions:
-            reroute_region = min(
-                feasible_regions,
-                key=lambda region: region["carbon_intensity"]
-            )
+    WAIT:
+        Current region is available, but a cleaner forecast
+        window exists within the deadline.
 
-            return {
-                "decision": "REROUTE",
-                "region": reroute_region["name"],
-                "estimated_carbon_g": calculate_carbon(
-                    reroute_region["energy_kwh"],
-                    reroute_region["carbon_intensity"]
-                ),
-                "carbon_budget_met": True,
-                "deadline_met": True,
-                "reason": "Current region is unavailable. Rerouting to the best feasible region."
-            }
-    # No region can handle the workload
-    if not feasible_regions:
+    REROUTE:
+        Current region is unavailable. GreenPulse moves the
+        workload to another feasible region.
+
+    NO FEASIBLE PLAN:
+        No available option satisfies the workload constraints.
+    """
+
+    if not regions:
         return {
             "decision": "NO FEASIBLE PLAN",
             "region": None,
-            "reason": "No region satisfies the workload constraints."
+            "estimated_carbon_g": 0,
+            "carbon_budget_met": False,
+            "deadline_met": False,
+            "reason": "No execution regions are available."
         }
 
-    # Choose the feasible region with the lowest carbon intensity
-    best_region = min(
-        feasible_regions,
-        key=lambda region: region["carbon_intensity"]
+    runtime_hours = max(
+        1,
+        int(workload.get("runtime_hours", 1))
     )
 
-    # Calculate estimated carbon
-    estimated_carbon = calculate_carbon(
-        best_region["energy_kwh"],
-        best_region["carbon_intensity"]
+    deadline_hours = max(
+        runtime_hours,
+        int(
+            workload.get(
+                "deadline_hours",
+                runtime_hours
+            )
+        )
     )
 
-    current_carbon = best_region["carbon_intensity"]
+    carbon_budget = float(
+        workload.get(
+            "carbon_budget",
+            float("inf")
+        )
+    )
 
-    # Decide whether to run now or wait
-    if forecast_carbon < current_carbon and best_start_index > 0:
-        decision = "WAIT"
-        reason = "A cleaner forecast window is available within the deadline."
+    current_region = next(
+        (
+            region
+            for region in regions
+            if region.get("current") is True
+        ),
+        regions[0]
+    )
 
+    feasible_regions = [
+        region
+        for region in regions
+        if is_feasible(region, workload)
+    ]
+
+    current_is_feasible = is_feasible(
+        current_region,
+        workload
+    )
+
+    # ---------------------------------------------------------
+    # REROUTE
+    # ---------------------------------------------------------
+
+    if not current_is_feasible:
+
+        reroute_candidates = [
+            region
+            for region in feasible_regions
+            if region.get("name")
+            != current_region.get("name")
+        ]
+
+        if not reroute_candidates:
+            return {
+                "decision": "NO FEASIBLE PLAN",
+                "region": None,
+                "estimated_carbon_g": 0,
+                "run_now_carbon_g": 0,
+                "carbon_saved_g": 0,
+                "start_in_minutes": 0,
+                "carbon_budget_met": False,
+                "deadline_met": False,
+                "reason": (
+                    "The current region is unavailable and "
+                    "no alternative feasible region exists."
+                )
+            }
+
+        # Calculate what the workload would have emitted
+        # in the current region if it were available.
+        current_region_carbon = calculate_carbon(
+            current_region["energy_kwh"],
+            current_region["carbon_intensity"]
+        )
+
+        # Choose the cleanest feasible alternative region.
+        reroute_region = min(
+            reroute_candidates,
+            key=lambda region: float(
+                region.get(
+                    "carbon_intensity",
+                    float("inf")
+                )
+            )
+        )
+
+        reroute_carbon = calculate_carbon(
+            reroute_region["energy_kwh"],
+            reroute_region["carbon_intensity"]
+        )
+
+        carbon_saved = (
+            current_region_carbon - reroute_carbon
+        )
+
+        # Make sure the rerouted workload still
+        # satisfies the carbon budget.
+        if reroute_carbon > carbon_budget:
+            return {
+                "decision": "NO FEASIBLE PLAN",
+                "region": None,
+                "estimated_carbon_g": round(
+                    reroute_carbon,
+                    2
+                ),
+                "run_now_carbon_g": round(
+                    current_region_carbon,
+                    2
+                ),
+                "carbon_saved_g": round(
+                    carbon_saved,
+                    2
+                ),
+                "start_in_minutes": 0,
+                "carbon_budget_met": False,
+                "deadline_met": True,
+                "reason": (
+                    "The current region is unavailable, but "
+                    "the available alternative regions exceed "
+                    "the carbon budget."
+                )
+            }
+
+        return {
+            "decision": "REROUTE",
+            "region": reroute_region["name"],
+            "estimated_carbon_g": round(
+                reroute_carbon,
+                2
+            ),
+            "run_now_carbon_g": round(
+                current_region_carbon,
+                2
+            ),
+            "carbon_saved_g": round(
+                carbon_saved,
+                2
+            ),
+            "start_in_minutes": 0,
+            "carbon_budget_met": True,
+            "deadline_met": True,
+            "reason": (
+                f"Current region ({current_region['name']}) "
+                "is unavailable. GreenPulse rerouted the "
+                "workload to the cleanest feasible alternative."
+            )
+        }
+
+    # ---------------------------------------------------------
+    # CURRENT REGION CARBON
+    # ---------------------------------------------------------
+
+    current_carbon_intensity = float(
+        current_region["carbon_intensity"]
+    )
+
+    current_energy = float(
+        current_region["energy_kwh"]
+    )
+
+    run_now_carbon = calculate_carbon(
+        current_energy,
+        current_carbon_intensity
+    )
+
+    # ---------------------------------------------------------
+    # FIND CLEANEST FUTURE WINDOW
+    # ---------------------------------------------------------
+
+    (
+        best_window,
+        forecast_carbon,
+        best_start_index
+    ) = find_best_window(
+        forecast_data,
+        runtime_hours,
+        deadline_hours
+    )
+
+    wait_available = (
+        best_window is not None
+        and forecast_carbon is not None
+    )
+
+    wait_carbon = None
+
+    if wait_available:
         wait_carbon = calculate_carbon(
-            best_region["energy_kwh"],
+            current_energy,
             forecast_carbon
         )
 
-        carbon_saved = estimated_carbon - wait_carbon
+    # ---------------------------------------------------------
+    # CHECK CONSTRAINTS
+    # ---------------------------------------------------------
 
-    else:
-        decision = "RUN"
-        reason = "Running now is cleaner than waiting."
-        carbon_saved = 0
+    run_now_within_budget = (
+        run_now_carbon <= carbon_budget
+    )
 
-    # Check carbon budget
-    if estimated_carbon > workload["carbon_budget"]:
+    wait_within_budget = (
+        wait_available
+        and wait_carbon <= carbon_budget
+    )
+
+    # ---------------------------------------------------------
+    # WAIT
+    # ---------------------------------------------------------
+
+    if (
+        wait_available
+        and best_start_index > 0
+        and wait_within_budget
+        and wait_carbon < run_now_carbon
+    ):
+
+        carbon_saved = (
+            run_now_carbon - wait_carbon
+        )
+
         return {
-            "decision": "NO FEASIBLE PLAN",
-            "region": None,
-            "estimated_carbon_g": estimated_carbon,
-            "reason": "The selected region exceeds the carbon budget."
+            "decision": "WAIT",
+            "region": current_region["name"],
+            "estimated_carbon_g": round(
+                wait_carbon,
+                2
+            ),
+            "run_now_carbon_g": round(
+                run_now_carbon,
+                2
+            ),
+            "carbon_saved_g": round(
+                carbon_saved,
+                2
+            ),
+            "start_in_minutes": (
+                best_start_index * 60
+            ),
+            "carbon_budget_met": True,
+            "deadline_met": True,
+            "reason": (
+                "A cleaner forecast window is available "
+                "within the workload deadline."
+            )
         }
+
+    # ---------------------------------------------------------
+    # RUN
+    # ---------------------------------------------------------
+
+    if run_now_within_budget:
+
+        return {
+            "decision": "RUN",
+            "region": current_region["name"],
+            "estimated_carbon_g": round(
+                run_now_carbon,
+                2
+            ),
+            "run_now_carbon_g": round(
+                run_now_carbon,
+                2
+            ),
+            "carbon_saved_g": 0,
+            "start_in_minutes": 0,
+            "carbon_budget_met": True,
+            "deadline_met": True,
+            "reason": (
+                "The current region is available and "
+                "running now satisfies the carbon budget. "
+                "No cleaner future window provides a better "
+                "feasible option."
+            )
+        }
+
+    # ---------------------------------------------------------
+    # WAIT EVEN IF RUNNING NOW EXCEEDS BUDGET
+    # ---------------------------------------------------------
+
+    if (
+        wait_available
+        and wait_within_budget
+    ):
+
+        carbon_saved = max(
+            0,
+            run_now_carbon - wait_carbon
+        )
+
+        return {
+            "decision": "WAIT",
+            "region": current_region["name"],
+            "estimated_carbon_g": round(
+                wait_carbon,
+                2
+            ),
+            "run_now_carbon_g": round(
+                run_now_carbon,
+                2
+            ),
+            "carbon_saved_g": round(
+                carbon_saved,
+                2
+            ),
+            "start_in_minutes": (
+                best_start_index * 60
+            ),
+            "carbon_budget_met": True,
+            "deadline_met": True,
+            "reason": (
+                "Running now would exceed the carbon "
+                "budget. GreenPulse found a future "
+                "execution window within the deadline "
+                "that satisfies the budget."
+            )
+        }
+
+    # ---------------------------------------------------------
+    # NO FEASIBLE PLAN
+    # ---------------------------------------------------------
 
     return {
-        "decision": decision,
-        "region": best_region["name"],
-        "estimated_carbon_g": estimated_carbon,
-        "start_in_minutes": best_start_index * 60,
-        "carbon_saved_g": round(carbon_saved, 2),
-        "carbon_budget_met": True,
-        "deadline_met": True,
-        "reason": reason
+        "decision": "NO FEASIBLE PLAN",
+        "region": None,
+        "estimated_carbon_g": round(
+            run_now_carbon,
+            2
+        ),
+        "run_now_carbon_g": round(
+            run_now_carbon,
+            2
+        ),
+        "carbon_saved_g": 0,
+        "start_in_minutes": 0,
+        "carbon_budget_met": False,
+        "deadline_met": False,
+        "reason": (
+            "Running now exceeds the carbon budget and "
+            "no cleaner forecast window within the "
+            "deadline satisfies the workload constraints."
+        )
     }
-
-
-if __name__ == "__main__":
-
-    workload = {
-        "workload_type": "batch",
-        "runtime_hours": 2,
-        "deadline_hours": 4,
-        "latency_tolerance": 150,
-        "carbon_budget": 100
-    }
-
-    forecast_data = {
-        "forecast": [
-            {"carbonIntensity": 151},
-            {"carbonIntensity": 198},
-            {"carbonIntensity": 211},
-            {"carbonIntensity": 224}
-        ]
-    }
-
-    regions = [
-        {
-            "name": "North Rhine-Westphalia",
-            "carbon_intensity": 420,
-            "latency": 30,
-            "gpu_available": True,
-            "grid_available": True,
-            "energy_kwh": 0.8
-        },
-        {
-            "name": "Lower Saxony",
-            "carbon_intensity": 180,
-            "latency": 90,
-            "gpu_available": True,
-            "grid_available": True,
-            "energy_kwh": 0.5
-        },
-        {
-            "name": "Schleswig-Holstein",
-            "carbon_intensity": 90,
-            "latency": 140,
-            "gpu_available": True,
-            "grid_available": True,
-            "energy_kwh": 0.4
-        }
-    ]
-
-    result = decision_engine(workload, regions, forecast_data)
-
-    print(result)
