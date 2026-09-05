@@ -244,17 +244,20 @@
 
         <ul class="sidebar-menu-list">
 
+            <!-- LOGOUT -->
+
             <li class="sidebar-menu-item">
 
                 <a
-                    href="#health"
+                    href="#"
                     class="sidebar-menu-link"
+                    id="logout-btn"
                 >
 
-                    <i class="bi bi-heart-pulse"></i>
+                    <i class="bi bi-box-arrow-right"></i>
 
                     <span>
-                        Backend Health
+                        Logout
                     </span>
 
                 </a>
@@ -450,7 +453,6 @@
                 </li>
 
                 <li>
-
                 </li>
 
                 <li>
@@ -1467,6 +1469,40 @@
 }
 
 
+/* =====================================================
+   LOGOUT BUTTON
+====================================================== */
+
+#logout-btn {
+
+    color: #dc3545 !important;
+
+}
+
+
+#logout-btn i {
+
+    color: #dc3545 !important;
+
+}
+
+
+#logout-btn:hover {
+
+    color: #bb2d3b !important;
+
+    background-color: rgba(220, 53, 69, 0.08);
+
+}
+
+
+#logout-btn:hover i {
+
+    color: #bb2d3b !important;
+
+}
+
+
 @media (max-width: 576px) {
 
     .ai-assistant-panel {
@@ -1571,7 +1607,7 @@ document.addEventListener(
         if (!token) {
 
             window.location.replace(
-                "login.html"
+                "index.html"
             );
 
             return;
@@ -1738,6 +1774,67 @@ document.addEventListener(
 
     }
 
+);
+
+</script>
+
+
+<!-- =====================================================
+     LOGOUT JAVASCRIPT
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const logoutButton =
+            document.getElementById(
+                "logout-btn"
+            );
+
+
+        if (!logoutButton) {
+
+            return;
+
+        }
+
+
+        logoutButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+
+
+                /* =========================================
+                   CLEAR LOGIN DATA
+                ========================================= */
+
+                sessionStorage.removeItem(
+                    "greenpulseToken"
+                );
+
+
+                sessionStorage.removeItem(
+                    "greenpulseUser"
+                );
+
+
+                /* =========================================
+                   REDIRECT TO HOME
+                ========================================= */
+
+                window.location.replace(
+                    "index.html"
+                );
+
+            }
+        );
+
+    }
 );
 
 </script>
@@ -2157,6 +2254,7 @@ document.addEventListener(
 
             }
 
+
             catch (error) {
 
 
@@ -2176,6 +2274,7 @@ document.addEventListener(
 
 
             }
+
 
             finally {
 
@@ -2282,6 +2381,7 @@ document.addEventListener(
 );
 
 </script>
+
 
 </body>
 
