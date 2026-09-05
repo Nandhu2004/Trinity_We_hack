@@ -4,7 +4,6 @@
 
 <head>
 
-```
 <meta charset="UTF-8">
 
 <meta
@@ -64,7 +63,6 @@
     rel="stylesheet"
     href="assets/css/main.css"
 >
-```
 
 </head>
 
@@ -79,7 +77,6 @@
     id="sidebar"
 >
 
-```
 <a
     href="dashboard.html"
     class="sidebar-brand"
@@ -276,27 +273,33 @@
 <div class="sidebar-profile">
 
     <img
-        src="assets/images/avatar.png"
-        alt="Administrator"
+        src="assets/images/avatar.jpg"
+        alt="User"
         class="sidebar-profile-img"
     >
 
     <div class="sidebar-profile-info">
 
-        <div class="sidebar-profile-name">
-            GreenPulse Admin
+        <div
+            class="sidebar-profile-name"
+            id="logged-user-name"
+        >
+            Loading...
         </div>
 
-        <div class="sidebar-profile-email">
+        <div
+            class="sidebar-profile-email"
+            id="logged-user-email"
+        >
             Green AI Dashboard
         </div>
 
     </div>
 
 </div>
-```
 
 </div>
+
 
 <!-- =====================================================
      MAIN CONTENT
@@ -304,7 +307,7 @@
 
 <div class="main-wrapper">
 
-```
+
 <!-- =================================================
      NAVBAR
 ================================================== -->
@@ -419,15 +422,16 @@
             >
 
                 <img
-                    src="assets/images/avatar.png"
+                    src="assets/images/avatar.jpg"
                     alt="Profile"
                     class="navbar-profile-img"
                 >
 
                 <span
                     class="navbar-profile-name d-none d-md-inline"
+                    id="navbar-user-name"
                 >
-                    Administrator
+                    Loading...
                 </span>
 
                 <i
@@ -446,17 +450,6 @@
                 </li>
 
                 <li>
-
-                    <a
-                        class="dropdown-item"
-                        href="#"
-                    >
-
-                        <i class="bi bi-person"></i>
-
-                        Administrator
-
-                    </a>
 
                 </li>
 
@@ -1162,9 +1155,9 @@
     </div>
 
 </footer>
-```
 
 </div>
+
 
 <!-- =====================================================
      AI ASSISTANT PANEL
@@ -1175,7 +1168,6 @@
     class="ai-assistant-panel"
 >
 
-```
 <div class="ai-assistant-header">
 
     <div>
@@ -1259,9 +1251,9 @@
     </button>
 
 </div>
-```
 
 </div>
+
 
 <!-- =====================================================
      AI ASSISTANT STYLES
@@ -1493,6 +1485,7 @@
 
 </style>
 
+
 <!-- =====================================================
      JAVASCRIPT LIBRARIES
 ====================================================== -->
@@ -1501,17 +1494,20 @@
     src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"
 ></script>
 
+
 <!-- ApexCharts -->
 
 <script
     src="https://cdn.jsdelivr.net/npm/apexcharts"
 ></script>
 
+
 <!-- Flatpickr -->
 
 <script
     src="assets/libs/flatpickr/flatpickr.min.js"
 ></script>
+
 
 <!-- =====================================================
      DASHBOARD UI
@@ -1521,21 +1517,231 @@
     src="assets/js/dashboard.js"
 ></script>
 
+
 <!-- =====================================================
      GREENPULSE API CONFIGURATION
 ====================================================== -->
 
 <script>
+
 window.GREENPULSE_API_BASE =
     window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1"
         ? "http://localhost:8000"
         : "https://trinitywehack-production.up.railway.app";
+
 </script>
+
 
 <script
     src="assets/js/greenpulse-api.js"
 ></script>
+
+
+<!-- =====================================================
+     LOGGED-IN USER SCRIPT
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        /* =================================================
+           GET AUTHENTICATION TOKEN
+        ================================================= */
+
+        const token =
+            sessionStorage.getItem(
+                "greenpulseToken"
+            );
+
+
+        const storedUser =
+            sessionStorage.getItem(
+                "greenpulseUser"
+            );
+
+
+        /* =================================================
+           CHECK LOGIN
+        ================================================= */
+
+        if (!token) {
+
+            window.location.replace(
+                "login.html"
+            );
+
+            return;
+
+        }
+
+
+        /* =================================================
+           READ USER DATA
+        ================================================= */
+
+        let user = {};
+
+
+        try {
+
+            user =
+                storedUser
+                    ? JSON.parse(storedUser)
+                    : {};
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Unable to read GreenPulse user data:",
+                error
+            );
+
+            user = {};
+
+        }
+
+
+        /* =================================================
+           BUILD USER NAME
+        ================================================= */
+
+        const firstName =
+            user.first_name || "";
+
+
+        const lastName =
+            user.last_name || "";
+
+
+        const combinedName =
+            `${firstName} ${lastName}`.trim();
+
+
+        const userName =
+            user.name ||
+            user.full_name ||
+            user.display_name ||
+            user.username ||
+            combinedName ||
+            (
+                user.email
+                    ? user.email.split("@")[0]
+                    : "GreenPulse User"
+            );
+
+
+        /* =================================================
+           USER EMAIL
+        ================================================= */
+
+        const userEmail =
+            user.email ||
+            "Green AI Dashboard";
+
+
+        /* =================================================
+           SIDEBAR NAME
+        ================================================= */
+
+        const loggedUserName =
+            document.getElementById(
+                "logged-user-name"
+            );
+
+
+        if (loggedUserName) {
+
+            loggedUserName.textContent =
+                userName;
+
+        }
+
+
+        /* =================================================
+           SIDEBAR EMAIL
+        ================================================= */
+
+        const loggedUserEmail =
+            document.getElementById(
+                "logged-user-email"
+            );
+
+
+        if (loggedUserEmail) {
+
+            loggedUserEmail.textContent =
+                userEmail;
+
+        }
+
+
+        /* =================================================
+           NAVBAR NAME
+        ================================================= */
+
+        const navbarUserName =
+            document.getElementById(
+                "navbar-user-name"
+            );
+
+
+        if (navbarUserName) {
+
+            navbarUserName.textContent =
+                userName;
+
+        }
+
+
+        /* =================================================
+           DROPDOWN NAME
+        ================================================= */
+
+        const dropdownUserName =
+            document.getElementById(
+                "dropdown-user-name"
+            );
+
+
+        if (dropdownUserName) {
+
+            dropdownUserName.textContent =
+                userName;
+
+        }
+
+
+        /* =================================================
+           PROFILE IMAGE ALT
+        ================================================= */
+
+        const profileImages =
+            document.querySelectorAll(
+                ".sidebar-profile-img, .navbar-profile-img"
+            );
+
+
+        profileImages.forEach(
+            function (image) {
+
+                image.alt =
+                    userName;
+
+            }
+        );
+
+    }
+
+);
+
+</script>
+
 
 <!-- =====================================================
      AI ASSISTANT JAVASCRIPT
@@ -1588,11 +1794,13 @@ document.addEventListener(
             );
 
 
+        /* =================================================
+           API BASE URL
+        ================================================= */
+
         const API_BASE_URL =
-    window.location.hostname === "localhost" ||
-    window.location.hostname === "127.0.0.1"
-        ? "http://localhost:8000"
-        : "https://trinitywehack-production.up.railway.app";
+            window.GREENPULSE_API_BASE;
+
 
         /* =================================================
            OPEN ASSISTANT
@@ -1811,6 +2019,20 @@ document.addEventListener(
             try {
 
 
+                /* =================================================
+                   GET JWT TOKEN
+                ================================================= */
+
+                const token =
+                    sessionStorage.getItem(
+                        "greenpulseToken"
+                    );
+
+
+                /* =================================================
+                   API REQUEST
+                ================================================= */
+
                 const response =
                     await fetch(
                         `${API_BASE_URL}/api/chat`,
@@ -1824,7 +2046,10 @@ document.addEventListener(
                                     "application/json",
 
                                 "Accept":
-                                    "application/json"
+                                    "application/json",
+
+                                "Authorization":
+                                    `Bearer ${token || ""}`
 
                             },
 
