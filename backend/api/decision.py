@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
 from decision_engine.engine import decision_engine
 from services.electricity_maps import get_latest_carbon
-
 
 router = APIRouter(
     prefix="/api/decision",
@@ -10,27 +10,24 @@ router = APIRouter(
 )
 
 
-@router.post("")
-async def make_decision():
+class WorkloadRequest(BaseModel):
+    workload_type: str
+    runtime_hours: float
+    deadline_hours: float
+    latency_tolerance: float
+    carbon_budget: float
+    priority: str = "normal"
 
-    # Workload information
-    workload = {
-        "workload_type": "batch",
-        "runtime_hours": 2,
-        "deadline_hours": 4,
-        "latency_tolerance": 150,
-        "carbon_budget": 100
-    }
+
+@router.post("")
+async def make_decision(workload: WorkloadRequest):
+
+    workload_data = workload.model_dump()
 
     try:
-        # Get live carbon intensity from Electricity Maps
         carbon_data = await get_latest_carbon("DE")
-
         live_carbon = carbon_data["carbonIntensity"]
 
-        # Prototype region information
-        # Carbon intensity comes from live Electricity Maps data.
-        # Latency, GPU, grid and energy values are simulated for the demo.
         regions = [
             {
                 "name": " North Rhine-Westphalia",
@@ -58,13 +55,13 @@ async def make_decision():
             }
         ]
 
-        # Send workload and regions to Person 3's decision engine
-        result = decision_engine(workload, regions)
+        result = decision_engine(workload_data, regions)
 
         return {
             "success": True,
             "carbon_source": "Electricity Maps",
             "live_carbon_intensity": live_carbon,
+            "workload": workload_data,
             "result": result
         }
 
