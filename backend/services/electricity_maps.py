@@ -56,3 +56,27 @@ async def get_carbon_forecast(zone: str, horizon_hours: int = 24):
     response.raise_for_status()
 
     return response.json()
+async def get_carbon_forecast(zone: str, horizon_hours: int = 24):
+    url = f"{BASE_URL}/carbon-intensity/forecast"
+
+    headers = {
+        "auth-token": API_KEY
+    }
+
+    params = {
+        "zone": zone,
+        "horizonHours": horizon_hours,
+        "temporalGranularity": "hourly"
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            url,
+            headers=headers,
+            params=params,
+            timeout=10
+        )
+
+    response.raise_for_status()
+
+    return response.json()

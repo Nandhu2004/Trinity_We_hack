@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
 from decision_engine.engine import decision_engine
 from services.electricity_maps import get_latest_carbon, get_carbon_forecast
-
 
 router = APIRouter(
     prefix="/api/decision",
@@ -10,31 +10,28 @@ router = APIRouter(
 )
 
 
-@router.post("")
-async def make_decision():
+class WorkloadRequest(BaseModel):
+    workload_type: str
+    runtime_hours: float
+    deadline_hours: float
+    latency_tolerance: float
+    carbon_budget: float
+    priority: str = "normal"
 
-    # Workload information
-    workload = {
-        "workload_type": "batch",
-        "runtime_hours": 2,
-        "deadline_hours": 4,
-        "latency_tolerance": 150,
-        "carbon_budget": 100
-    }
+
+@router.post("")
+async def make_decision(workload: WorkloadRequest):
+
+    workload_data = workload.model_dump()
 
     try:
-        # Get live carbon intensity from Electricity Maps
         carbon_data = await get_latest_carbon("DE")
         forecast_data = await get_carbon_forecast("DE")
-
         live_carbon = carbon_data["carbonIntensity"]
 
-        # Prototype region information
-        # Carbon intensity comes from live Electricity Maps data.
-        # Latency, GPU, grid and energy values are simulated for the demo.
         regions = [
             {
-                "name": "Region A",
+                "name": " North Rhine-Westphalia",
                 "carbon_intensity": live_carbon + 250,
                 "latency": 30,
                 "gpu_available": True,
@@ -42,7 +39,7 @@ async def make_decision():
                 "energy_kwh": 0.8
             },
             {
-                "name": "Region B",
+                "name": "Lower Saxony",
                 "carbon_intensity": live_carbon + 100,
                 "latency": 90,
                 "gpu_available": True,
@@ -50,7 +47,7 @@ async def make_decision():
                 "energy_kwh": 0.5
             },
             {
-                "name": "Region C",
+                "name": "Schleswig-Holstein",
                 "carbon_intensity": live_carbon,
                 "latency": 140,
                 "gpu_available": True,
@@ -59,13 +56,13 @@ async def make_decision():
             }
         ]
 
-        # Send workload and regions to Person 3's decision engine
-        result = decision_engine(workload, regions, forecast_data)
+        result = decision_engine(workload_data, regions, forecast_data)
 
         return {
             "success": True,
             "carbon_source": "Electricity Maps",
             "live_carbon_intensity": live_carbon,
+            "workload": workload_data,
             "result": result
         }
 

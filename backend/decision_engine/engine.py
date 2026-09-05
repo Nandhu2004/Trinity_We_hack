@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
     regions = [
         {
-            "name": "Region A",
+            "name": "North Rhine-Westphalia",
             "carbon_intensity": 420,
             "latency": 30,
             "gpu_available": True,
@@ -151,7 +151,7 @@ if __name__ == "__main__":
             "energy_kwh": 0.8
         },
         {
-            "name": "Region B",
+            "name": "Lower Saxony",
             "carbon_intensity": 180,
             "latency": 90,
             "gpu_available": True,
@@ -159,7 +159,7 @@ if __name__ == "__main__":
             "energy_kwh": 0.5
         },
         {
-            "name": "Region C",
+            "name": "Schleswig-Holstein",
             "carbon_intensity": 90,
             "latency": 140,
             "gpu_available": True,
