@@ -33,7 +33,7 @@ async def make_decision():
         # Latency, GPU, grid and energy values are simulated for the demo.
         regions = [
             {
-                "name": "Region A",
+                "name": " North Rhine-Westphalia",
                 "carbon_intensity": live_carbon + 250,
                 "latency": 30,
                 "gpu_available": True,
@@ -41,7 +41,7 @@ async def make_decision():
                 "energy_kwh": 0.8
             },
             {
-                "name": "Region B",
+                "name": "Lower Saxony",
                 "carbon_intensity": live_carbon + 100,
                 "latency": 90,
                 "gpu_available": True,
@@ -49,7 +49,7 @@ async def make_decision():
                 "energy_kwh": 0.5
             },
             {
-                "name": "Region C",
+                "name": "Schleswig-Holstein",
                 "carbon_intensity": live_carbon,
                 "latency": 140,
                 "gpu_available": True,
