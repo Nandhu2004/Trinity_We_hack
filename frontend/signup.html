@@ -759,8 +759,11 @@ document.addEventListener(
        CONFIGURATION
        ===================================================== */
 
-    const API_BASE =
-        "http://localhost:8000";
+    const API_BASE_URL =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+        ? "http://localhost:8000"
+        : "https://trinitywehack-production.up.railway.app";
 
 
     /* =====================================================

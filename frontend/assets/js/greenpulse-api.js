@@ -21,8 +21,11 @@
     // Configuration
     // ---------------------------------------------------
 
-    const API_BASE =
-        window.GREENPULSE_API_BASE || 'http://localhost:8000';
+    const API_BASE_URL =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+        ? "http://localhost:8000"
+        : "https://trinitywehack-production.up.railway.app";
 
     const DEFAULT_ZONE = 'DE';
     const FORECAST_HORIZON_HOURS = 24;
@@ -49,7 +52,7 @@
     // ---------------------------------------------------
 
     async function apiRequest(path, options = {}) {
-        const url = `${API_BASE}${path}`;
+        const url = `${API_BASE_URL}${path}`;
 
         const response = await fetch(url, {
             headers: {

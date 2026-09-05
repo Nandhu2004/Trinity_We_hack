@@ -1588,7 +1588,7 @@ document.addEventListener(
             );
 
 
-        const API_BASE=
+        const API_BASE_URL =
     window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1"
         ? "http://localhost:8000"
@@ -1813,7 +1813,7 @@ document.addEventListener(
 
                 const response =
                     await fetch(
-                        `${API_BASE}/api/chat`,
+                        `${API_BASE_URL}/api/chat`,
                         {
 
                             method: "POST",
