@@ -9,6 +9,7 @@ def find_best_window(forecast_data, runtime_hours, deadline_hours):
 
     best_window = None
     best_carbon = float("inf")
+    best_start_index = 0
 
     for i in range(max_start_index + 1):
         window = forecast[i:i + runtime_hours]
@@ -23,13 +24,14 @@ def find_best_window(forecast_data, runtime_hours, deadline_hours):
         if average_carbon < best_carbon:
             best_carbon = average_carbon
             best_window = window
+            best_start_index = i
 
-    return best_window, best_carbon
+    return best_window, best_carbon, best_start_index
 
 
 def decision_engine(workload, regions, forecast_data):
     current_region = regions[0]
-    best_window, forecast_carbon = find_best_window(
+    best_window, forecast_carbon, best_start_index = find_best_window(
         forecast_data,
         workload["runtime_hours"],
         workload["deadline_hours"]
@@ -83,12 +85,21 @@ def decision_engine(workload, regions, forecast_data):
     current_carbon = best_region["carbon_intensity"]
 
     # Decide whether to run now or wait
-    if forecast_carbon < current_carbon:
+    if forecast_carbon < current_carbon and best_start_index > 0:
         decision = "WAIT"
         reason = "A cleaner forecast window is available within the deadline."
+
+        wait_carbon = calculate_carbon(
+            best_region["energy_kwh"],
+            forecast_carbon
+        )
+
+        carbon_saved = estimated_carbon - wait_carbon
+
     else:
         decision = "RUN"
         reason = "Running now is cleaner than waiting."
+        carbon_saved = 0
 
     # Check carbon budget
     if estimated_carbon > workload["carbon_budget"]:
@@ -103,6 +114,8 @@ def decision_engine(workload, regions, forecast_data):
         "decision": decision,
         "region": best_region["name"],
         "estimated_carbon_g": estimated_carbon,
+        "start_in_minutes": best_start_index * 60,
+        "carbon_saved_g": round(carbon_saved, 2),
         "carbon_budget_met": True,
         "deadline_met": True,
         "reason": reason
