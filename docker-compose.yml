@@ -1,0 +1,52 @@
+
+services:
+
+  postgres:
+    image: postgres:15
+    container_name: greenpulse-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: greenpulse
+      POSTGRES_USER: greenpulse
+      POSTGRES_PASSWORD: greenpulse_password
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U greenpulse -d greenpulse"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+
+  backend:
+    build:
+      context: ./backend
+
+    container_name: greenpulse-backend
+    restart: unless-stopped
+
+    ports:
+      - "8000:8000"
+
+    environment:
+      DATABASE_URL: postgresql://greenpulse:greenpulse_password@postgres:5432/greenpulse
+
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL}
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+
+volumes:
+  postgres_data:

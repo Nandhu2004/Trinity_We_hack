@@ -1,0 +1,2116 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Sign Up - GreenPulse</title>
+
+    <meta
+        name="description"
+        content="Create your GreenPulse account"
+    >
+
+    <meta
+        name="author"
+        content="GreenPulse Team"
+    >
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="assets/images/favicon.ico"
+    >
+
+    <!-- Bootstrap -->
+
+    <link
+        rel="stylesheet"
+        href="assets/libs/bootstrap/css/bootstrap.min.css"
+    >
+
+    <!-- Bootstrap Icons -->
+
+    <link
+        rel="stylesheet"
+        href="assets/libs/bootstrap-icons/bootstrap-icons.css"
+    >
+
+    <!-- GreenPulse CSS -->
+
+    <link
+        rel="stylesheet"
+        href="assets/css/main.css"
+    >
+
+
+    <style>
+
+        /* ==========================================
+           OTP Verification Section
+           ========================================== */
+
+        .otp-section {
+            display: none;
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+
+        .otp-section.show {
+            display: block;
+        }
+
+
+        .otp-message {
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+
+        .otp-input {
+            text-align: center;
+            letter-spacing: 8px;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+
+        .otp-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            gap: 10px;
+        }
+
+
+        .resend-otp-btn {
+            border: none;
+            background: transparent;
+            padding: 0;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+
+        .resend-otp-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+
+        .otp-success-message {
+            display: none;
+            margin-top: 15px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+
+        .otp-success-message.show {
+            display: block;
+        }
+
+
+        /* ==========================================
+           Password Rules
+           ========================================== */
+
+        .password-rules {
+            margin-top: 10px;
+            font-size: 12px;
+            line-height: 1.9;
+            opacity: 0.8;
+        }
+
+
+        .password-rule {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+
+        .password-rule i {
+            font-size: 12px;
+        }
+
+
+        .password-rule.valid {
+            opacity: 1;
+        }
+
+
+        .password-rule.invalid {
+            opacity: 0.65;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==========================================
+     Authentication Container
+     ========================================== -->
+
+<div class="login-wrapper">
+
+
+    <!-- Background Shapes -->
+
+    <div class="login-bg-shape login-bg-shape-1"></div>
+
+    <div class="login-bg-shape login-bg-shape-2"></div>
+
+
+    <!-- Signup Card -->
+
+    <div class="login-card">
+
+
+        <!-- Brand -->
+
+        <a
+            href="dashboard.html"
+            class="login-brand text-decoration-none"
+        >
+
+            <i class="bi bi-asterisk"></i>
+
+            <span>GreenPulse</span>
+
+        </a>
+
+
+        <!-- Subtitle -->
+
+        <p class="login-subtitle">
+
+            Create your account to access GreenPulse
+
+        </p>
+
+
+        <!-- ==========================================
+             Signup Form
+             ========================================== -->
+
+        <form
+            id="signupForm"
+            class="needs-validation"
+            novalidate
+        >
+
+
+            <!-- Full Name -->
+
+            <div class="login-form-group">
+
+                <label
+                    for="fullName"
+                    class="login-form-label"
+                >
+                    Full Name
+                </label>
+
+
+                <div class="login-input-group">
+
+                    <i class="bi bi-person input-icon"></i>
+
+                    <input
+                        type="text"
+                        id="fullName"
+                        name="fullName"
+                        class="login-input"
+                        placeholder="Enter your full name"
+                        minlength="2"
+                        maxlength="150"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Designation -->
+
+            <div class="login-form-group">
+
+                <label
+                    for="designation"
+                    class="login-form-label"
+                >
+                    Designation
+                </label>
+
+
+                <div class="login-input-group">
+
+                    <i class="bi bi-briefcase input-icon"></i>
+
+                    <select
+                        id="designation"
+                        name="designation"
+                        class="login-input"
+                        required
+                    >
+
+                        <option
+                            value=""
+                            selected
+                            disabled
+                        >
+                            Select your designation
+                        </option>
+
+                        <option value="student">
+                            Student
+                        </option>
+
+                        <option value="software-engineer">
+                            Software Engineer
+                        </option>
+
+                        <option value="data-scientist">
+                            Data Scientist
+                        </option>
+
+                        <option value="machine-learning-engineer">
+                            Machine Learning Engineer
+                        </option>
+
+                        <option value="ai-engineer">
+                            AI Engineer
+                        </option>
+
+                        <option value="devops-engineer">
+                            DevOps Engineer
+                        </option>
+
+                        <option value="cloud-engineer">
+                            Cloud Engineer
+                        </option>
+
+                        <option value="researcher">
+                            Researcher
+                        </option>
+
+                        <option value="tech-lead">
+                            Tech Lead
+                        </option>
+
+                        <option value="engineering-manager">
+                            Engineering Manager
+                        </option>
+
+                        <option value="product-manager">
+                            Product Manager
+                        </option>
+
+                        <option value="other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- Other Designation -->
+
+            <div
+                class="login-form-group"
+                id="otherDesignationGroup"
+                style="display: none;"
+            >
+
+                <label
+                    for="otherDesignation"
+                    class="login-form-label"
+                >
+                    Specify Your Designation
+                </label>
+
+
+                <div class="login-input-group">
+
+                    <i class="bi bi-pencil input-icon"></i>
+
+                    <input
+                        type="text"
+                        id="otherDesignation"
+                        name="otherDesignation"
+                        class="login-input"
+                        placeholder="Enter your designation"
+                        maxlength="150"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Email -->
+
+            <div class="login-form-group">
+
+                <label
+                    for="email"
+                    class="login-form-label"
+                >
+                    Email Address
+                </label>
+
+
+                <div class="login-input-group">
+
+                    <i class="bi bi-envelope input-icon"></i>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="login-input"
+                        placeholder="name@company.com"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Password -->
+
+            <div class="login-form-group">
+
+                <label
+                    for="password"
+                    class="login-form-label"
+                >
+                    Password
+                </label>
+
+
+                <div class="login-input-group">
+
+                    <i
+                        class="bi bi-shield-lock input-icon"
+                    ></i>
+
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="login-input login-input-password"
+                        placeholder="Enter your password"
+                        minlength="8"
+                        maxlength="100"
+                        required
+                    >
+
+
+                    <button
+                        type="button"
+                        class="password-toggle-btn"
+                        id="toggle-password"
+                        aria-label="Show password"
+                    >
+
+                        <i class="bi bi-eye"></i>
+
+                    </button>
+
+                </div>
+
+
+                <!-- Password Rules -->
+
+                <div
+                    class="password-rules"
+                    id="passwordRules"
+                >
+
+                    <div
+                        class="password-rule invalid"
+                        id="rule-length"
+                    >
+
+                        <i class="bi bi-circle"></i>
+
+                        <span>
+                            At least 8 characters
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="password-rule invalid"
+                        id="rule-uppercase"
+                    >
+
+                        <i class="bi bi-circle"></i>
+
+                        <span>
+                            At least 1 uppercase letter
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="password-rule invalid"
+                        id="rule-number"
+                    >
+
+                        <i class="bi bi-circle"></i>
+
+                        <span>
+                            At least 1 number
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="password-rule invalid"
+                        id="rule-special"
+                    >
+
+                        <i class="bi bi-circle"></i>
+
+                        <span>
+                            At least 1 special character
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Confirm Password -->
+
+            <div class="login-form-group">
+
+                <label
+                    for="confirmPassword"
+                    class="login-form-label"
+                >
+                    Confirm Password
+                </label>
+
+
+                <div class="login-input-group">
+
+                    <i
+                        class="bi bi-shield-check input-icon"
+                    ></i>
+
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        class="login-input login-input-password"
+                        placeholder="Confirm your password"
+                        required
+                    >
+
+
+                    <button
+                        type="button"
+                        class="password-toggle-btn"
+                        id="toggle-confirm-password"
+                        aria-label="Show password"
+                    >
+
+                        <i class="bi bi-eye"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Terms -->
+
+            <div class="login-options">
+
+                <label class="custom-control-label">
+
+                    <input
+                        type="checkbox"
+                        class="custom-checkbox-input"
+                        id="terms"
+                        name="terms"
+                        required
+                    >
+
+                    <span>
+                        I agree to the Terms of Service
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <!-- ==========================================
+                 Create Account Button
+                 ========================================== -->
+
+            <button
+                type="submit"
+                class="btn-login"
+                id="btn-submit"
+            >
+
+                <span>
+                    Create GreenPulse Account
+                </span>
+
+                <i class="bi bi-arrow-right"></i>
+
+            </button>
+
+
+        </form>
+
+
+        <!-- ==========================================
+             OTP SECTION
+             ========================================== -->
+
+        <div
+            class="otp-section"
+            id="otpSection"
+        >
+
+
+            <div class="login-form-group">
+
+
+                <label
+                    for="otp"
+                    class="login-form-label"
+                >
+
+                    Email Verification
+
+                </label>
+
+
+                <p class="otp-message">
+
+                    We've sent a 6-digit verification code
+                    to your email.
+
+                    Please enter it below to verify
+                    your account.
+
+                </p>
+
+
+                <div class="login-input-group">
+
+                    <i
+                        class="bi bi-shield-check input-icon"
+                    ></i>
+
+
+                    <input
+                        type="text"
+                        id="otp"
+                        class="login-input otp-input"
+                        placeholder="000000"
+                        maxlength="6"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                    >
+
+                </div>
+
+
+                <div class="otp-actions">
+
+                    <button
+                        type="button"
+                        class="resend-otp-btn"
+                        id="resendOtp"
+                    >
+
+                        <i class="bi bi-arrow-clockwise"></i>
+
+                        Resend OTP
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn-login"
+                        id="verifyOtp"
+                        style="width: auto; padding: 9px 18px;"
+                    >
+
+                        <span>
+                            Verify
+                        </span>
+
+                        <i class="bi bi-check2"></i>
+
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- Success Message -->
+
+            <div
+                class="otp-success-message"
+                id="otpSuccessMessage"
+            >
+
+                <i class="bi bi-check-circle"></i>
+
+                Email verified successfully.
+                Redirecting to login...
+
+            </div>
+
+
+        </div>
+
+
+        <!-- Footer -->
+
+        <p class="login-footer-text">
+
+            Already have an account?
+
+            <a
+                href="login.html"
+                id="link-login"
+            >
+                Sign In
+            </a>
+
+        </p>
+
+
+    </div>
+
+</div>
+
+
+<!-- Bootstrap -->
+
+<script
+    src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"
+></script>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+    console.log(
+        "GreenPulse signup JS loaded"
+    );
+
+
+    /* =====================================================
+       CONFIGURATION
+       ===================================================== */
+
+    const API_BASE_URL =
+        "http://localhost:8000";
+
+
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
+
+    const form =
+        document.getElementById(
+            "signupForm"
+        );
+
+
+    const submitButton =
+        document.getElementById(
+            "btn-submit"
+        );
+
+
+    const fullName =
+        document.getElementById(
+            "fullName"
+        );
+
+
+    const designation =
+        document.getElementById(
+            "designation"
+        );
+
+
+    const otherDesignationGroup =
+        document.getElementById(
+            "otherDesignationGroup"
+        );
+
+
+    const otherDesignation =
+        document.getElementById(
+            "otherDesignation"
+        );
+
+
+    const email =
+        document.getElementById(
+            "email"
+        );
+
+
+    const password =
+        document.getElementById(
+            "password"
+        );
+
+
+    const confirmPassword =
+        document.getElementById(
+            "confirmPassword"
+        );
+
+
+    const terms =
+        document.getElementById(
+            "terms"
+        );
+
+
+    const otpSection =
+        document.getElementById(
+            "otpSection"
+        );
+
+
+    const otpInput =
+        document.getElementById(
+            "otp"
+        );
+
+
+    const verifyOtpButton =
+        document.getElementById(
+            "verifyOtp"
+        );
+
+
+    const resendOtpButton =
+        document.getElementById(
+            "resendOtp"
+        );
+
+
+    const otpSuccessMessage =
+        document.getElementById(
+            "otpSuccessMessage"
+        );
+
+
+    /* =====================================================
+       PASSWORD RULE ELEMENTS
+       ===================================================== */
+
+    const ruleLength =
+        document.getElementById(
+            "rule-length"
+        );
+
+
+    const ruleUppercase =
+        document.getElementById(
+            "rule-uppercase"
+        );
+
+
+    const ruleNumber =
+        document.getElementById(
+            "rule-number"
+        );
+
+
+    const ruleSpecial =
+        document.getElementById(
+            "rule-special"
+        );
+
+
+    /* =====================================================
+       ELEMENT CHECK
+       ===================================================== */
+
+    if (!form) {
+
+        console.error(
+            "ERROR: signupForm was not found."
+        );
+
+        return;
+
+    }
+
+
+    if (!submitButton) {
+
+        console.error(
+            "ERROR: btn-submit was not found."
+        );
+
+        return;
+
+    }
+
+
+    console.log(
+        "Signup elements initialized successfully."
+    );
+
+
+    /* =====================================================
+       PASSWORD RULE VALIDATION
+       ===================================================== */
+
+    function updatePasswordRule(
+        element,
+        valid
+    ) {
+
+        if (!element) {
+            return;
+        }
+
+
+        const icon =
+            element.querySelector("i");
+
+
+        if (valid) {
+
+            icon.className =
+                "bi bi-check-circle-fill";
+
+            element.classList.remove(
+                "invalid"
+            );
+
+            element.classList.add(
+                "valid"
+            );
+
+        } else {
+
+            icon.className =
+                "bi bi-circle";
+
+            element.classList.remove(
+                "valid"
+            );
+
+            element.classList.add(
+                "invalid"
+            );
+
+        }
+
+    }
+
+
+    function validatePasswordRules() {
+
+        const value =
+            password.value;
+
+
+        const hasLength =
+            value.length >= 8;
+
+
+        const hasUppercase =
+            /[A-Z]/.test(value);
+
+
+        const hasNumber =
+            /[0-9]/.test(value);
+
+
+        const hasSpecial =
+            /[^A-Za-z0-9]/.test(value);
+
+
+        updatePasswordRule(
+            ruleLength,
+            hasLength
+        );
+
+
+        updatePasswordRule(
+            ruleUppercase,
+            hasUppercase
+        );
+
+
+        updatePasswordRule(
+            ruleNumber,
+            hasNumber
+        );
+
+
+        updatePasswordRule(
+            ruleSpecial,
+            hasSpecial
+        );
+
+
+        return (
+            hasLength &&
+            hasUppercase &&
+            hasNumber &&
+            hasSpecial
+        );
+
+    }
+
+
+    password.addEventListener(
+        "input",
+        validatePasswordRules
+    );
+
+
+    /* =====================================================
+       PASSWORD TOGGLE
+       ===================================================== */
+
+    const togglePassword =
+        document.getElementById(
+            "toggle-password"
+        );
+
+
+    if (togglePassword) {
+
+        togglePassword.addEventListener(
+            "click",
+            function () {
+
+                if (
+                    password.type ===
+                    "password"
+                ) {
+
+                    password.type =
+                        "text";
+
+
+                    this.innerHTML =
+                        '<i class="bi bi-eye-slash"></i>';
+
+
+                    this.setAttribute(
+                        "aria-label",
+                        "Hide password"
+                    );
+
+                } else {
+
+                    password.type =
+                        "password";
+
+
+                    this.innerHTML =
+                        '<i class="bi bi-eye"></i>';
+
+
+                    this.setAttribute(
+                        "aria-label",
+                        "Show password"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       CONFIRM PASSWORD TOGGLE
+       ===================================================== */
+
+    const toggleConfirmPassword =
+        document.getElementById(
+            "toggle-confirm-password"
+        );
+
+
+    if (toggleConfirmPassword) {
+
+        toggleConfirmPassword.addEventListener(
+            "click",
+            function () {
+
+                if (
+                    confirmPassword.type ===
+                    "password"
+                ) {
+
+                    confirmPassword.type =
+                        "text";
+
+
+                    this.innerHTML =
+                        '<i class="bi bi-eye-slash"></i>';
+
+
+                    this.setAttribute(
+                        "aria-label",
+                        "Hide password"
+                    );
+
+                } else {
+
+                    confirmPassword.type =
+                        "password";
+
+
+                    this.innerHTML =
+                        '<i class="bi bi-eye"></i>';
+
+
+                    this.setAttribute(
+                        "aria-label",
+                        "Show password"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       DESIGNATION
+       ===================================================== */
+
+    designation.addEventListener(
+        "change",
+        function () {
+
+            console.log(
+                "Designation:",
+                designation.value
+            );
+
+
+            if (
+                designation.value ===
+                "other"
+            ) {
+
+                otherDesignationGroup.style.display =
+                    "block";
+
+
+                otherDesignation.required =
+                    true;
+
+            } else {
+
+                otherDesignationGroup.style.display =
+                    "none";
+
+
+                otherDesignation.required =
+                    false;
+
+
+                otherDesignation.value =
+                    "";
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       PASSWORD MATCH
+       ===================================================== */
+
+    function validatePasswords() {
+
+        if (
+            password.value !==
+            confirmPassword.value
+        ) {
+
+            confirmPassword.setCustomValidity(
+                "Passwords do not match."
+            );
+
+            return false;
+
+        }
+
+
+        confirmPassword.setCustomValidity(
+            ""
+        );
+
+
+        return true;
+
+    }
+
+
+    password.addEventListener(
+        "input",
+        validatePasswords
+    );
+
+
+    confirmPassword.addEventListener(
+        "input",
+        validatePasswords
+    );
+
+
+    /* =====================================================
+       OTP INPUT
+       ===================================================== */
+
+    otpInput.addEventListener(
+        "input",
+        function () {
+
+            this.value =
+                this.value
+                    .replace(/\D/g, "")
+                    .slice(0, 6);
+
+        }
+    );
+
+
+    /* =====================================================
+       SIGNUP
+       ===================================================== */
+
+    form.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+
+            console.log(
+                "================================="
+            );
+
+
+            console.log(
+                "SIGNUP SUBMIT EVENT FIRED"
+            );
+
+
+            console.log(
+                "================================="
+            );
+
+
+            /* ---------------------------------------------
+               Password validation
+               --------------------------------------------- */
+
+            if (
+                !validatePasswordRules()
+            ) {
+
+                alert(
+                    "Password must contain at least 8 characters, including an uppercase letter, a number, and a special character."
+                );
+
+
+                password.focus();
+
+
+                return;
+
+            }
+
+
+            /* ---------------------------------------------
+               Confirm password validation
+               --------------------------------------------- */
+
+            if (
+                !validatePasswords()
+            ) {
+
+                alert(
+                    "Passwords do not match."
+                );
+
+
+                confirmPassword.focus();
+
+
+                return;
+
+            }
+
+
+            /* ---------------------------------------------
+               Full name
+               --------------------------------------------- */
+
+            if (
+                !fullName.value.trim()
+            ) {
+
+                alert(
+                    "Please enter your full name."
+                );
+
+
+                fullName.focus();
+
+
+                return;
+
+            }
+
+
+            /* ---------------------------------------------
+               Designation
+               --------------------------------------------- */
+
+            if (
+                !designation.value
+            ) {
+
+                alert(
+                    "Please select your designation."
+                );
+
+
+                designation.focus();
+
+
+                return;
+
+            }
+
+
+            /* ---------------------------------------------
+               Other designation
+               --------------------------------------------- */
+
+            if (
+                designation.value ===
+                "other" &&
+                !otherDesignation.value.trim()
+            ) {
+
+                alert(
+                    "Please specify your designation."
+                );
+
+
+                otherDesignation.focus();
+
+
+                return;
+
+            }
+
+
+            /* ---------------------------------------------
+               Email
+               --------------------------------------------- */
+
+            const emailValue =
+                email.value
+                    .trim()
+                    .toLowerCase();
+
+
+            if (!emailValue) {
+
+                alert(
+                    "Please enter your email address."
+                );
+
+
+                email.focus();
+
+
+                return;
+
+            }
+
+
+            if (
+                !email.checkValidity()
+            ) {
+
+                alert(
+                    "Please enter a valid email address."
+                );
+
+
+                email.focus();
+
+
+                return;
+
+            }
+
+
+            /* ---------------------------------------------
+               Terms
+               --------------------------------------------- */
+
+            if (!terms.checked) {
+
+                alert(
+                    "Please accept the Terms of Service."
+                );
+
+
+                terms.focus();
+
+
+                return;
+
+            }
+
+
+            console.log(
+                "Frontend validation passed"
+            );
+
+
+            /* ---------------------------------------------
+               Prepare data
+               --------------------------------------------- */
+
+            const signupData = {
+
+                full_name:
+                    fullName.value.trim(),
+
+
+                designation:
+                    designation.value ===
+                    "other"
+
+                        ? otherDesignation.value.trim()
+
+                        : designation.value,
+
+
+                company_email:
+                    emailValue,
+
+
+                password:
+                    password.value
+
+            };
+
+
+            console.log(
+                "Signup data:",
+                {
+                    full_name:
+                        signupData.full_name,
+
+                    designation:
+                        signupData.designation,
+
+                    company_email:
+                        signupData.company_email,
+
+                    password:
+                        "********"
+                }
+            );
+
+
+            /* ---------------------------------------------
+               Loading state
+               --------------------------------------------- */
+
+            submitButton.disabled =
+                true;
+
+
+            submitButton.innerHTML =
+                `
+                <span>Sending OTP...</span>
+                <i class="bi bi-hourglass-split"></i>
+                `;
+
+
+            console.log(
+                "Sending signup request..."
+            );
+
+
+            console.log(
+                "API URL:",
+                API_BASE_URL +
+                "/api/auth/signup"
+            );
+
+
+            /* ---------------------------------------------
+               API REQUEST
+               --------------------------------------------- */
+
+            try {
+
+                const response =
+                    await fetch(
+                        API_BASE_URL +
+                        "/api/auth/signup",
+                        {
+                            method:
+                                "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    signupData
+                                )
+                        }
+                    );
+
+
+                console.log(
+                    "Signup response status:",
+                    response.status
+                );
+
+
+                const responseText =
+                    await response.text();
+
+
+                console.log(
+                    "Signup response:",
+                    responseText
+                );
+
+
+                let data = {};
+
+
+                if (responseText) {
+
+                    try {
+
+                        data =
+                            JSON.parse(
+                                responseText
+                            );
+
+                    } catch (
+                        jsonError
+                    ) {
+
+                        console.error(
+                            "JSON parse error:",
+                            jsonError
+                        );
+
+
+                        throw new Error(
+                            "The backend returned an invalid response."
+                        );
+
+                    }
+
+                }
+
+
+                /* -----------------------------------------
+                   Backend error
+                   ----------------------------------------- */
+
+                if (!response.ok) {
+
+                    let message =
+                        "Signup failed.";
+
+
+                    if (
+                        typeof data.detail ===
+                        "string"
+                    ) {
+
+                        message =
+                            data.detail;
+
+                    } else if (
+                        Array.isArray(
+                            data.detail
+                        )
+                    ) {
+
+                        message =
+                            data.detail
+                                .map(
+                                    item =>
+                                        item.msg ||
+                                        "Validation error"
+                                )
+                                .join(", ");
+
+                    } else if (
+                        data.message
+                    ) {
+
+                        message =
+                            data.message;
+
+                    }
+
+
+                    throw new Error(
+                        message
+                    );
+
+                }
+
+
+                /* -----------------------------------------
+                   SUCCESS
+                   ----------------------------------------- */
+
+                console.log(
+                    "OTP successfully sent."
+                );
+
+
+                /*
+                 * Show OTP section
+                 */
+
+                otpSection.classList.add(
+                    "show"
+                );
+
+
+                /*
+                 * Scroll to OTP
+                 */
+
+                otpSection.scrollIntoView({
+                    behavior:
+                        "smooth",
+
+                    block:
+                        "center"
+                });
+
+
+                /*
+                 * Disable signup fields
+                 */
+
+                fullName.disabled =
+                    true;
+
+
+                designation.disabled =
+                    true;
+
+
+                otherDesignation.disabled =
+                    true;
+
+
+                email.disabled =
+                    true;
+
+
+                password.disabled =
+                    true;
+
+
+                confirmPassword.disabled =
+                    true;
+
+
+                terms.disabled =
+                    true;
+
+
+                /*
+                 * Change button
+                 */
+
+                submitButton.innerHTML =
+                    `
+                    <span>OTP Sent</span>
+                    <i class="bi bi-check2"></i>
+                    `;
+
+
+                otpInput.focus();
+
+
+            } catch (error) {
+
+                console.error(
+                    "SIGNUP ERROR:",
+                    error
+                );
+
+
+                let message =
+                    error.message;
+
+
+                if (
+                    error instanceof
+                    TypeError
+                ) {
+
+                    message =
+                        "Unable to connect to the GreenPulse backend. Make sure FastAPI is running on http://localhost:8000.";
+
+                }
+
+
+                alert(
+                    "Signup failed:\n\n" +
+                    message
+                );
+
+
+                /*
+                 * Restore button
+                 */
+
+                submitButton.disabled =
+                    false;
+
+
+                submitButton.innerHTML =
+                    `
+                    <span>
+                        Create GreenPulse Account
+                    </span>
+
+                    <i class="bi bi-arrow-right"></i>
+                    `;
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       VERIFY OTP
+       ===================================================== */
+
+    verifyOtpButton.addEventListener(
+        "click",
+        async function () {
+
+            const otp =
+                otpInput.value.trim();
+
+
+            if (
+                !/^\d{6}$/.test(otp)
+            ) {
+
+                alert(
+                    "Please enter the 6-digit OTP."
+                );
+
+
+                otpInput.focus();
+
+
+                return;
+
+            }
+
+
+            verifyOtpButton.disabled =
+                true;
+
+
+            verifyOtpButton.innerHTML =
+                `
+                <span>Verifying...</span>
+                <i class="bi bi-hourglass-split"></i>
+                `;
+
+
+            console.log(
+                "Verifying OTP..."
+            );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        API_BASE_URL +
+                        "/api/auth/verify-otp",
+                        {
+                            method:
+                                "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    email:
+                                        email.value
+                                            .trim()
+                                            .toLowerCase(),
+
+                                    otp:
+                                        otp
+                                })
+                        }
+                    );
+
+
+                console.log(
+                    "OTP response status:",
+                    response.status
+                );
+
+
+                const responseText =
+                    await response.text();
+
+
+                console.log(
+                    "OTP response:",
+                    responseText
+                );
+
+
+                let data = {};
+
+
+                if (responseText) {
+
+                    try {
+
+                        data =
+                            JSON.parse(
+                                responseText
+                            );
+
+                    } catch {
+
+                        throw new Error(
+                            "Invalid response from backend."
+                        );
+
+                    }
+
+                }
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.detail ||
+                        data.message ||
+                        "OTP verification failed."
+                    );
+
+                }
+
+
+                /*
+                 * Success
+                 */
+
+                otpSuccessMessage.classList.add(
+                    "show"
+                );
+
+
+                console.log(
+                    "Email verification successful."
+                );
+
+
+                setTimeout(
+                    function () {
+
+                        window.location.href =
+                            "login.html?verified=true";
+
+                    },
+                    1200
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "OTP verification error:",
+                    error
+                );
+
+
+                alert(
+                    "OTP verification failed:\n\n" +
+                    error.message
+                );
+
+
+                verifyOtpButton.disabled =
+                    false;
+
+
+                verifyOtpButton.innerHTML =
+                    `
+                    <span>Verify</span>
+                    <i class="bi bi-check2"></i>
+                    `;
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       RESEND OTP
+       ===================================================== */
+
+    resendOtpButton.addEventListener(
+        "click",
+        async function () {
+
+            resendOtpButton.disabled =
+                true;
+
+
+            resendOtpButton.innerHTML =
+                `
+                <i class="bi bi-hourglass-split"></i>
+                Sending...
+                `;
+
+
+            console.log(
+                "Resending OTP..."
+            );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        API_BASE_URL +
+                        "/api/auth/resend-otp",
+                        {
+                            method:
+                                "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    email:
+                                        email.value
+                                            .trim()
+                                            .toLowerCase()
+                                })
+                        }
+                    );
+
+
+                console.log(
+                    "Resend response status:",
+                    response.status
+                );
+
+
+                const responseText =
+                    await response.text();
+
+
+                console.log(
+                    "Resend response:",
+                    responseText
+                );
+
+
+                let data = {};
+
+
+                if (responseText) {
+
+                    try {
+
+                        data =
+                            JSON.parse(
+                                responseText
+                            );
+
+                    } catch {
+
+                        throw new Error(
+                            "Invalid backend response."
+                        );
+
+                    }
+
+                }
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.detail ||
+                        data.message ||
+                        "Unable to resend OTP."
+                    );
+
+                }
+
+
+                alert(
+                    "A new OTP has been sent to your email."
+                );
+
+
+                resendOtpButton.disabled =
+                    false;
+
+
+                resendOtpButton.innerHTML =
+                    `
+                    <i class="bi bi-arrow-clockwise"></i>
+                    Resend OTP
+                    `;
+
+
+            } catch (error) {
+
+                console.error(
+                    "Resend OTP error:",
+                    error
+                );
+
+
+                alert(
+                    "Unable to resend OTP:\n\n" +
+                    error.message
+                );
+
+
+                resendOtpButton.disabled =
+                    false;
+
+
+                resendOtpButton.innerHTML =
+                    `
+                    <i class="bi bi-arrow-clockwise"></i>
+                    Resend OTP
+                    `;
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       INITIALIZATION COMPLETE
+       ===================================================== */
+
+    console.log(
+        "GreenPulse signup JavaScript initialized."
+    );
+
+});
+
+</script>
+
+
+</body>
+
+</html>
