@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 
 <html lang="en">
@@ -67,6 +68,53 @@
 </head>
 
 <body>
+
+<!-- =====================================================
+     LOCATION PERMISSION POPUP
+====================================================== -->
+
+<div id="location-permission-modal">
+
+    <div class="location-permission-box">
+
+        <div class="location-icon">
+            <i class="bi bi-geo-alt-fill"></i>
+        </div>
+
+        <h3>
+            Allow Location
+        </h3>
+
+        <p>
+            GreenPulse needs your location to identify
+            your electricity region and provide
+            carbon-aware recommendations.
+        </p>
+
+        <button
+            type="button"
+            id="allow-location-btn"
+        >
+
+            <i class="bi bi-geo-alt-fill"></i>
+
+            Allow Location
+
+        </button>
+
+        <button
+            type="button"
+            id="skip-location-btn"
+        >
+
+            Not now
+
+        </button>
+
+    </div>
+
+</div>
+
 
 <!-- =====================================================
      SIDEBAR
@@ -1503,6 +1551,179 @@
 }
 
 
+/* =====================================================
+   LOCATION PERMISSION POPUP
+====================================================== */
+
+#location-permission-modal {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 20000;
+
+    padding: 20px;
+
+}
+
+
+.location-permission-box {
+
+    width: 380px;
+
+    max-width: 100%;
+
+    background: #ffffff;
+
+    border-radius: 18px;
+
+    padding: 30px;
+
+    text-align: center;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.25);
+
+}
+
+
+.location-icon {
+
+    width: 60px;
+
+    height: 60px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 50%;
+
+    background: rgba(33, 140, 130, 0.12);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.location-icon i {
+
+    font-size: 28px;
+
+    color: #218c82;
+
+}
+
+
+.location-permission-box h3 {
+
+    margin: 0 0 10px;
+
+    font-size: 22px;
+
+    font-weight: 600;
+
+    color: #222;
+
+}
+
+
+.location-permission-box p {
+
+    margin: 0 0 22px;
+
+    color: #6c757d;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+}
+
+
+#allow-location-btn {
+
+    width: 100%;
+
+    border: none;
+
+    background: #218c82;
+
+    color: white;
+
+    padding: 12px;
+
+    border-radius: 9px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+#allow-location-btn:hover {
+
+    background: #19766e;
+
+}
+
+
+#allow-location-btn:disabled {
+
+    opacity: 0.7;
+
+    cursor: wait;
+
+}
+
+
+#allow-location-btn i {
+
+    margin-right: 6px;
+
+}
+
+
+#skip-location-btn {
+
+    width: 100%;
+
+    border: none;
+
+    background: transparent;
+
+    color: #6c757d;
+
+    padding: 11px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+}
+
+
+#skip-location-btn:hover {
+
+    color: #218c82;
+
+}
+
+
 @media (max-width: 576px) {
 
     .ai-assistant-panel {
@@ -2383,6 +2604,262 @@ document.addEventListener(
 </script>
 
 
+<!-- =====================================================
+     LOCATION PERMISSION JAVASCRIPT
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const modal =
+            document.getElementById(
+                "location-permission-modal"
+            );
+
+
+        const allowButton =
+            document.getElementById(
+                "allow-location-btn"
+            );
+
+
+        const skipButton =
+            document.getElementById(
+                "skip-location-btn"
+            );
+
+
+        /*
+         * Check browser support.
+         */
+
+        if (!navigator.geolocation) {
+
+            console.log(
+                "Geolocation is not supported by this browser."
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Check if location was already saved
+         * during this session.
+         */
+
+        const savedLatitude =
+            sessionStorage.getItem(
+                "greenpulseLatitude"
+            );
+
+
+        const savedLongitude =
+            sessionStorage.getItem(
+                "greenpulseLongitude"
+            );
+
+
+        if (
+            savedLatitude &&
+            savedLongitude
+        ) {
+
+            console.log(
+                "GreenPulse location already available."
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Show location popup.
+         */
+
+        modal.style.display = "flex";
+
+
+        /*
+         * Allow Location button.
+         */
+
+        allowButton.addEventListener(
+            "click",
+            function () {
+
+                allowButton.disabled = true;
+
+
+                allowButton.innerHTML =
+                    '<i class="bi bi-hourglass-split"></i> Getting Location...';
+
+
+                /*
+                 * This triggers the browser's
+                 * native location permission.
+                 */
+
+                navigator.geolocation.getCurrentPosition(
+
+                    function (position) {
+
+                        const latitude =
+                            position.coords.latitude;
+
+
+                        const longitude =
+                            position.coords.longitude;
+
+
+                        console.log(
+                            "Location permission granted."
+                        );
+
+
+                        console.log(
+                            "Latitude:",
+                            latitude
+                        );
+
+
+                        console.log(
+                            "Longitude:",
+                            longitude
+                        );
+
+
+                        /*
+                         * Save location.
+                         */
+
+                        sessionStorage.setItem(
+                            "greenpulseLatitude",
+                            latitude
+                        );
+
+
+                        sessionStorage.setItem(
+                            "greenpulseLongitude",
+                            longitude
+                        );
+
+
+                        /*
+                         * Close popup.
+                         */
+
+                        modal.style.display =
+                            "none";
+
+
+                        allowButton.disabled =
+                            false;
+
+
+                        allowButton.innerHTML =
+                            '<i class="bi bi-geo-alt-fill"></i> Allow Location';
+
+
+                    },
+
+
+                    function (error) {
+
+                        console.error(
+                            "GreenPulse location error:",
+                            error
+                        );
+
+
+                        allowButton.disabled =
+                            false;
+
+
+                        allowButton.innerHTML =
+                            '<i class="bi bi-geo-alt-fill"></i> Allow Location';
+
+
+                        if (
+                            error.code ===
+                            error.PERMISSION_DENIED
+                        ) {
+
+                            console.log(
+                                "Location permission was denied or blocked."
+                            );
+
+                        }
+
+
+                        else if (
+                            error.code ===
+                            error.POSITION_UNAVAILABLE
+                        ) {
+
+                            console.log(
+                                "Location information is unavailable."
+                            );
+
+                        }
+
+
+                        else if (
+                            error.code ===
+                            error.TIMEOUT
+                        ) {
+
+                            console.log(
+                                "Location request timed out."
+                            );
+
+                        }
+
+                    },
+
+
+                    {
+                        enableHighAccuracy: true,
+
+                        timeout: 15000,
+
+                        maximumAge: 0
+
+                    }
+
+                );
+
+            }
+        );
+
+
+        /*
+         * Not now button.
+         */
+
+        skipButton.addEventListener(
+            "click",
+            function () {
+
+                modal.style.display =
+                    "none";
+
+            }
+        );
+
+    }
+
+);
+
+</script>
+
+
 </body>
 
 </html>
+```
