@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 
 <html lang="en">
@@ -101,8 +100,6 @@
             Allow Location
 
         </button>
-
-        
 
     </div>
 
@@ -1808,10 +1805,6 @@ document.addEventListener(
     "DOMContentLoaded",
     function () {
 
-        /* =================================================
-           GET AUTHENTICATION TOKEN
-        ================================================= */
-
         const token =
             sessionStorage.getItem(
                 "greenpulseToken"
@@ -1824,10 +1817,6 @@ document.addEventListener(
             );
 
 
-        /* =================================================
-           CHECK LOGIN
-        ================================================= */
-
         if (!token) {
 
             window.location.replace(
@@ -1838,10 +1827,6 @@ document.addEventListener(
 
         }
 
-
-        /* =================================================
-           READ USER DATA
-        ================================================= */
 
         let user = {};
 
@@ -1866,10 +1851,6 @@ document.addEventListener(
 
         }
 
-
-        /* =================================================
-           BUILD USER NAME
-        ================================================= */
 
         const firstName =
             user.first_name || "";
@@ -1896,18 +1877,10 @@ document.addEventListener(
             );
 
 
-        /* =================================================
-           USER EMAIL
-        ================================================= */
-
         const userEmail =
             user.email ||
             "Green AI Dashboard";
 
-
-        /* =================================================
-           SIDEBAR NAME
-        ================================================= */
 
         const loggedUserName =
             document.getElementById(
@@ -1923,10 +1896,6 @@ document.addEventListener(
         }
 
 
-        /* =================================================
-           SIDEBAR EMAIL
-        ================================================= */
-
         const loggedUserEmail =
             document.getElementById(
                 "logged-user-email"
@@ -1940,10 +1909,6 @@ document.addEventListener(
 
         }
 
-
-        /* =================================================
-           NAVBAR NAME
-        ================================================= */
 
         const navbarUserName =
             document.getElementById(
@@ -1959,10 +1924,6 @@ document.addEventListener(
         }
 
 
-        /* =================================================
-           DROPDOWN NAME
-        ================================================= */
-
         const dropdownUserName =
             document.getElementById(
                 "dropdown-user-name"
@@ -1976,10 +1937,6 @@ document.addEventListener(
 
         }
 
-
-        /* =================================================
-           PROFILE IMAGE ALT
-        ================================================= */
 
         const profileImages =
             document.querySelectorAll(
@@ -2033,10 +1990,6 @@ document.addEventListener(
                 event.preventDefault();
 
 
-                /* =========================================
-                   CLEAR LOGIN DATA
-                ========================================= */
-
                 sessionStorage.removeItem(
                     "greenpulseToken"
                 );
@@ -2046,10 +1999,6 @@ document.addEventListener(
                     "greenpulseUser"
                 );
 
-
-                /* =========================================
-                   REDIRECT TO HOME
-                ========================================= */
 
                 window.location.replace(
                     "index.html"
@@ -2074,10 +2023,6 @@ document.addEventListener(
     "DOMContentLoaded",
     function () {
 
-
-        /* =================================================
-           ELEMENTS
-        ================================================= */
 
         const aiButton =
             document.getElementById(
@@ -2115,17 +2060,9 @@ document.addEventListener(
             );
 
 
-        /* =================================================
-           API BASE URL
-        ================================================= */
-
         const API_BASE_URL =
             window.GREENPULSE_API_BASE;
 
-
-        /* =================================================
-           OPEN ASSISTANT
-        ================================================= */
 
         function openAssistant(event) {
 
@@ -2160,10 +2097,6 @@ document.addEventListener(
         }
 
 
-        /* =================================================
-           CLOSE ASSISTANT
-        ================================================= */
-
         function closeAssistant() {
 
             if (aiPanel) {
@@ -2175,10 +2108,6 @@ document.addEventListener(
 
         }
 
-
-        /* =================================================
-           ADD MESSAGE
-        ================================================= */
 
         function addMessage(
             text,
@@ -2218,10 +2147,6 @@ document.addEventListener(
 
         }
 
-
-        /* =================================================
-           LOADING MESSAGE
-        ================================================= */
 
         function addLoadingMessage() {
 
@@ -2264,10 +2189,6 @@ document.addEventListener(
         }
 
 
-        /* =================================================
-           REMOVE LOADING MESSAGE
-        ================================================= */
-
         function removeLoadingMessage() {
 
             const loadingMessage =
@@ -2284,10 +2205,6 @@ document.addEventListener(
 
         }
 
-
-        /* =================================================
-           SEND MESSAGE
-        ================================================= */
 
         async function sendMessage() {
 
@@ -2313,25 +2230,17 @@ document.addEventListener(
             }
 
 
-            /* USER MESSAGE */
-
             addMessage(
                 text,
                 true
             );
 
 
-            /* CLEAR INPUT */
-
             input.value = "";
 
 
-            /* LOADING */
-
             addLoadingMessage();
 
-
-            /* DISABLE SEND */
 
             sendButton.disabled =
                 true;
@@ -2340,19 +2249,11 @@ document.addEventListener(
             try {
 
 
-                /* =================================================
-                   GET JWT TOKEN
-                ================================================= */
-
                 const token =
                     sessionStorage.getItem(
                         "greenpulseToken"
                     );
 
-
-                /* =================================================
-                   API REQUEST
-                ================================================= */
 
                 const response =
                     await fetch(
@@ -2392,10 +2293,6 @@ document.addEventListener(
                     );
 
 
-                /* ==========================================
-                   READ RESPONSE
-                ========================================== */
-
                 let data;
 
 
@@ -2416,10 +2313,6 @@ document.addEventListener(
                 removeLoadingMessage();
 
 
-                /* ==========================================
-                   BACKEND ERROR
-                ========================================== */
-
                 if (!response.ok) {
 
                     const errorMessage =
@@ -2439,10 +2332,6 @@ document.addEventListener(
 
                 }
 
-
-                /* ==========================================
-                   SUCCESS
-                ========================================== */
 
                 if (
                     data.assistant_message
@@ -2518,10 +2407,6 @@ document.addEventListener(
         }
 
 
-        /* =================================================
-           EVENT LISTENERS
-        ================================================= */
-
         if (
             aiButton &&
             aiPanel
@@ -2578,10 +2463,6 @@ document.addEventListener(
         }
 
 
-        /* =================================================
-           ESCAPE TO CLOSE
-        ================================================= */
-
         document.addEventListener(
             "keydown",
             function (event) {
@@ -2626,12 +2507,6 @@ document.addEventListener(
         const allowButton =
             document.getElementById(
                 "allow-location-btn"
-            );
-
-
-        const skipButton =
-            document.getElementById(
-                "skip-location-btn"
             );
 
 
@@ -2689,15 +2564,12 @@ document.addEventListener(
         }
 
 
-        /* 
-         * Check browser support.
-         */
-
         if (!navigator.geolocation) {
 
             console.log(
                 "Geolocation is not supported by this browser."
             );
+
 
             const locationText =
                 document.getElementById(
@@ -2717,11 +2589,6 @@ document.addEventListener(
 
         }
 
-
-        /* 
-         * Check if location was already saved
-         * during this session.
-         */
 
         const savedLatitude =
             sessionStorage.getItem(
@@ -2745,8 +2612,6 @@ document.addEventListener(
             );
 
 
-            /* SHOW SAVED LOCATION */
-
             showLocation(
                 savedLatitude,
                 savedLongitude
@@ -2758,16 +2623,8 @@ document.addEventListener(
         }
 
 
-        /* 
-         * Show location popup.
-         */
-
         modal.style.display = "flex";
 
-
-        /* 
-         * Allow Location button.
-         */
 
         allowButton.addEventListener(
             "click",
@@ -2779,11 +2636,6 @@ document.addEventListener(
                 allowButton.innerHTML =
                     '<i class="bi bi-hourglass-split"></i> Getting Location...';
 
-
-                /*
-                 * This triggers the browser's
-                 * native location permission.
-                 */
 
                 navigator.geolocation.getCurrentPosition(
 
@@ -2814,10 +2666,6 @@ document.addEventListener(
                         );
 
 
-                        /*
-                         * Save location.
-                         */
-
                         sessionStorage.setItem(
                             "greenpulseLatitude",
                             latitude
@@ -2830,19 +2678,11 @@ document.addEventListener(
                         );
 
 
-                        /*
-                         * SHOW LOCATION ON WEBPAGE.
-                         */
-
                         showLocation(
                             latitude,
                             longitude
                         );
 
-
-                        /*
-                         * Close popup.
-                         */
 
                         modal.style.display =
                             "none";
@@ -2969,17 +2809,80 @@ document.addEventListener(
             }
         );
 
+    }
 
-        /*
-         * Not now button.
-         */
+);
 
-        skipButton.addEventListener(
-            "click",
-            function () {
+</script>
 
-                modal.style.display =
-                    "none";
+
+<!-- =====================================================
+     BEST LOCATION DISPLAY
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const decisionButtons = [
+            "btn-run-decision",
+            "btn-run-decision-alert",
+            "btn-run-decision-menu",
+            "btn-run-decision-bottom"
+        ];
+
+
+        const bestRegion =
+            document.getElementById(
+                "stat-best-region"
+            );
+
+
+        const bestRegionDetail =
+            document.getElementById(
+                "stat-best-region-detail"
+            );
+
+
+        decisionButtons.forEach(
+            function (buttonId) {
+
+                const button =
+                    document.getElementById(
+                        buttonId
+                    );
+
+
+                if (!button) {
+
+                    return;
+
+                }
+
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        if (bestRegion) {
+
+                            bestRegion.textContent =
+                                "Sweden";
+
+                        }
+
+
+                        if (bestRegionDetail) {
+
+                            bestRegionDetail.innerHTML =
+                                '<i class="bi bi-geo-alt"></i> Clean Energy Location';
+
+                        }
+
+                    }
+                );
 
             }
         );
@@ -2994,4 +2897,3 @@ document.addEventListener(
 </body>
 
 </html>
-```
