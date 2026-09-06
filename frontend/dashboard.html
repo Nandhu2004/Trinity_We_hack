@@ -707,9 +707,19 @@
                 <i class="bi bi-geo-alt"></i>
 
                 <span>
-                    Zone: DE
+                    Zone: IN
                 </span>
 
+            </div>
+
+            <!-- USER LOCATION -->
+
+            <div
+                id="user-location-text"
+                class="mt-2 text-muted"
+                style="font-size: 13px;"
+            >
+                Detecting your location...
             </div>
 
         </div>
@@ -990,7 +1000,7 @@
                         class="trend-badge"
                         id="forecast-zone"
                     >
-                        Zone: DE
+                        Zone: IN
                     </span>
 
 
@@ -2632,7 +2642,61 @@ document.addEventListener(
             );
 
 
-        /*
+        /* =================================================
+           LOCATION DISPLAY
+        ================================================= */
+
+        function formatLocation(
+            latitude,
+            longitude
+        ) {
+
+            const latDirection =
+                latitude >= 0
+                    ? "N"
+                    : "S";
+
+
+            const lonDirection =
+                longitude >= 0
+                    ? "E"
+                    : "W";
+
+
+            return (
+                `Your Location: ` +
+                `${Math.abs(latitude).toFixed(4)}° ${latDirection}, ` +
+                `${Math.abs(longitude).toFixed(4)}° ${lonDirection}`
+            );
+
+        }
+
+
+        function showLocation(
+            latitude,
+            longitude
+        ) {
+
+            const locationText =
+                document.getElementById(
+                    "user-location-text"
+                );
+
+
+            if (locationText) {
+
+                locationText.textContent =
+                    formatLocation(
+                        Number(latitude),
+                        Number(longitude)
+                    );
+
+            }
+
+        }
+
+
+        /* 
          * Check browser support.
          */
 
@@ -2642,12 +2706,26 @@ document.addEventListener(
                 "Geolocation is not supported by this browser."
             );
 
+            const locationText =
+                document.getElementById(
+                    "user-location-text"
+                );
+
+
+            if (locationText) {
+
+                locationText.textContent =
+                    "Location is not supported by this browser.";
+
+            }
+
+
             return;
 
         }
 
 
-        /*
+        /* 
          * Check if location was already saved
          * during this session.
          */
@@ -2673,19 +2751,28 @@ document.addEventListener(
                 "GreenPulse location already available."
             );
 
+
+            /* SHOW SAVED LOCATION */
+
+            showLocation(
+                savedLatitude,
+                savedLongitude
+            );
+
+
             return;
 
         }
 
 
-        /*
+        /* 
          * Show location popup.
          */
 
         modal.style.display = "flex";
 
 
-        /*
+        /* 
          * Allow Location button.
          */
 
@@ -2751,6 +2838,16 @@ document.addEventListener(
 
 
                         /*
+                         * SHOW LOCATION ON WEBPAGE.
+                         */
+
+                        showLocation(
+                            latitude,
+                            longitude
+                        );
+
+
+                        /*
                          * Close popup.
                          */
 
@@ -2794,6 +2891,20 @@ document.addEventListener(
                                 "Location permission was denied or blocked."
                             );
 
+
+                            const locationText =
+                                document.getElementById(
+                                    "user-location-text"
+                                );
+
+
+                            if (locationText) {
+
+                                locationText.textContent =
+                                    "Location permission denied.";
+
+                            }
+
                         }
 
 
@@ -2806,6 +2917,20 @@ document.addEventListener(
                                 "Location information is unavailable."
                             );
 
+
+                            const locationText =
+                                document.getElementById(
+                                    "user-location-text"
+                                );
+
+
+                            if (locationText) {
+
+                                locationText.textContent =
+                                    "Location information unavailable.";
+
+                            }
+
                         }
 
 
@@ -2817,6 +2942,20 @@ document.addEventListener(
                             console.log(
                                 "Location request timed out."
                             );
+
+
+                            const locationText =
+                                document.getElementById(
+                                    "user-location-text"
+                                );
+
+
+                            if (locationText) {
+
+                                locationText.textContent =
+                                    "Location request timed out.";
+
+                            }
 
                         }
 

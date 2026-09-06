@@ -27,7 +27,7 @@
         ? "http://localhost:8000"
         : "https://trinitywehack-production.up.railway.app";
 
-    const DEFAULT_ZONE = 'DE';
+    const DEFAULT_ZONE = 'IN';
     const FORECAST_HORIZON_HOURS = 24;
     const POLL_INTERVAL_MS = 60000;
 
