@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>GreenPulse AI Assistant</title>
+
+    <meta
+        name="description"
+        content="GreenPulse AI Assistant - Carbon-aware workload orchestration"
+    >
+
+    <!-- Bootstrap -->
+    <link
+        rel="stylesheet"
+        href="assets/libs/bootstrap/css/bootstrap.min.css"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="assets/libs/bootstrap-icons/bootstrap-icons.css"
+    >
+
+    <!-- Main GreenPulse CSS -->
+    <link
+        rel="stylesheet"
+        href="assets/css/main.css"
+    >
+
+
+    <style>
+
+        /* =====================================================
+           PAGE
+        ====================================================== */
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            background: #f4f7f5;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+        }
+
+
+        /* =====================================================
+           TOP NAVBAR
+        ====================================================== */
+
+        .ai-navbar {
+
+            height: 70px;
+
+            background: white;
+
+            border-bottom: 1px solid #e5e9e7;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 30px;
+
+        }
+
+
+        .ai-brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            text-decoration: none;
+
+            color: #218c82;
+
+            font-size: 21px;
+
+            font-weight: 700;
+
+        }
+
+
+        .ai-brand i {
+
+            font-size: 22px;
+
+        }
+
+
+        .back-dashboard {
+
+            text-decoration: none;
+
+            color: #218c82;
+
+            border: 1px solid #dce5e2;
+
+            padding: 9px 16px;
+
+            border-radius: 9px;
+
+            font-size: 14px;
+
+            transition: 0.2s;
+
+        }
+
+
+        .back-dashboard:hover {
+
+            background: #218c82;
+
+            color: white;
+
+        }
+
+
+        /* =====================================================
+           MAIN LAYOUT
+        ====================================================== */
+
+        .ai-page {
+
+            height: calc(100vh - 70px);
+
+            display: flex;
+
+            justify-content: center;
+
+            padding: 25px;
+
+        }
+
+
+        .ai-container {
+
+            width: 100%;
+
+            max-width: 1050px;
+
+            height: 100%;
+
+            background: white;
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 10px 35px rgba(0, 0, 0, 0.08);
+
+            display: flex;
+
+            flex-direction: column;
+
+            overflow: hidden;
+
+        }
+
+
+        /* =====================================================
+           ASSISTANT HEADER
+        ====================================================== */
+
+        .assistant-header {
+
+            background: #218c82;
+
+            color: white;
+
+            padding: 22px 25px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+        }
+
+
+        .assistant-title {
+
+            font-size: 20px;
+
+            font-weight: 600;
+
+        }
+
+
+        .assistant-title i {
+
+            margin-right: 8px;
+
+        }
+
+
+        .assistant-subtitle {
+
+            font-size: 13px;
+
+            opacity: 0.85;
+
+            margin-top: 4px;
+
+        }
+
+
+        .session-status {
+
+            font-size: 12px;
+
+            background: rgba(255,255,255,0.15);
+
+            padding: 7px 11px;
+
+            border-radius: 20px;
+
+        }
+
+
+        /* =====================================================
+           CHAT AREA
+        ====================================================== */
+
+        .chat-messages {
+
+            flex: 1;
+
+            overflow-y: auto;
+
+            padding: 28px;
+
+            background: #f7f9f8;
+
+        }
+
+
+        .message-row {
+
+            display: flex;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .message-row.user {
+
+            justify-content: flex-end;
+
+        }
+
+
+        .message {
+
+            max-width: 75%;
+
+            padding: 14px 17px;
+
+            border-radius: 15px;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            white-space: pre-wrap;
+
+        }
+
+
+        .message.ai {
+
+            background: white;
+
+            color: #263330;
+
+            border: 1px solid #e3e8e6;
+
+            border-bottom-left-radius: 4px;
+
+        }
+
+
+        .message.user {
+
+            background: #218c82;
+
+            color: white;
+
+            border-bottom-right-radius: 4px;
+
+        }
+
+
+        .message-label {
+
+            font-size: 11px;
+
+            margin-bottom: 5px;
+
+            opacity: 0.65;
+
+        }
+
+
+        /* =====================================================
+           LOADING
+        ====================================================== */
+
+        .typing {
+
+            display: inline-flex;
+
+            gap: 4px;
+
+            align-items: center;
+
+        }
+
+
+        .typing span {
+
+            width: 6px;
+
+            height: 6px;
+
+            background: #218c82;
+
+            border-radius: 50%;
+
+            animation: blink 1.2s infinite;
+
+        }
+
+
+        .typing span:nth-child(2) {
+
+            animation-delay: 0.2s;
+
+        }
+
+
+        .typing span:nth-child(3) {
+
+            animation-delay: 0.4s;
+
+        }
+
+
+        @keyframes blink {
+
+            0%, 80%, 100% {
+
+                opacity: 0.3;
+
+            }
+
+            40% {
+
+                opacity: 1;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           QUICK PROMPTS
+        ====================================================== */
+
+        .quick-prompts {
+
+            padding: 12px 25px;
+
+            background: white;
+
+            border-top: 1px solid #e5e9e7;
+
+            display: flex;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+
+        }
+
+
+        .quick-prompt {
+
+            border: 1px solid #d7e2df;
+
+            background: #f8faf9;
+
+            color: #218c82;
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            cursor: pointer;
+
+        }
+
+
+        .quick-prompt:hover {
+
+            background: #218c82;
+
+            color: white;
+
+        }
+
+
+        /* =====================================================
+           INPUT
+        ====================================================== */
+
+        .chat-input-area {
+
+            padding: 16px 20px;
+
+            background: white;
+
+            border-top: 1px solid #e5e9e7;
+
+            display: flex;
+
+            gap: 10px;
+
+        }
+
+
+        #ai-chat-input {
+
+            flex: 1;
+
+            border: 1px solid #d6dfdc;
+
+            border-radius: 12px;
+
+            padding: 13px 15px;
+
+            outline: none;
+
+            font-size: 14px;
+
+        }
+
+
+        #ai-chat-input:focus {
+
+            border-color: #218c82;
+
+            box-shadow:
+                0 0 0 3px rgba(33,140,130,0.08);
+
+        }
+
+
+        #ai-chat-send {
+
+            width: 48px;
+
+            border: none;
+
+            border-radius: 12px;
+
+            background: #218c82;
+
+            color: white;
+
+            cursor: pointer;
+
+            font-size: 16px;
+
+        }
+
+
+        #ai-chat-send:hover {
+
+            opacity: 0.9;
+
+        }
+
+
+        #ai-chat-send:disabled {
+
+            opacity: 0.5;
+
+            cursor: not-allowed;
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ====================================================== */
+
+        @media (max-width: 768px) {
+
+            .ai-page {
+
+                padding: 0;
+
+            }
+
+            .ai-container {
+
+                border-radius: 0;
+
+            }
+
+            .message {
+
+                max-width: 90%;
+
+            }
+
+            .ai-navbar {
+
+                padding: 0 15px;
+
+            }
+
+            .assistant-header {
+
+                padding: 18px;
+
+            }
+
+            .chat-messages {
+
+                padding: 18px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+====================================================== -->
+
+<header class="ai-navbar">
+
+    <a
+        href="dashboard.html"
+        class="ai-brand"
+    >
+
+        <i class="bi bi-asterisk"></i>
+
+        <span>
+            GreenPulse
+        </span>
+
+    </a>
+
+
+    <a
+        href="dashboard.html"
+        class="back-dashboard"
+    >
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back to Dashboard
+
+    </a>
+
+</header>
+
+
+
+<!-- =====================================================
+     AI PAGE
+====================================================== -->
+
+<main class="ai-page">
+
+
+    <div class="ai-container">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <div class="assistant-header">
+
+            <div>
+
+                <div class="assistant-title">
+
+                    <i class="bi bi-stars"></i>
+
+                    GreenPulse AI Assistant
+
+                </div>
+
+                <div class="assistant-subtitle">
+
+                    Carbon-aware and resilience-aware
+                    workload orchestration
+
+                </div>
+
+            </div>
+
+
+            <div class="session-status">
+
+                <i class="bi bi-circle-fill"></i>
+
+                Session active
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             CHAT MESSAGES
+        ================================================== -->
+
+        <div
+            id="ai-chat-messages"
+            class="chat-messages"
+        >
+
+
+            <div class="message-row">
+
+                <div class="message ai">
+
+                    <div class="message-label">
+                        GreenPulse AI
+                    </div>
+
+                    Hi! I'm GreenPulse AI Assistant. 🌱
+
+                    <br><br>
+
+                    Tell me about the AI workload you
+                    want to execute.
+
+                    <br><br>
+
+                    I can analyse workload urgency,
+                    workload size, runtime, deadline
+                    and current carbon conditions to
+                    recommend whether to:
+
+                    <br><br>
+
+                    • RUN now
+                    <br>
+                    • WAIT for a cleaner window
+                    <br>
+                    • REROUTE to another region
+
+                    <br><br>
+
+                    <strong>Example:</strong>
+
+                    <br>
+
+                    "I need to process a large yearly
+                    employee report."
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             QUICK PROMPTS
+        ================================================== -->
+
+        <div class="quick-prompts">
+
+            <button
+                class="quick-prompt"
+                type="button"
+                data-prompt="I need to process a large yearly employee report"
+            >
+                Large workload
+            </button>
+
+
+            <button
+                class="quick-prompt"
+                type="button"
+                data-prompt="I have an urgent workload that needs to run immediately"
+            >
+                Urgent workload
+            </button>
+
+
+            <button
+                class="quick-prompt"
+                type="button"
+                data-prompt="I need to summarize a huge dataset"
+            >
+                Large dataset
+            </button>
+
+
+            <button
+                class="quick-prompt"
+                type="button"
+                data-prompt="I need to train a machine learning model"
+            >
+                ML training
+            </button>
+
+
+            <button
+                class="quick-prompt"
+                type="button"
+                data-prompt="I need to run an inference workload"
+            >
+                Inference
+            </button>
+
+        </div>
+
+
+
+        <!-- =================================================
+             INPUT
+        ================================================== -->
+
+        <div class="chat-input-area">
+
+            <input
+                type="text"
+                id="ai-chat-input"
+                placeholder="Describe your workload..."
+                autocomplete="off"
+            >
+
+
+            <button
+                id="ai-chat-send"
+                type="button"
+                aria-label="Send message"
+            >
+
+                <i class="bi bi-send-fill"></i>
+
+            </button>
+
+        </div>
+
+
+    </div>
+
+</main>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        /* =================================================
+           API
+        ================================================== */
+
+        const API_BASE =
+            window.GREENPULSE_API_BASE ||
+            "http://localhost:8000";
+
+
+        /* =================================================
+           ELEMENTS
+        ================================================== */
+
+        const input =
+            document.getElementById(
+                "ai-chat-input"
+            );
+
+
+        const sendButton =
+            document.getElementById(
+                "ai-chat-send"
+            );
+
+
+        const messages =
+            document.getElementById(
+                "ai-chat-messages"
+            );
+
+
+        /* =================================================
+           SESSION ID
+        ================================================== */
+
+        function getSessionId() {
+
+            let sessionId =
+                sessionStorage.getItem(
+                    "greenpulse_session_id"
+                );
+
+
+            if (!sessionId) {
+
+                sessionId =
+                    crypto.randomUUID();
+
+                sessionStorage.setItem(
+                    "greenpulse_session_id",
+                    sessionId
+                );
+
+            }
+
+
+            return sessionId;
+
+        }
+
+
+        /* =================================================
+           ADD MESSAGE
+        ================================================== */
+
+        function addMessage(
+            text,
+            isUser
+        ) {
+
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "message-row " +
+                (isUser ? "user" : "");
+
+
+            const message =
+                document.createElement(
+                    "div"
+                );
+
+
+            message.className =
+                "message " +
+                (isUser ? "user" : "ai");
+
+
+            const label =
+                document.createElement(
+                    "div"
+                );
+
+
+            label.className =
+                "message-label";
+
+
+            label.textContent =
+                isUser
+                    ? "You"
+                    : "GreenPulse AI";
+
+
+            const content =
+                document.createElement(
+                    "div"
+                );
+
+
+            content.textContent =
+                text;
+
+
+            message.appendChild(
+                label
+            );
+
+
+            message.appendChild(
+                content
+            );
+
+
+            row.appendChild(
+                message
+            );
+
+
+            messages.appendChild(
+                row
+            );
+
+
+            messages.scrollTop =
+                messages.scrollHeight;
+
+        }
+
+
+        /* =================================================
+           LOADING MESSAGE
+        ================================================== */
+
+        function addLoadingMessage() {
+
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "message-row";
+
+
+            row.id =
+                "ai-loading-row";
+
+
+            const message =
+                document.createElement(
+                    "div"
+                );
+
+
+            message.className =
+                "message ai";
+
+
+            const label =
+                document.createElement(
+                    "div"
+                );
+
+
+            label.className =
+                "message-label";
+
+
+            label.textContent =
+                "GreenPulse AI";
+
+
+            const typing =
+                document.createElement(
+                    "div"
+                );
+
+
+            typing.className =
+                "typing";
+
+
+            typing.innerHTML =
+                "<span></span>" +
+                "<span></span>" +
+                "<span></span>";
+
+
+            message.appendChild(
+                label
+            );
+
+
+            message.appendChild(
+                typing
+            );
+
+
+            row.appendChild(
+                message
+            );
+
+
+            messages.appendChild(
+                row
+            );
+
+
+            messages.scrollTop =
+                messages.scrollHeight;
+
+        }
+
+
+        /* =================================================
+           REMOVE LOADING
+        ================================================== */
+
+        function removeLoadingMessage() {
+
+            const loading =
+                document.getElementById(
+                    "ai-loading-row"
+                );
+
+
+            if (loading) {
+
+                loading.remove();
+
+            }
+
+        }
+
+
+        /* =================================================
+           SEND MESSAGE
+        ================================================== */
+
+        async function sendMessage() {
+
+
+            const text =
+                input.value.trim();
+
+
+            if (!text) {
+
+                return;
+
+            }
+
+
+            /* Show user message */
+
+            addMessage(
+                text,
+                true
+            );
+
+
+            /* Clear input */
+
+            input.value = "";
+
+
+            /* Show loading */
+
+            addLoadingMessage();
+
+
+            /* Disable button */
+
+            sendButton.disabled =
+                true;
+
+
+            try {
+
+
+                /* =========================================
+                   CALL FASTAPI
+                ========================================== */
+
+                const response =
+                    await fetch(
+                        `${API_BASE}/api/chat`,
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json",
+
+                                "Accept":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    message:
+                                        text,
+
+                                    session_id:
+                                        getSessionId(),
+
+                                    simulate_grid_failure:
+                                        false,
+
+                                    carbon_budget:
+                                        120
+
+                                })
+
+                        }
+                    );
+
+
+                /* Parse response */
+
+                const data =
+                    await response.json();
+
+
+                /* Remove loading */
+
+                removeLoadingMessage();
+
+
+                /* =========================================
+                   ERROR
+                ========================================== */
+
+                if (!response.ok) {
+
+
+                    addMessage(
+
+                        "⚠️ " +
+                        (
+                            data.detail ||
+                            "GreenPulse backend returned an error."
+                        ),
+
+                        false
+
+                    );
+
+
+                    return;
+
+                }
+
+
+                /* =========================================
+                   SUCCESS
+                ========================================== */
+
+                if (
+                    data.assistant_message
+                ) {
+
+
+                    addMessage(
+
+                        data.assistant_message,
+
+                        false
+
+                    );
+
+
+                } else {
+
+
+                    addMessage(
+
+                        "⚠️ GreenPulse returned an unexpected response.",
+
+                        false
+
+                    );
+
+                }
+
+
+            }
+
+            catch (error) {
+
+
+                console.error(
+                    "GreenPulse API error:",
+                    error
+                );
+
+
+                removeLoadingMessage();
+
+
+                addMessage(
+
+                    "⚠️ Unable to connect to the GreenPulse backend. " +
+                    "Please make sure FastAPI is running on " +
+                    "http://localhost:8000.",
+
+                    false
+
+                );
+
+            }
+
+
+            finally {
+
+
+                sendButton.disabled =
+                    false;
+
+
+                input.focus();
+
+            }
+
+        }
+
+
+        /* =================================================
+           SEND BUTTON
+        ================================================== */
+
+        sendButton.addEventListener(
+            "click",
+            sendMessage
+        );
+
+
+        /* =================================================
+           ENTER KEY
+        ================================================== */
+
+        input.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Enter"
+                ) {
+
+                    event.preventDefault();
+
+                    sendMessage();
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           QUICK PROMPTS
+        ================================================== */
+
+        const quickPrompts =
+            document.querySelectorAll(
+                ".quick-prompt"
+            );
+
+
+        quickPrompts.forEach(
+            function (button) {
+
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+
+                        const prompt =
+                            button.getAttribute(
+                                "data-prompt"
+                            );
+
+
+                        input.value =
+                            prompt;
+
+
+                        input.focus();
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* =================================================
+           INITIAL FOCUS
+        ================================================== */
+
+        input.focus();
+
+    }
+
+);
+
+</script>
+
+
+</body>
+
+</html>

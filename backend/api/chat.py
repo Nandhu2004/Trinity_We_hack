@@ -13,12 +13,30 @@ router = APIRouter(
 
 
 # =========================================================
+# URGENT WORD LIMIT
+# =========================================================
+
+URGENT_LIMIT = 4
+
+# Stores usage separately for each browser/session.
+# Example:
+# {
+#     "session-A": 2,
+#     "session-B": 4
+# }
+urgent_usage = {}
+
+
+# =========================================================
 # REQUEST MODEL
 # =========================================================
 
 class ChatRequest(BaseModel):
 
     message: str
+
+    # Frontend generates this automatically.
+    session_id: str = "default"
 
     carbon_budget: float = 100
 
@@ -33,192 +51,20 @@ def detect_workload_type(message: str):
 
     text = message.lower()
 
-    if any(word in text for word in [
-        "training",
-        "train model",
-        "train an ai",
-        "train a model",
-        "machine learning training"
-    ]):
+    if "training" in text or "train" in text:
         return "training"
 
-    if any(word in text for word in [
-        "inference",
-        "prediction",
-        "predict",
-        "classification",
-        "generate prediction"
-    ]):
+    if "inference" in text:
         return "inference"
 
     return "batch"
 
 
 # =========================================================
-# PRIORITY DETECTION
+# RUNTIME + DEADLINE EXTRACTION
 # =========================================================
 
-def detect_priority(message: str):
-
-    text = message.lower()
-
-    urgent_words = [
-        "urgent",
-        "urgently",
-        "emergency",
-        "critical",
-        "immediately",
-        "immediate",
-        "asap",
-        "as soon as possible",
-        "right now",
-        "high priority"
-    ]
-
-    if any(word in text for word in urgent_words):
-        return "urgent"
-
-    low_priority_words = [
-        "overnight",
-        "whenever",
-        "not urgent",
-        "low priority",
-        "can wait",
-        "flexible",
-        "later"
-    ]
-
-    if any(word in text for word in low_priority_words):
-        return "low"
-
-    return "normal"
-
-
-# =========================================================
-# WORKLOAD SIZE DETECTION
-# =========================================================
-
-def detect_workload_size(message: str):
-
-    text = message.lower()
-
-    # -----------------------------------------------------
-    # Page-based workloads
-    # -----------------------------------------------------
-
-    page_match = re.search(
-        r"(\d[\d,]*)\s*(?:pages?|page)",
-        text
-    )
-
-    if page_match:
-
-        pages = int(
-            page_match.group(1).replace(",", "")
-        )
-
-        if pages >= 10000:
-            return 1000
-
-        if pages >= 5000:
-            return 800
-
-        if pages >= 1000:
-            return 500
-
-        if pages >= 500:
-            return 300
-
-        return 150
-
-    # -----------------------------------------------------
-    # Employee / record workloads
-    # -----------------------------------------------------
-
-    employee_match = re.search(
-        r"(\d[\d,]*)\s*(?:employees?|workers?|users?)",
-        text
-    )
-
-    if employee_match:
-
-        employees = int(
-            employee_match.group(1).replace(",", "")
-        )
-
-        if employees >= 10000:
-            return 1000
-
-        if employees >= 5000:
-            return 800
-
-        if employees >= 1000:
-            return 500
-
-        return 200
-
-    # -----------------------------------------------------
-    # Dataset size
-    # -----------------------------------------------------
-
-    dataset_match = re.search(
-        r"(\d+(?:\.\d+)?)\s*(gb|tb|million|billion)",
-        text
-    )
-
-    if dataset_match:
-
-        value = float(dataset_match.group(1))
-
-        unit = dataset_match.group(2)
-
-        if unit == "tb":
-            return 1000
-
-        if unit == "gb":
-            return max(100, value)
-
-        if unit == "million":
-            return 500
-
-        if unit == "billion":
-            return 1000
-
-    # -----------------------------------------------------
-    # Keywords indicating a large workload
-    # -----------------------------------------------------
-
-    large_words = [
-        "large dataset",
-        "huge dataset",
-        "massive dataset",
-        "big dataset",
-        "large report",
-        "huge report",
-        "massive report",
-        "yearly report",
-        "annual report",
-        "consolidated",
-        "bulk processing",
-        "large batch",
-        "big data"
-    ]
-
-    if any(word in text for word in large_words):
-        return 500
-
-    # -----------------------------------------------------
-    # Default workload
-    # -----------------------------------------------------
-
-    return 100
-
-
-# =========================================================
-# RUNTIME DETECTION
-# =========================================================
-
-def detect_runtime(message: str, workload_size: float):
+def extract_workload_values(message: str):
 
     text = message.lower()
 
@@ -227,366 +73,71 @@ def detect_runtime(message: str, workload_size: float):
         text
     )
 
-    if runtime_match:
-
-        return float(
-            runtime_match.group(1)
-        )
-
-    # -----------------------------------------------------
-    # Intelligent prototype defaults
-    # -----------------------------------------------------
-
-    if workload_size >= 800:
-        return 8
-
-    if workload_size >= 500:
-        return 5
-
-    if workload_size >= 300:
-        return 4
-
-    if workload_size >= 150:
-        return 3
-
-    return 2
-
-
-# =========================================================
-# DEADLINE DETECTION
-# =========================================================
-
-def detect_deadline(message: str, priority: str):
-
-    text = message.lower()
-
     deadline_match = re.search(
         r"deadline\s*(?:of|is|:)?\s*"
         r"(\d+(?:\.\d+)?)\s*(?:hours?|hrs?)",
         text
     )
 
-    if deadline_match:
+    runtime_hours = (
+        float(runtime_match.group(1))
+        if runtime_match
+        else None
+    )
 
-        return float(
-            deadline_match.group(1)
-        )
+    deadline_hours = (
+        float(deadline_match.group(1))
+        if deadline_match
+        else None
+    )
 
-    # -----------------------------------------------------
-    # Urgent workloads
-    # -----------------------------------------------------
-
-    if priority == "urgent":
-
-        return 2
-
-    # -----------------------------------------------------
-    # Explicit time phrases
-    # -----------------------------------------------------
-
-    if "within 1 hour" in text:
-        return 1
-
-    if "within 2 hours" in text:
-        return 2
-
-    if "within 4 hours" in text:
-        return 4
-
-    if "within 6 hours" in text:
-        return 6
-
-    if "within 12 hours" in text:
-        return 12
-
-    if "today" in text:
-        return 12
-
-    if "tonight" in text:
-        return 12
-
-    if "tomorrow" in text:
-        return 24
-
-    if "this week" in text:
-        return 168
-
-    # -----------------------------------------------------
-    # Flexible workloads
-    # -----------------------------------------------------
-
-    if priority == "low":
-        return 48
-
-    # -----------------------------------------------------
-    # Normal default
-    # -----------------------------------------------------
-
-    return 24
+    return runtime_hours, deadline_hours
 
 
 # =========================================================
-# LOCATION DETECTION
+# URGENT WORD CHECK
 # =========================================================
 
-def detect_location(message: str):
+def check_urgent_limit(session_id: str, message: str):
 
     text = message.lower()
 
-    locations = {
+    # Count only the complete word "urgent".
+    #
+    # urgent       -> counts
+    # URGENT       -> counts
+    # Urgent       -> counts
+    # urgently     -> does NOT count
+    # urgency      -> does NOT count
 
-        "india": "IN",
-
-        "germany": "DE",
-        "france": "FR",
-        "belgium": "BE",
-        "netherlands": "NL",
-        "denmark": "DK",
-
-        "de": "DE",
-        "fr": "FR",
-        "be": "BE",
-        "nl": "NL",
-        "dk": "DK"
-    }
-
-    for name, code in locations.items():
-
-        if re.search(
-            r"\b" + re.escape(name) + r"\b",
-            text
-        ):
-            return code
-
-    return None
-
-
-# =========================================================
-# SPECIAL SCENARIO DETECTION
-# =========================================================
-
-def detect_scenario(message: str):
-
-    text = message.lower()
-
-    if any(word in text for word in [
-        "emergency",
-        "urgent",
-        "critical",
-        "asap",
-        "immediately",
-        "right now"
-    ]):
-
-        return "URGENT"
-
-    if any(word in text for word in [
-        "bank statement",
-        "employee statement",
-        "salary statement",
-        "payroll",
-        "financial report",
-        "annual report",
-        "yearly report"
-    ]):
-
-        return "FINANCIAL_BATCH"
-
-    if any(word in text for word in [
-        "5000 page",
-        "5000 pages",
-        "large report",
-        "huge report",
-        "massive report",
-        "document summarization",
-        "summarize a large"
-    ]):
-
-        return "LARGE_DOCUMENT"
-
-    if any(word in text for word in [
-        "train",
-        "training",
-        "train model"
-    ]):
-
-        return "MODEL_TRAINING"
-
-    if any(word in text for word in [
-        "inference",
-        "prediction",
-        "predict"
-    ]):
-
-        return "INFERENCE"
-
-    if any(word in text for word in [
-        "dataset",
-        "data processing",
-        "data analysis",
-        "batch processing",
-        "bulk processing"
-    ]):
-
-        return "DATA_PROCESSING"
-
-    return "GENERAL"
-
-
-# =========================================================
-# BUILD WORKLOAD
-# =========================================================
-
-def build_workload(message: str, carbon_budget: float):
-
-    workload_type = detect_workload_type(message)
-
-    priority = detect_priority(message)
-
-    workload_size = detect_workload_size(message)
-
-    runtime_hours = detect_runtime(
-        message,
-        workload_size
+    urgent_count = len(
+        re.findall(r"\burgent\b", text)
     )
 
-    deadline_hours = detect_deadline(
-        message,
-        priority
+    # Create counter for new session
+    if session_id not in urgent_usage:
+        urgent_usage[session_id] = 0
+
+    current_count = urgent_usage[session_id]
+
+    # No urgent word in this message
+    if urgent_count == 0:
+
+        return True, current_count
+
+
+    # Check whether this message would exceed 4
+    if current_count + urgent_count > URGENT_LIMIT:
+
+        return False, current_count
+
+
+    # Update usage
+    urgent_usage[session_id] = (
+        current_count + urgent_count
     )
 
-    location = detect_location(message)
-
-    scenario = detect_scenario(message)
-
-    # -----------------------------------------------------
-    # Scenario-specific adjustments
-    # -----------------------------------------------------
-
-    if scenario == "URGENT":
-
-        priority = "urgent"
-
-        deadline_hours = min(
-            deadline_hours,
-            2
-        )
-
-        # urgent work should not be given an
-        # artificially long runtime
-
-        runtime_hours = min(
-            runtime_hours,
-            2
-        )
-
-
-    elif scenario == "LARGE_DOCUMENT":
-
-        workload_size = max(
-            workload_size,
-            500
-        )
-
-        runtime_hours = max(
-            runtime_hours,
-            5
-        )
-
-        deadline_hours = max(
-            deadline_hours,
-            24
-        )
-
-
-    elif scenario == "FINANCIAL_BATCH":
-
-        workload_size = max(
-            workload_size,
-            500
-        )
-
-        runtime_hours = max(
-            runtime_hours,
-            4
-        )
-
-        deadline_hours = max(
-            deadline_hours,
-            24
-        )
-
-
-    elif scenario == "MODEL_TRAINING":
-
-        workload_type = "training"
-
-        workload_size = max(
-            workload_size,
-            500
-        )
-
-        runtime_hours = max(
-            runtime_hours,
-            6
-        )
-
-        deadline_hours = max(
-            deadline_hours,
-            24
-        )
-
-
-    elif scenario == "INFERENCE":
-
-        workload_type = "inference"
-
-        workload_size = min(
-            workload_size,
-            200
-        )
-
-        runtime_hours = min(
-            runtime_hours,
-            2
-        )
-
-
-    elif scenario == "DATA_PROCESSING":
-
-        workload_type = "batch"
-
-        workload_size = max(
-            workload_size,
-            200
-        )
-
-
-    return {
-
-        "workload_type": workload_type,
-
-        "runtime_hours": runtime_hours,
-
-        "deadline_hours": deadline_hours,
-
-        "latency_tolerance": (
-            30
-            if priority == "urgent"
-            else 150
-        ),
-
-        "carbon_budget": carbon_budget,
-
-        "priority": priority,
-
-        "workload_size": workload_size,
-
-        # Used by the decision layer if supported
-        "preferred_region": location,
-
-        "scenario": scenario
-    }
+    return True, urgent_usage[session_id]
 
 
 # =========================================================
@@ -596,19 +147,215 @@ def build_workload(message: str, carbon_budget: float):
 @router.post("")
 async def chat(request: ChatRequest):
 
-    if not request.message.strip():
+    # -----------------------------------------------------
+    # CHECK URGENT LIMIT FIRST
+    # -----------------------------------------------------
+
+    allowed, urgent_count = check_urgent_limit(
+        request.session_id,
+        request.message
+    )
+
+    if not allowed:
 
         raise HTTPException(
-            status_code=400,
-            detail="Please describe the workload you want GreenPulse to run."
+            status_code=429,
+            detail=(
+                "Urgent request limit reached. "
+                "You can use the word 'urgent' a maximum "
+                "of 4 times per session."
+            )
         )
 
 
-    workload = build_workload(
-        request.message,
-        request.carbon_budget
+    # -----------------------------------------------------
+    # DETECT WORKLOAD
+    # -----------------------------------------------------
+
+    workload_type = detect_workload_type(
+        request.message
     )
 
+
+    # -----------------------------------------------------
+    # EXTRACT RUNTIME + DEADLINE
+    # -----------------------------------------------------
+
+    runtime_hours, deadline_hours = (
+        extract_workload_values(
+            request.message
+        )
+    )
+
+
+    # -----------------------------------------------------
+    # DEFAULT VALUES
+    #
+    # This allows simple judge/demo prompts such as:
+    #
+    # "I need to summarize a large dataset"
+    #
+    # instead of forcing the user to specify hours.
+    # -----------------------------------------------------
+
+    if runtime_hours is None:
+
+        text = request.message.lower()
+
+        if any(
+            word in text
+            for word in [
+                "urgent",
+                "emergency",
+                "immediate",
+                "immediately",
+                "critical"
+            ]
+        ):
+
+            runtime_hours = 1
+
+        elif any(
+            word in text
+            for word in [
+                "large",
+                "huge",
+                "5000",
+                "thousand",
+                "yearly",
+                "annual",
+                "consolidated",
+                "report"
+            ]
+        ):
+
+            runtime_hours = 6
+
+        else:
+
+            runtime_hours = 2
+
+
+    if deadline_hours is None:
+
+        text = request.message.lower()
+
+        if any(
+            word in text
+            for word in [
+                "urgent",
+                "emergency",
+                "immediate",
+                "immediately",
+                "critical"
+            ]
+        ):
+
+            deadline_hours = 2
+
+        elif any(
+            word in text
+            for word in [
+                "large",
+                "huge",
+                "5000",
+                "thousand",
+                "yearly",
+                "annual",
+                "consolidated",
+                "report"
+            ]
+        ):
+
+            deadline_hours = 24
+
+        else:
+
+            deadline_hours = 24
+
+
+    # -----------------------------------------------------
+    # PRIORITY
+    # -----------------------------------------------------
+
+    text = request.message.lower()
+
+    if any(
+        word in text
+        for word in [
+            "urgent",
+            "emergency",
+            "critical",
+            "immediate",
+            "immediately"
+        ]
+    ):
+
+        priority = "urgent"
+
+    elif any(
+        word in text
+        for word in [
+            "high priority",
+            "important"
+        ]
+    ):
+
+        priority = "high"
+
+    else:
+
+        priority = "normal"
+
+
+    # -----------------------------------------------------
+    # WORKLOAD SIZE
+    # -----------------------------------------------------
+
+    workload_size = 100
+
+    if any(
+        word in text
+        for word in [
+            "large",
+            "huge",
+            "5000",
+            "thousand",
+            "massive",
+            "yearly",
+            "annual",
+            "consolidated"
+        ]
+    ):
+
+        workload_size = 1000
+
+
+    # -----------------------------------------------------
+    # WORKLOAD OBJECT
+    # -----------------------------------------------------
+
+    workload = {
+
+        "workload_type": workload_type,
+
+        "runtime_hours": runtime_hours,
+
+        "deadline_hours": deadline_hours,
+
+        "latency_tolerance": 150,
+
+        "carbon_budget": request.carbon_budget,
+
+        "priority": priority,
+
+        "workload_size": workload_size
+    }
+
+
+    # -----------------------------------------------------
+    # RUN DECISION PIPELINE
+    # -----------------------------------------------------
 
     try:
 
@@ -625,24 +372,20 @@ async def chat(request: ChatRequest):
         decision = result["result"]
 
 
-        # =================================================
-        # ASSISTANT RESPONSE
-        # =================================================
+        # -------------------------------------------------
+        # CREATE AI RESPONSE
+        # -------------------------------------------------
 
         if decision["decision"] == "REROUTE":
 
             assistant_message = (
 
-                "🌱 GreenPulse recommends REROUTING this workload.\n\n"
+                "🌱 GreenPulse recommends REROUTING "
+                f"this workload to {decision['region']}.\n\n"
 
-                f"Recommended region: {decision['region']}\n"
-
-                f"Estimated carbon emissions: "
-                f"{decision.get('estimated_carbon_g', 'N/A')} g\n\n"
-
-                "The selected region provides a lower-carbon "
-                "execution option while satisfying the workload "
-                "constraints."
+                "Reason: this region provides a "
+                "lower-carbon execution option under "
+                "the current workload constraints."
             )
 
 
@@ -650,12 +393,12 @@ async def chat(request: ChatRequest):
 
             assistant_message = (
 
-                "⏳ GreenPulse recommends WAITING.\n\n"
+                "⏳ GreenPulse recommends WAITING "
+                "for a cleaner execution window.\n\n"
 
-                "The current execution window is not the "
-                "most carbon-efficient option. A cleaner "
-                "execution window is expected within the "
-                "allowed deadline."
+                "The workload can meet its deadline "
+                "more efficiently by avoiding the "
+                "current carbon conditions."
             )
 
 
@@ -663,12 +406,10 @@ async def chat(request: ChatRequest):
 
             assistant_message = (
 
-                "🟢 GreenPulse recommends RUNNING the workload now.\n\n"
+                "▶️ GreenPulse recommends RUNNING "
+                "the workload now.\n\n"
 
-                f"Execution region: "
-                f"{decision.get('region', 'current region')}\n\n"
-
-                "The current execution conditions satisfy "
+                "The current execution option satisfies "
                 "the workload constraints."
             )
 
@@ -678,16 +419,13 @@ async def chat(request: ChatRequest):
             assistant_message = (
 
                 "⚠️ GreenPulse could not find a feasible "
-                "execution plan within the specified constraints.\n\n"
-
-                "Try increasing the carbon budget or allowing "
-                "a longer execution deadline."
+                "execution plan within the given constraints."
             )
 
 
-        # =================================================
-        # FINAL RESPONSE
-        # =================================================
+        # -------------------------------------------------
+        # RETURN RESPONSE
+        # -------------------------------------------------
 
         return {
 
@@ -697,7 +435,9 @@ async def chat(request: ChatRequest):
 
             "assistant_message": assistant_message,
 
-            "scenario": workload["scenario"],
+            "urgent_usage": urgent_count,
+
+            "urgent_limit": URGENT_LIMIT,
 
             "workload": workload,
 
