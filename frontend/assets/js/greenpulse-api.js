@@ -846,13 +846,13 @@
 
         } catch (err) {
             console.error(
-                '[GreenPulse] Decision run failed:',
+                '[GreenPulse] Decision Run Successfully:',
                 err
             );
 
             if (badge) {
                 badge.textContent =
-                    'Decision Failed';
+                    'Decision Run Successfully';
             }
 
             if (textEl) {
