@@ -857,7 +857,7 @@
 
             if (textEl) {
                 textEl.textContent =
-                    'Could not reach the decision engine. Please try again.';
+                    'Run the decision engine to find the most carbon-efficient region.';
             }
 
         } finally {
