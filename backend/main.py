@@ -10,6 +10,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine
 
+from api.map import router as map_router
+
 from app import models
 
 from api.electricity import router as electricity_router
@@ -89,6 +91,8 @@ app.include_router(chat_router)
 
 app.include_router(login_router)
 
+app.include_router(map_router)
+
 app.include_router(signup_router)
 
 app.include_router(verify_otp_router)
@@ -111,6 +115,12 @@ def root():
 @app.get("/api/health")
 def health():
 
+    return {
+        "status": "healthy",
+        "service": "GreenPulse Backend"
+    }
+@app.get("/health")
+def health():
     return {
         "status": "healthy",
         "service": "GreenPulse Backend"

@@ -1,0 +1,4931 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    GreenPulse - Global Energy Map
+</title>
+
+<meta
+    name="description"
+    content="GreenPulse Global Energy Map - Carbon-aware electricity regions and live carbon intensity"
+>
+
+<meta
+    name="author"
+    content="GreenPulse Team"
+>
+
+<link
+    rel="icon"
+    type="image/png"
+    href="assets/images/favicon.ico"
+>
+
+<!-- =====================================================
+     LOCAL LIBRARIES
+====================================================== -->
+
+<link
+    rel="stylesheet"
+    href="assets/libs/bootstrap/css/bootstrap.min.css"
+>
+
+<link
+    rel="stylesheet"
+    href="assets/libs/bootstrap-icons/bootstrap-icons.css"
+>
+
+<link
+    rel="stylesheet"
+    href="assets/libs/apexcharts/apexcharts.css"
+>
+
+<link
+    rel="stylesheet"
+    href="assets/libs/flatpickr/flatpickr.min.css"
+>
+
+<!-- =====================================================
+     LEAFLET
+====================================================== -->
+
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+<!-- =====================================================
+     GREENPULSE STYLES
+====================================================== -->
+
+<link
+    rel="stylesheet"
+    href="assets/css/main.css"
+>
+
+</head>
+
+<body>
+
+<!-- =====================================================
+     LOCATION PERMISSION POPUP
+====================================================== -->
+
+<div id="location-permission-modal">
+
+    <div class="location-permission-box">
+
+        <div class="location-icon">
+            <i class="bi bi-geo-alt-fill"></i>
+        </div>
+
+        <h3>
+            Allow Location
+        </h3>
+
+        <p>
+            GreenPulse needs your location to identify
+            your electricity region and provide
+            carbon-aware recommendations.
+        </p>
+
+        <button
+            type="button"
+            id="allow-location-btn"
+        >
+
+            <i class="bi bi-geo-alt-fill"></i>
+
+            Allow Location
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SIDEBAR
+====================================================== -->
+
+<div
+    class="sidebar-wrapper"
+    id="sidebar"
+>
+
+<a
+    href="dashboard.html"
+    class="sidebar-brand"
+>
+
+    <i class="bi bi-asterisk"></i>
+
+    <span>
+        GreenPulse
+    </span>
+
+</a>
+
+
+<div class="flex-grow-1 overflow-y-auto">
+
+
+    <!-- MENU -->
+
+    <div class="sidebar-menu-section">
+
+        <div class="sidebar-menu-title">
+            Menu
+        </div>
+
+        <ul class="sidebar-menu-list">
+
+            <li class="sidebar-menu-item">
+
+                <a
+                    href="dashboard.html"
+                    class="sidebar-menu-link"
+                >
+
+                    <i class="bi bi-grid-fill"></i>
+
+                    <span>
+                        Dashboard
+                    </span>
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- GREENPULSE -->
+
+    <div class="sidebar-menu-section">
+
+        <div class="sidebar-menu-title">
+            GreenPulse
+        </div>
+
+        <ul class="sidebar-menu-list">
+
+
+            <li class="sidebar-menu-item">
+
+                <a
+                    href="#regions"
+                    class="sidebar-menu-link"
+                >
+
+                    <i class="bi bi-globe2"></i>
+
+                    <span>
+                        Regions
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <li class="sidebar-menu-item">
+
+                <a
+                    href="#carbon"
+                    class="sidebar-menu-link"
+                >
+
+                    <i class="bi bi-cloud-sun"></i>
+
+                    <span>
+                        Carbon Intensity
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <li class="sidebar-menu-item">
+
+                <a
+                    href="#forecast"
+                    class="sidebar-menu-link"
+                >
+
+                    <i class="bi bi-graph-up"></i>
+
+                    <span>
+                        Forecast
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <li class="sidebar-menu-item">
+
+                <a
+                    href="#decision"
+                    class="sidebar-menu-link"
+                >
+
+                    <i class="bi bi-cpu"></i>
+
+                    <span>
+                        Decision Engine
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <!-- AI ASSISTANT -->
+
+            <li class="sidebar-menu-item">
+
+                <a
+                    href="#ai-assistant"
+                    class="sidebar-menu-link"
+                    id="ai-assistant-link"
+                >
+
+                    <i class="bi bi-stars"></i>
+
+                    <span>
+                        AI Assistant
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <!-- GLOBAL MAP -->
+
+            <li class="sidebar-menu-item">
+
+                <a
+                    href="global-map.html"
+                    class="sidebar-menu-link active"
+                >
+
+                    <i class="bi bi-globe-americas"></i>
+
+                    <span>
+                        Global Energy Map
+                    </span>
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- SYSTEM -->
+
+    <div class="sidebar-menu-section">
+
+        <div class="sidebar-menu-title">
+            System
+        </div>
+
+        <ul class="sidebar-menu-list">
+
+            <li class="sidebar-menu-item">
+
+                <a
+                    href="#"
+                    class="sidebar-menu-link"
+                    id="logout-btn"
+                >
+
+                    <i class="bi bi-box-arrow-right"></i>
+
+                    <span>
+                        Logout
+                    </span>
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+
+<!-- PROFILE -->
+
+<div class="sidebar-profile">
+
+    <img
+        src="assets/images/avatar.jpg"
+        alt="User"
+        class="sidebar-profile-img"
+    >
+
+    <div class="sidebar-profile-info">
+
+        <div
+            class="sidebar-profile-name"
+            id="logged-user-name"
+        >
+            Loading...
+        </div>
+
+        <div
+            class="sidebar-profile-email"
+            id="logged-user-email"
+        >
+            Green AI Dashboard
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     MAIN CONTENT
+====================================================== -->
+
+<div class="main-wrapper">
+
+
+<!-- =================================================
+     NAVBAR
+================================================== -->
+
+<header class="navbar-custom">
+
+
+    <div class="navbar-left">
+
+
+        <button
+            class="btn-desktop-toggle d-none d-xl-flex align-items-center justify-content-center me-3"
+            id="desktop-sidebar-toggle"
+            aria-label="Minimize Sidebar"
+        >
+
+            <i class="bi bi-chevron-bar-left"></i>
+
+        </button>
+
+
+        <button
+            class="sidebar-toggle-btn me-2"
+            id="sidebar-toggle"
+            aria-label="Toggle Navigation"
+        >
+
+            <i class="bi bi-list"></i>
+
+        </button>
+
+
+        <!-- RUN DECISION -->
+
+        <button
+            class="btn-quick-action"
+            id="btn-run-decision"
+            type="button"
+        >
+
+            <i class="bi bi-play-fill"></i>
+
+            <span>
+                Run Decision
+            </span>
+
+        </button>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="navbar-search-wrapper">
+
+        <input
+            type="text"
+            class="navbar-search-input"
+            placeholder="Search regions..."
+            id="main-search"
+        >
+
+        <button
+            class="navbar-search-btn"
+            aria-label="Search"
+            type="button"
+            id="main-search-button"
+        >
+
+            <i class="bi bi-search"></i>
+
+        </button>
+
+    </div>
+
+
+    <!-- RIGHT -->
+
+    <div class="navbar-actions">
+
+
+        <button
+            class="navbar-action-btn me-1"
+            id="btn-fullscreen"
+            aria-label="Toggle Fullscreen"
+            type="button"
+        >
+
+            <i class="bi bi-arrows-fullscreen"></i>
+
+        </button>
+
+
+        <button
+            class="navbar-action-btn"
+            id="btn-refresh-all"
+            aria-label="Refresh Dashboard"
+            type="button"
+        >
+
+            <i class="bi bi-arrow-clockwise"></i>
+
+        </button>
+
+
+        <div class="dropdown ms-2">
+
+            <button
+                class="navbar-profile-btn dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+            >
+
+                <img
+                    src="assets/images/avatar.jpg"
+                    alt="Profile"
+                    class="navbar-profile-img"
+                >
+
+                <span
+                    class="navbar-profile-name d-none d-md-inline"
+                    id="navbar-user-name"
+                >
+                    Loading...
+                </span>
+
+                <i
+                    class="bi bi-chevron-down navbar-profile-caret"
+                ></i>
+
+            </button>
+
+
+            <ul
+                class="dropdown-menu dropdown-menu-end dropdown-menu-profile"
+            >
+
+                <li class="dropdown-header">
+                    GreenPulse
+                </li>
+
+                <li>
+
+                    <a
+                        class="dropdown-item"
+                        href="#"
+                    >
+
+                        <i class="bi bi-gear"></i>
+
+                        Settings
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =================================================
+     GLOBAL ENERGY MAP CONTENT
+================================================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h1 class="page-title">
+            Global Energy Map
+        </h1>
+
+        <p class="page-subtitle">
+            Explore live carbon intensity across global electricity regions.
+        </p>
+
+    </div>
+
+
+    <div class="d-flex align-items-center gap-2">
+
+        <span
+            class="badge bg-secondary"
+            id="map-live-status"
+        >
+            Loading...
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     MAP SEARCH
+================================================== -->
+
+<div class="card mb-4">
+
+    <div class="card-header">
+
+        <div>
+
+            <h2 class="card-title mb-1">
+                Explore Energy Regions
+            </h2>
+
+            <small class="text-muted">
+                Search for a country or electricity region
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="p-3">
+
+        <div
+            class="position-relative"
+            style="max-width: 600px;"
+        >
+
+            <div class="input-group">
+
+                <input
+                    type="text"
+                    id="map-location-search"
+                    class="form-control"
+                    placeholder="Search country or region..."
+                    autocomplete="off"
+                >
+
+                <button
+                    type="button"
+                    id="map-search-button"
+                    class="btn btn-primary"
+                >
+
+                    <i class="bi bi-search"></i>
+
+                    Search
+
+                </button>
+
+            </div>
+
+
+            <div
+                id="search-suggestions"
+                class="list-group position-absolute w-100"
+                style="
+                    display: none;
+                    z-index: 5000;
+                    top: 100%;
+                    margin-top: 4px;
+                "
+            ></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     MAP
+================================================== -->
+
+<div class="card mb-4">
+
+    <div class="card-header">
+
+        <div>
+
+            <h2 class="card-title">
+                Global Electricity Carbon Map
+            </h2>
+
+            <small class="text-muted">
+                Live electricity carbon intensity by region
+            </small>
+
+        </div>
+
+
+        <div class="d-flex align-items-center gap-2">
+
+            <span
+                class="badge bg-secondary"
+                id="map-energy-status"
+            >
+                Select a region
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="global-energy-map"
+        style="
+            width: 100%;
+            height: 560px;
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+        "
+    ></div>
+
+
+    <!-- LOADING -->
+
+    <div
+        id="map-loading"
+        style="
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        "
+    >
+
+        <div class="text-center">
+
+            <div
+                class="spinner-border"
+                role="status"
+            ></div>
+
+            <div class="mt-2 text-muted">
+                Loading energy data...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     MAP ALERT
+================================================== -->
+
+<div
+    id="map-alert"
+    class="alert alert-danger"
+    style="display: none;"
+    role="alert"
+></div>
+
+
+<!-- =================================================
+     SELECTED REGION
+================================================== -->
+
+<div
+    id="region-empty-state"
+    class="card mb-4"
+>
+
+    <div class="text-center p-5">
+
+        <i
+            class="bi bi-globe-americas"
+            style="
+                font-size: 45px;
+                opacity: 0.35;
+            "
+        ></i>
+
+        <h4 class="mt-3">
+            Select a region
+        </h4>
+
+        <p class="text-muted mb-0">
+            Click a location on the map or search for a country
+            to view live carbon information.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div
+    id="region-data"
+    style="display: none;"
+>
+
+
+    <!-- =================================================
+         METRIC CARDS
+    ================================================== -->
+
+    <div class="row g-4 mb-4">
+
+
+        <!-- CARBON -->
+
+        <div class="col-xl-4 col-md-6">
+
+            <div class="card card-stat h-100">
+
+                <div class="card-header">
+
+                    <span class="stat-label">
+                        Carbon Intensity
+                    </span>
+
+                    <i class="bi bi-cloud-sun text-muted"></i>
+
+                </div>
+
+
+                <div
+                    class="stat-value"
+                    id="map-carbon-value"
+                >
+                    —
+                </div>
+
+
+                <div class="trend-badge">
+
+                    <i class="bi bi-lightning-charge"></i>
+
+                    <span>
+                        gCO₂eq/kWh
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RENEWABLE -->
+
+        <div class="col-xl-4 col-md-6">
+
+            <div class="card card-stat h-100">
+
+                <div class="card-header">
+
+                    <span class="stat-label">
+                        Renewable Energy
+                    </span>
+
+                    <i class="bi bi-sun text-muted"></i>
+
+                </div>
+
+
+                <div
+                    class="stat-value"
+                    id="map-renewable-value"
+                >
+                    —
+                </div>
+
+
+                <div class="trend-badge">
+
+                    <i class="bi bi-leaf"></i>
+
+                    <span>
+                        Renewable share
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CARBON FREE -->
+
+        <div class="col-xl-4 col-md-6">
+
+            <div class="card card-stat h-100">
+
+                <div class="card-header">
+
+                    <span class="stat-label">
+                        Carbon-Free Energy
+                    </span>
+
+                    <i class="bi bi-tree text-muted"></i>
+
+                </div>
+
+
+                <div
+                    class="stat-value"
+                    id="map-carbon-free-value"
+                >
+                    —
+                </div>
+
+
+                <div class="trend-badge">
+
+                    <i class="bi bi-check-circle"></i>
+
+                    <span>
+                        Carbon-free share
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         REGION INFORMATION
+    ================================================== -->
+
+    <div class="row g-4 mb-4">
+
+
+        <!-- HISTORY -->
+
+        <div class="col-xl-8">
+
+            <div class="card h-100">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2 class="card-title">
+                            Carbon Intensity Forecast
+                        </h2>
+
+                        <small
+                            class="text-muted"
+                            id="map-updated-time"
+                        >
+                            Updated —
+                        </small>
+
+                    </div>
+
+                    <button
+                        class="card-more-btn"
+                        id="btn-refresh-map-history"
+                        type="button"
+                    >
+
+                        <i class="bi bi-arrow-repeat"></i>
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="carbon-history-chart"
+                    style="min-height: 300px;"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ELECTRICITY MIX -->
+
+        <div class="col-xl-4">
+
+            <div class="card h-100">
+
+                <div class="card-header">
+
+                    <h2 class="card-title">
+                        Electricity Mix
+                    </h2>
+
+                </div>
+
+
+                <div
+                    id="electricity-mix"
+                    class="p-3"
+                >
+
+                    <div class="text-muted text-center py-5">
+
+                        Electricity mix unavailable.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         ANALYTICS
+    ================================================== -->
+
+    <div
+        id="map-analytics"
+        class="card mb-4"
+    >
+
+        <div class="card-header">
+
+            <div>
+
+                <h2 class="card-title">
+                    Region Analytics
+                </h2>
+
+                <small class="text-muted">
+                    Current electricity region information
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="p-4">
+
+            <div class="row g-4">
+
+                <div class="col-md-4">
+
+                    <div class="text-muted small">
+                        Region
+                    </div>
+
+                    <div
+                        id="map-region-name"
+                        class="fw-semibold fs-5"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="text-muted small">
+                        Zone
+                    </div>
+
+                    <div
+                        id="map-region-zone"
+                        class="fw-semibold fs-5"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="text-muted small">
+                        Data Source
+                    </div>
+
+                    <div
+                        id="map-data-source"
+                        class="fw-semibold fs-5"
+                    >
+                        Electricity Maps
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     FOOTER
+================================================== -->
+
+<footer class="footer-custom">
+
+    <div class="footer-left">
+
+        <span class="footer-logo">
+
+            <i class="bi bi-asterisk"></i>
+
+            GreenPulse
+
+        </span>
+
+
+        <span class="footer-separator">
+            |
+        </span>
+
+
+        <span class="footer-copy">
+
+            © 2026 GreenPulse —
+            Carbon-aware AI workload orchestration
+
+        </span>
+
+    </div>
+
+
+    <div class="footer-right">
+
+        <ul class="footer-links">
+
+            <li>
+
+                <a
+                    href="dashboard.html"
+                    class="footer-link"
+                >
+                    Dashboard
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a
+                    href="#global-energy-map"
+                    class="footer-link"
+                >
+                    Global Map
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a
+                    href="#"
+                    class="footer-link"
+                >
+
+                    Backend Status
+
+                    <span
+                        class="status-dot"
+                        id="backend-status-dot"
+                    ></span>
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+</footer>
+
+</div>
+
+
+<!-- =====================================================
+     AI ASSISTANT PANEL
+====================================================== -->
+
+<div
+    id="ai-assistant-panel"
+    class="ai-assistant-panel"
+>
+
+<div class="ai-assistant-header">
+
+    <div>
+
+        <div class="ai-assistant-title">
+
+            <i class="bi bi-stars"></i>
+
+            GreenPulse AI Assistant
+
+        </div>
+
+
+        <div class="ai-assistant-subtitle">
+
+            Carbon-aware workload assistant
+
+        </div>
+
+    </div>
+
+
+    <button
+        id="close-ai-assistant"
+        type="button"
+        aria-label="Close AI Assistant"
+    >
+
+        <i class="bi bi-x-lg"></i>
+
+    </button>
+
+</div>
+
+
+<div
+    id="ai-chat-messages"
+    class="ai-chat-messages"
+>
+
+    <div class="ai-message">
+
+        Hi! I'm GreenPulse AI Assistant.
+
+        <br><br>
+
+        Tell me what AI workload you want to run,
+        and I'll help find a greener execution plan.
+
+        <br><br>
+
+        <strong>Example:</strong>
+
+        <br>
+
+        "Summarise the past 5 years of call records."
+
+    </div>
+
+</div>
+
+
+<div class="ai-chat-input-area">
+
+    <input
+        type="text"
+        id="ai-chat-input"
+        placeholder="Describe your workload..."
+        autocomplete="off"
+    >
+
+
+    <button
+        id="ai-chat-send"
+        type="button"
+        aria-label="Send message"
+    >
+
+        <i class="bi bi-send-fill"></i>
+
+    </button>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     AI + LOCATION STYLES
+====================================================== -->
+
+<style>
+
+.ai-assistant-panel {
+
+    position: fixed;
+
+    bottom: 25px;
+
+    right: 25px;
+
+    width: 380px;
+
+    height: 520px;
+
+    background: white;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 15px 45px rgba(0, 0, 0, 0.20);
+
+    z-index: 9999;
+
+    display: none;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+}
+
+
+.ai-assistant-header {
+
+    background: #218c82;
+
+    color: white;
+
+    padding: 18px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+}
+
+
+.ai-assistant-title {
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+}
+
+
+.ai-assistant-title i {
+
+    margin-right: 7px;
+
+}
+
+
+.ai-assistant-subtitle {
+
+    font-size: 12px;
+
+    opacity: 0.8;
+
+    margin-top: 3px;
+
+}
+
+
+#close-ai-assistant {
+
+    border: none;
+
+    background: transparent;
+
+    color: white;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+}
+
+
+.ai-chat-messages {
+
+    flex: 1;
+
+    padding: 18px;
+
+    overflow-y: auto;
+
+    background: #f6f8f7;
+
+}
+
+
+.ai-message {
+
+    background: white;
+
+    padding: 13px;
+
+    border-radius: 12px;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    margin-bottom: 12px;
+
+    max-width: 90%;
+
+    word-wrap: break-word;
+
+}
+
+
+.ai-user-message {
+
+    background: #218c82;
+
+    color: white;
+
+    margin-left: auto;
+
+}
+
+
+.ai-chat-input-area {
+
+    display: flex;
+
+    padding: 12px;
+
+    border-top: 1px solid #e5e5e5;
+
+    background: white;
+
+}
+
+
+#ai-chat-input {
+
+    flex: 1;
+
+    border: 1px solid #ddd;
+
+    border-radius: 10px;
+
+    padding: 10px;
+
+    outline: none;
+
+    font-size: 14px;
+
+}
+
+
+#ai-chat-input:focus {
+
+    border-color: #218c82;
+
+}
+
+
+#ai-chat-send {
+
+    margin-left: 8px;
+
+    width: 42px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #218c82;
+
+    color: white;
+
+    cursor: pointer;
+
+}
+
+
+#ai-chat-send:disabled {
+
+    opacity: 0.6;
+
+    cursor: not-allowed;
+
+}
+
+
+#ai-chat-send:hover:not(:disabled) {
+
+    opacity: 0.9;
+
+}
+
+
+/* =====================================================
+   LOGOUT BUTTON
+====================================================== */
+
+#logout-btn {
+
+    color: #dc3545 !important;
+
+}
+
+
+#logout-btn i {
+
+    color: #dc3545 !important;
+
+}
+
+
+#logout-btn:hover {
+
+    color: #bb2d3b !important;
+
+    background-color: rgba(220, 53, 69, 0.08);
+
+}
+
+
+#logout-btn:hover i {
+
+    color: #bb2d3b !important;
+
+}
+
+
+/* =====================================================
+   LOCATION POPUP
+====================================================== */
+
+#location-permission-modal {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 20000;
+
+    padding: 20px;
+
+}
+
+
+.location-permission-box {
+
+    width: 380px;
+
+    max-width: 100%;
+
+    background: #ffffff;
+
+    border-radius: 18px;
+
+    padding: 30px;
+
+    text-align: center;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.25);
+
+}
+
+
+.location-icon {
+
+    width: 60px;
+
+    height: 60px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 50%;
+
+    background: rgba(33, 140, 130, 0.12);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.location-icon i {
+
+    font-size: 28px;
+
+    color: #218c82;
+
+}
+
+
+.location-permission-box h3 {
+
+    margin: 0 0 10px;
+
+    font-size: 22px;
+
+    font-weight: 600;
+
+    color: #222;
+
+}
+
+
+.location-permission-box p {
+
+    margin: 0 0 22px;
+
+    color: #6c757d;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+}
+
+
+#allow-location-btn {
+
+    width: 100%;
+
+    border: none;
+
+    background: #218c82;
+
+    color: white;
+
+    padding: 12px;
+
+    border-radius: 9px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+#allow-location-btn:hover {
+
+    background: #19766e;
+
+}
+
+
+#allow-location-btn:disabled {
+
+    opacity: 0.7;
+
+    cursor: wait;
+
+}
+
+
+#allow-location-btn i {
+
+    margin-right: 6px;
+
+}
+
+
+/* =====================================================
+   MAP
+====================================================== */
+
+#global-energy-map {
+
+    min-height: 560px;
+
+}
+
+
+.leaflet-container {
+
+    font-family: inherit;
+
+}
+
+
+.map-region-marker {
+
+    border-radius: 50%;
+
+    border: 3px solid white;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.3);
+
+}
+
+
+.map-popup-title {
+
+    font-weight: 700;
+
+    font-size: 15px;
+
+    margin-bottom: 5px;
+
+}
+
+
+.map-popup-value {
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+
+@media (max-width: 576px) {
+
+    .ai-assistant-panel {
+
+        right: 10px;
+
+        bottom: 10px;
+
+        width: calc(100% - 20px);
+
+        height: 500px;
+
+    }
+
+
+    #global-energy-map {
+
+        min-height: 450px;
+
+    }
+
+}
+
+</style>
+
+
+<!-- =====================================================
+     JAVASCRIPT LIBRARIES
+====================================================== -->
+
+<script
+    src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"
+></script>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/apexcharts"
+></script>
+
+
+<script
+    src="assets/libs/flatpickr/flatpickr.min.js"
+></script>
+
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
+
+
+<!-- =====================================================
+     DASHBOARD UI
+====================================================== -->
+
+<script
+    src="assets/js/dashboard.js"
+></script>
+
+
+<!-- =====================================================
+     GREENPULSE API CONFIGURATION
+====================================================== -->
+
+<script>
+
+window.GREENPULSE_API_BASE =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+        ? "http://localhost:8000"
+        : "https://trinitywehack-production.up.railway.app";
+
+</script>
+
+
+<script
+    src="assets/js/greenpulse-api.js"
+></script>
+
+
+<!-- =====================================================
+     LOGGED-IN USER SCRIPT
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const token =
+            sessionStorage.getItem(
+                "greenpulseToken"
+            );
+
+
+        const storedUser =
+            sessionStorage.getItem(
+                "greenpulseUser"
+            );
+
+
+        if (!token) {
+
+            window.location.replace(
+                "index.html"
+            );
+
+            return;
+
+        }
+
+
+        let user = {};
+
+
+        try {
+
+            user =
+                storedUser
+                    ? JSON.parse(storedUser)
+                    : {};
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Unable to read GreenPulse user data:",
+                error
+            );
+
+            user = {};
+
+        }
+
+
+        const firstName =
+            user.first_name || "";
+
+
+        const lastName =
+            user.last_name || "";
+
+
+        const combinedName =
+            `${firstName} ${lastName}`.trim();
+
+
+        const userName =
+            user.name ||
+            user.full_name ||
+            user.display_name ||
+            user.username ||
+            combinedName ||
+            (
+                user.email
+                    ? user.email.split("@")[0]
+                    : "GreenPulse User"
+            );
+
+
+        const userEmail =
+            user.email ||
+            "Green AI Dashboard";
+
+
+        const loggedUserName =
+            document.getElementById(
+                "logged-user-name"
+            );
+
+
+        if (loggedUserName) {
+
+            loggedUserName.textContent =
+                userName;
+
+        }
+
+
+        const loggedUserEmail =
+            document.getElementById(
+                "logged-user-email"
+            );
+
+
+        if (loggedUserEmail) {
+
+            loggedUserEmail.textContent =
+                userEmail;
+
+        }
+
+
+        const navbarUserName =
+            document.getElementById(
+                "navbar-user-name"
+            );
+
+
+        if (navbarUserName) {
+
+            navbarUserName.textContent =
+                userName;
+
+        }
+
+
+        const profileImages =
+            document.querySelectorAll(
+                ".sidebar-profile-img, .navbar-profile-img"
+            );
+
+
+        profileImages.forEach(
+            function (image) {
+
+                image.alt =
+                    userName;
+
+            }
+        );
+
+    }
+
+);
+
+</script>
+
+
+<!-- =====================================================
+     LOGOUT
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const logoutButton =
+            document.getElementById(
+                "logout-btn"
+            );
+
+
+        if (!logoutButton) {
+
+            return;
+
+        }
+
+
+        logoutButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+
+
+                sessionStorage.removeItem(
+                    "greenpulseToken"
+                );
+
+
+                sessionStorage.removeItem(
+                    "greenpulseUser"
+                );
+
+
+                sessionStorage.removeItem(
+                    "greenpulseLatitude"
+                );
+
+
+                sessionStorage.removeItem(
+                    "greenpulseLongitude"
+                );
+
+
+                window.location.replace(
+                    "index.html"
+                );
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+
+<!-- =====================================================
+     GLOBAL ENERGY MAP JAVASCRIPT
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const API_BASE =
+            window.GREENPULSE_API_BASE;
+
+
+        const mapElement =
+            document.getElementById(
+                "global-energy-map"
+            );
+
+
+        if (!mapElement) {
+
+            return;
+
+        }
+
+
+        /* =================================================
+           ELEMENTS
+        ================================================= */
+
+        const searchInput =
+            document.getElementById(
+                "map-location-search"
+            );
+
+
+        const searchButton =
+            document.getElementById(
+                "map-search-button"
+            );
+
+
+        const suggestions =
+            document.getElementById(
+                "search-suggestions"
+            );
+
+
+        const loading =
+            document.getElementById(
+                "map-loading"
+            );
+
+
+        const alertBox =
+            document.getElementById(
+                "map-alert"
+            );
+
+
+        const emptyState =
+            document.getElementById(
+                "region-empty-state"
+            );
+
+
+        const regionData =
+            document.getElementById(
+                "region-data"
+            );
+
+
+        const liveStatus =
+            document.getElementById(
+                "map-live-status"
+            );
+
+
+        const backendDot =
+            document.getElementById(
+                "backend-status-dot"
+            );
+
+
+        /* =================================================
+           COUNTRY CENTERS
+        ================================================= */
+
+        const countryCenters = {
+
+            IN: [20.5937, 78.9629],
+
+            DE: [51.1657, 10.4515],
+
+            FR: [46.2276, 2.2137],
+
+            ES: [40.4637, -3.7492],
+
+            IT: [41.8719, 12.5674],
+
+            GB: [55.3781, -3.4360],
+
+            SE: [60.1282, 18.6435],
+
+            NO: [60.4720, 8.4689],
+
+            FI: [61.9241, 25.7482],
+
+            DK: [56.2639, 9.5018],
+
+            NL: [52.1326, 5.2913],
+
+            BE: [50.8503, 4.3517],
+
+            PL: [51.9194, 19.1451],
+
+            PT: [39.3999, -8.2245],
+
+            AT: [47.5162, 14.5501],
+
+            CH: [46.8182, 8.2275],
+
+            US: [37.0902, -95.7129],
+
+            CA: [56.1304, -106.3468],
+
+            BR: [-14.2350, -51.9253],
+
+            AU: [-25.2744, 133.7751],
+
+            NZ: [-40.9006, 174.8860],
+
+            JP: [36.2048, 138.2529],
+
+            KR: [35.9078, 127.7669],
+
+            SG: [1.3521, 103.8198],
+
+            IE: [53.4129, -8.2439],
+
+            CZ: [49.8175, 15.4730],
+
+            GR: [39.0742, 21.8243],
+
+            HU: [47.1625, 19.5033],
+
+            RO: [45.9432, 24.9668]
+
+        };
+
+
+        /* =================================================
+           MAP
+        ================================================= */
+
+        const energyMap =
+            L.map(
+                "global-energy-map",
+                {
+                    zoomControl: true,
+                    worldCopyJump: true
+                }
+            ).setView(
+                [20, 10],
+                2
+            );
+
+
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                maxZoom: 18,
+                attribution:
+                    "&copy; OpenStreetMap contributors"
+            }
+        ).addTo(
+            energyMap
+        );
+
+
+        let selectedZone =
+            null;
+
+
+        let selectedMarker =
+            null;
+
+
+        let carbonHistoryChart =
+            null;
+
+
+        /* =================================================
+           MAP MARKERS
+        ================================================= */
+
+        const markerLayer =
+            L.layerGroup().addTo(
+                energyMap
+            );
+
+
+        function getCarbonColor(
+            carbon
+        ) {
+
+            const value =
+                Number(carbon);
+
+
+            if (!Number.isFinite(value)) {
+
+                return "#6c757d";
+
+            }
+
+
+            if (value <= 100) {
+
+                return "#198754";
+
+            }
+
+
+            if (value <= 200) {
+
+                return "#8aa000";
+
+            }
+
+
+            if (value <= 300) {
+
+                return "#ffc107";
+
+            }
+
+
+            if (value <= 500) {
+
+                return "#fd7e14";
+
+            }
+
+
+            return "#dc3545";
+
+        }
+
+
+        function createMarkerIcon(
+            carbon
+        ) {
+
+            const color =
+                getCarbonColor(
+                    carbon
+                );
+
+
+            return L.divIcon({
+
+                className:
+                    "",
+
+                html:
+                    `<div
+                        class="map-region-marker"
+                        style="
+                            width: 20px;
+                            height: 20px;
+                            background: ${color};
+                        "
+                    ></div>`,
+
+                iconSize:
+                    [20, 20],
+
+                iconAnchor:
+                    [10, 10]
+
+            });
+
+        }
+
+
+        /* =================================================
+           LOADING
+        ================================================= */
+
+        function showLoading(
+            visible
+        ) {
+
+            if (!loading) {
+
+                return;
+
+            }
+
+
+            loading.style.display =
+                visible
+                    ? "flex"
+                    : "none";
+
+        }
+
+
+        /* =================================================
+           ALERT
+        ================================================= */
+
+        function showAlert(
+            message
+        ) {
+
+            if (!alertBox) {
+
+                return;
+
+            }
+
+
+            alertBox.textContent =
+                message;
+
+
+            alertBox.style.display =
+                "block";
+
+        }
+
+
+        function hideAlert() {
+
+            if (!alertBox) {
+
+                return;
+
+            }
+
+
+            alertBox.style.display =
+                "none";
+
+        }
+
+
+        /* =================================================
+           FORMAT
+        ================================================= */
+
+        function formatNumber(
+            value
+        ) {
+
+            if (
+                value === null ||
+                value === undefined ||
+                value === ""
+            ) {
+
+                return "—";
+
+            }
+
+
+            const number =
+                Number(value);
+
+
+            if (!Number.isFinite(number)) {
+
+                return "—";
+
+            }
+
+
+            return number.toLocaleString(
+                undefined,
+                {
+                    maximumFractionDigits: 2
+                }
+            );
+
+        }
+
+
+        function formatPercentage(
+            value
+        ) {
+
+            if (
+                value === null ||
+                value === undefined ||
+                value === ""
+            ) {
+
+                return "—";
+
+            }
+
+
+            const number =
+                Number(value);
+
+
+            if (!Number.isFinite(number)) {
+
+                return "—";
+
+            }
+
+
+            return (
+                number.toFixed(1) +
+                "%"
+            );
+
+        }
+
+
+        function formatDateTime(
+            value
+        ) {
+
+            if (!value) {
+
+                return "Updated —";
+
+            }
+
+
+            const date =
+                new Date(value);
+
+
+            if (
+                Number.isNaN(
+                    date.getTime()
+                )
+            ) {
+
+                return "Updated —";
+
+            }
+
+
+            return (
+                "Updated " +
+                date.toLocaleString()
+            );
+
+        }
+
+
+        /* =================================================
+           API REQUEST
+        ================================================= */
+
+        async function apiRequest(
+            url
+        ) {
+
+            const token =
+                sessionStorage.getItem(
+                    "greenpulseToken"
+                );
+
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method: "GET",
+
+                        headers: {
+
+                            "Accept":
+                                "application/json",
+
+                            ...(token
+                                ? {
+                                    "Authorization":
+                                        `Bearer ${token}`
+                                }
+                                : {})
+
+                        }
+
+                    }
+                );
+
+
+            let data = {};
+
+
+            try {
+
+                data =
+                    await response.json();
+
+            }
+
+            catch (error) {
+
+                data = {};
+
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.detail ||
+                    data.message ||
+                    `Request failed with status ${response.status}`
+                );
+
+            }
+
+
+            return data;
+
+        }
+
+
+        /* =================================================
+           SEARCH
+        ================================================= */
+
+        async function searchLocations(
+            query
+        ) {
+
+            const cleanQuery =
+                query.trim();
+
+
+            if (!cleanQuery) {
+
+                if (suggestions) {
+
+                    suggestions.style.display =
+                        "none";
+
+                }
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await apiRequest(
+                        `${API_BASE}/api/map/search?q=${encodeURIComponent(cleanQuery)}`
+                    );
+
+
+                const results =
+                    Array.isArray(
+                        response.results
+                    )
+                        ? response.results
+                        : [];
+
+
+                renderSuggestions(
+                    results
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Map search error:",
+                    error
+                );
+
+
+                if (suggestions) {
+
+                    suggestions.innerHTML =
+                        `
+                        <div class="list-group-item text-danger">
+                            Unable to search regions.
+                        </div>
+                        `;
+
+                    suggestions.style.display =
+                        "block";
+
+                }
+
+            }
+
+        }
+
+
+        function escapeHtml(
+            text
+        ) {
+
+            return String(
+                text || ""
+            )
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
+
+        function renderSuggestions(
+            results
+        ) {
+
+            if (!suggestions) {
+
+                return;
+
+            }
+
+
+            if (!results.length) {
+
+                suggestions.innerHTML =
+                    `
+                    <div class="list-group-item text-muted">
+                        No regions found.
+                    </div>
+                    `;
+
+                suggestions.style.display =
+                    "block";
+
+                return;
+
+            }
+
+
+            suggestions.innerHTML =
+                results
+                    .map(
+                        function (result) {
+
+                            return `
+                                <button
+                                    type="button"
+                                    class="list-group-item list-group-item-action map-search-result"
+                                    data-zone="${escapeHtml(result.zone)}"
+                                    data-name="${escapeHtml(result.name)}"
+                                >
+                                    <i class="bi bi-geo-alt me-2"></i>
+                                    ${escapeHtml(result.name)}
+                                    <span class="text-muted ms-2">
+                                        ${escapeHtml(result.zone)}
+                                    </span>
+                                </button>
+                            `;
+
+                        }
+                    )
+                    .join("");
+
+
+            suggestions.style.display =
+                "block";
+
+
+            document
+                .querySelectorAll(
+                    ".map-search-result"
+                )
+                .forEach(
+                    function (button) {
+
+                        button.addEventListener(
+                            "click",
+                            function () {
+
+                                const zone =
+                                    button.dataset.zone;
+
+
+                                const name =
+                                    button.dataset.name;
+
+
+                                if (searchInput) {
+
+                                    searchInput.value =
+                                        name;
+
+                                }
+
+
+                                suggestions.style.display =
+                                    "none";
+
+
+                                selectMapLocation(
+                                    zone,
+                                    name
+                                );
+
+                            }
+                        );
+
+                    }
+                );
+
+        }
+
+
+        /* =================================================
+           SELECT LOCATION
+        ================================================= */
+
+        async function selectMapLocation(
+            zone,
+            name
+        ) {
+
+            if (!zone) {
+
+                return;
+
+            }
+
+
+            selectedZone =
+                zone.toUpperCase();
+
+
+            hideAlert();
+
+
+            const center =
+                countryCenters[
+                    selectedZone
+                ];
+
+
+            if (center) {
+
+                energyMap.flyTo(
+                    center,
+                    4,
+                    {
+                        duration: 1
+                    }
+                );
+
+            }
+
+
+            if (
+                selectedMarker
+            ) {
+
+                energyMap.removeLayer(
+                    selectedMarker
+                );
+
+            }
+
+
+            if (center) {
+
+                selectedMarker =
+                    L.marker(
+                        center,
+                        {
+                            icon:
+                                createMarkerIcon(
+                                    null
+                                )
+                        }
+                    )
+                    .addTo(
+                        energyMap
+                    )
+                    .bindPopup(
+                        `
+                        <div class="map-popup-title">
+                            ${escapeHtml(name || selectedZone)}
+                        </div>
+
+                        <div>
+                            Zone:
+                            <strong>
+                                ${escapeHtml(selectedZone)}
+                            </strong>
+                        </div>
+
+                        <div>
+                            Loading carbon intensity...
+                        </div>
+                        `
+                    )
+                    .openPopup();
+
+            }
+
+
+            await loadRegion(
+                selectedZone,
+                name
+            );
+
+        }
+
+
+        /* =================================================
+           LOAD REGION
+        ================================================= */
+
+        async function loadRegion(
+            zone,
+            name
+        ) {
+
+            showLoading(
+                true
+            );
+
+
+            hideAlert();
+
+
+            try {
+
+                const response =
+                    await apiRequest(
+                        `${API_BASE}/api/map/latest?zone=${encodeURIComponent(zone)}`
+                    );
+
+
+                const data =
+                    response.data ||
+                    response;
+
+
+                if (
+                    !data ||
+                    typeof data !== "object"
+                ) {
+
+                    throw new Error(
+                        "Invalid region data returned by backend."
+                    );
+
+                }
+
+
+                updateLatest(
+                    data,
+                    zone,
+                    name
+                );
+
+
+                await Promise.allSettled(
+                    [
+                        updateHistory(
+                            zone
+                        ),
+
+                        updateMix(
+                            zone
+                        )
+                    ]
+                );
+
+
+                if (emptyState) {
+
+                    emptyState.style.display =
+                        "none";
+
+                }
+
+
+                if (regionData) {
+
+                    regionData.style.display =
+                        "block";
+
+                }
+
+
+                setLiveStatus(
+                    true
+                );
+
+
+                energyMap.invalidateSize();
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Unable to load region:",
+                    error
+                );
+
+
+                showAlert(
+                    error.message ||
+                    "Unable to load electricity data for this region."
+                );
+
+
+                setLiveStatus(
+                    false
+                );
+
+            }
+
+            finally {
+
+                showLoading(
+                    false
+                );
+
+            }
+
+        }
+
+
+        /* =================================================
+           LATEST DATA
+        ================================================= */
+
+        function updateLatest(
+            data,
+            zone,
+            name
+        ) {
+
+            const carbon =
+                data.carbonIntensity ??
+                data.carbon_intensity ??
+                data.value;
+
+
+            const renewable =
+                data.renewablePercentage ??
+                data.renewable_percentage ??
+                data.renewableShare ??
+                data.renewable_share;
+
+
+            const carbonFree =
+                data.carbonFreePercentage ??
+                data.carbon_free_percentage ??
+                data.carbonFreeShare ??
+                data.carbon_free_share;
+
+
+            const carbonElement =
+                document.getElementById(
+                    "map-carbon-value"
+                );
+
+
+            const renewableElement =
+                document.getElementById(
+                    "map-renewable-value"
+                );
+
+
+            const carbonFreeElement =
+                document.getElementById(
+                    "map-carbon-free-value"
+                );
+
+
+            if (carbonElement) {
+
+                carbonElement.textContent =
+                    carbon !== undefined &&
+                    carbon !== null
+                        ? formatNumber(
+                            carbon
+                        ) +
+                        " gCO₂eq/kWh"
+                        : "—";
+
+            }
+
+
+            if (renewableElement) {
+
+                renewableElement.textContent =
+                    formatPercentage(
+                        renewable
+                    );
+
+            }
+
+
+            if (carbonFreeElement) {
+
+                carbonFreeElement.textContent =
+                    formatPercentage(
+                        carbonFree
+                    );
+
+            }
+
+
+            const updatedElement =
+                document.getElementById(
+                    "map-updated-time"
+                );
+
+
+            if (updatedElement) {
+
+                updatedElement.textContent =
+                    formatDateTime(
+                        data.datetime ||
+                        data.updatedAt ||
+                        data.updated_at
+                    );
+
+            }
+
+
+            const regionName =
+                document.getElementById(
+                    "map-region-name"
+                );
+
+
+            const regionZone =
+                document.getElementById(
+                    "map-region-zone"
+                );
+
+
+            const source =
+                document.getElementById(
+                    "map-data-source"
+                );
+
+
+            if (regionName) {
+
+                regionName.textContent =
+                    name ||
+                    zone;
+
+            }
+
+
+            if (regionZone) {
+
+                regionZone.textContent =
+                    zone;
+
+            }
+
+
+            if (source) {
+
+                source.textContent =
+                    "Electricity Maps";
+
+            }
+
+
+            const statusBadge =
+                document.getElementById(
+                    "map-energy-status"
+                );
+
+
+            if (statusBadge) {
+
+                const carbonNumber =
+                    Number(carbon);
+
+
+                let status =
+                    "Data Available";
+
+
+                if (
+                    Number.isFinite(
+                        carbonNumber
+                    )
+                ) {
+
+                    if (
+                        carbonNumber <= 100
+                    ) {
+
+                        status =
+                            "Very Clean";
+
+                    }
+
+                    else if (
+                        carbonNumber <= 200
+                    ) {
+
+                        status =
+                            "Clean";
+
+                    }
+
+                    else if (
+                        carbonNumber <= 300
+                    ) {
+
+                        status =
+                            "Moderate";
+
+                    }
+
+                    else if (
+                        carbonNumber <= 500
+                    ) {
+
+                        status =
+                            "High Carbon";
+
+                    }
+
+                    else {
+
+                        status =
+                            "Very High Carbon";
+
+                    }
+
+                }
+
+
+                statusBadge.textContent =
+                    status;
+
+            }
+
+
+            if (
+                selectedMarker
+            ) {
+
+                const center =
+                    countryCenters[
+                        zone
+                    ];
+
+
+                if (center) {
+
+                    selectedMarker.setIcon(
+                        createMarkerIcon(
+                            carbon
+                        )
+                    );
+
+
+                    selectedMarker.setPopupContent(
+                        `
+                        <div class="map-popup-title">
+                            ${escapeHtml(name || zone)}
+                        </div>
+
+                        <div>
+                            Zone:
+                            <strong>
+                                ${escapeHtml(zone)}
+                            </strong>
+                        </div>
+
+                        <div class="map-popup-value mt-1">
+                            Carbon Intensity:
+                            ${
+                                carbon !== undefined &&
+                                carbon !== null
+                                    ? formatNumber(carbon) +
+                                      " gCO₂eq/kWh"
+                                    : "Unavailable"
+                            }
+                        </div>
+                        `
+                    );
+
+                }
+
+            }
+
+        }
+
+
+        /* =================================================
+           HISTORY / FORECAST
+        ================================================= */
+
+        async function updateHistory(
+            zone
+        ) {
+
+            const chartElement =
+                document.getElementById(
+                    "carbon-history-chart"
+                );
+
+
+            if (!chartElement) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await apiRequest(
+                        `${API_BASE}/api/map/history?zone=${encodeURIComponent(zone)}`
+                    );
+
+
+                const data =
+                    response.data ||
+                    response;
+
+
+                let records =
+                    [];
+
+
+                if (
+                    Array.isArray(data)
+                ) {
+
+                    records =
+                        data;
+
+                }
+
+                else if (
+                    Array.isArray(
+                        data?.forecast
+                    )
+                ) {
+
+                    records =
+                        data.forecast;
+
+                }
+
+                else if (
+                    Array.isArray(
+                        data?.history
+                    )
+                ) {
+
+                    records =
+                        data.history;
+
+                }
+
+                else if (
+                    Array.isArray(
+                        data?.data
+                    )
+                ) {
+
+                    records =
+                        data.data;
+
+                }
+
+
+                if (!records.length) {
+
+                    chartElement.innerHTML =
+                        `
+                        <div class="text-center text-muted py-5">
+                            Carbon forecast unavailable.
+                        </div>
+                        `;
+
+                    return;
+
+                }
+
+
+                const categories =
+                    records.map(
+                        function (item) {
+
+                            return (
+                                item.datetime ||
+                                item.timestamp ||
+                                item.time
+                            );
+
+                        }
+                    );
+
+
+                const values =
+                    records.map(
+                        function (item) {
+
+                            return Number(
+                                item.carbonIntensity ??
+                                item.carbon_intensity ??
+                                item.value ??
+                                0
+                            );
+
+                        }
+                    );
+
+
+                const formattedCategories =
+                    categories.map(
+                        function (value) {
+
+                            const date =
+                                new Date(value);
+
+
+                            if (
+                                Number.isNaN(
+                                    date.getTime()
+                                )
+                            ) {
+
+                                return value;
+
+                            }
+
+
+                            return date.toLocaleTimeString(
+                                [],
+                                {
+                                    hour: "2-digit",
+                                    minute: "2-digit"
+                                }
+                            );
+
+                        }
+                    );
+
+
+                if (
+                    carbonHistoryChart
+                ) {
+
+                    carbonHistoryChart.destroy();
+
+                }
+
+
+                chartElement.innerHTML =
+                    "";
+
+
+                carbonHistoryChart =
+                    new ApexCharts(
+                        chartElement,
+                        {
+
+                            chart: {
+
+                                type:
+                                    "line",
+
+                                height:
+                                    300,
+
+                                toolbar: {
+
+                                    show:
+                                        false
+
+                                },
+
+                                zoom: {
+
+                                    enabled:
+                                        false
+
+                                }
+
+                            },
+
+
+                            series: [
+
+                                {
+
+                                    name:
+                                        "Carbon Intensity",
+
+                                    data:
+                                        values
+
+                                }
+
+                            ],
+
+
+                            xaxis: {
+
+                                categories:
+                                    formattedCategories,
+
+                                labels: {
+
+                                    rotate:
+                                        -45,
+
+                                    hideOverlappingLabels:
+                                        true
+
+                                }
+
+                            },
+
+
+                            yaxis: {
+
+                                title: {
+
+                                    text:
+                                        "gCO₂eq/kWh"
+
+                                }
+
+                            },
+
+
+                            stroke: {
+
+                                curve:
+                                    "smooth",
+
+                                width:
+                                    3
+
+                            },
+
+
+                            dataLabels: {
+
+                                enabled:
+                                    false
+
+                            },
+
+
+                            tooltip: {
+
+                                y: {
+
+                                    formatter:
+                                        function (
+                                            value
+                                        ) {
+
+                                            return (
+                                                formatNumber(
+                                                    value
+                                                ) +
+                                                " gCO₂eq/kWh"
+                                            );
+
+                                        }
+
+                                }
+
+                            }
+
+                        }
+                    );
+
+
+                await carbonHistoryChart.render();
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "History error:",
+                    error
+                );
+
+
+                chartElement.innerHTML =
+                    `
+                    <div class="text-center text-muted py-5">
+                        Carbon forecast unavailable.
+                    </div>
+                    `;
+
+            }
+
+        }
+
+
+        /* =================================================
+           ELECTRICITY MIX
+        ================================================= */
+
+        async function updateMix(
+            zone
+        ) {
+
+            const mixContainer =
+                document.getElementById(
+                    "electricity-mix"
+                );
+
+
+            if (!mixContainer) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await apiRequest(
+                        `${API_BASE}/api/map/mix?zone=${encodeURIComponent(zone)}`
+                    );
+
+
+                const data =
+                    response.data ||
+                    response;
+
+
+                const mix =
+                    data?.powerProductionBreakdown ||
+                    data?.powerConsumptionBreakdown ||
+                    data?.electricityMix ||
+                    data?.mix;
+
+
+                if (
+                    !mix ||
+                    typeof mix !== "object"
+                ) {
+
+                    mixContainer.innerHTML =
+                        `
+                        <div class="text-muted text-center py-5">
+                            Electricity mix unavailable.
+                        </div>
+                        `;
+
+                    return;
+
+                }
+
+
+                const entries =
+                    Object.entries(
+                        mix
+                    )
+                    .filter(
+                        function (entry) {
+
+                            return (
+                                entry[1] !== null &&
+                                entry[1] !== undefined
+                            );
+
+                        }
+                    );
+
+
+                if (!entries.length) {
+
+                    mixContainer.innerHTML =
+                        `
+                        <div class="text-muted text-center py-5">
+                            Electricity mix unavailable.
+                        </div>
+                        `;
+
+                    return;
+
+                }
+
+
+                mixContainer.innerHTML =
+                    entries
+                        .map(
+                            function (
+                                entry
+                            ) {
+
+                                const key =
+                                    entry[0];
+
+
+                                const value =
+                                    Number(
+                                        entry[1]
+                                    );
+
+
+                                if (
+                                    !Number.isFinite(
+                                        value
+                                    )
+                                ) {
+
+                                    return "";
+
+                                }
+
+
+                                const label =
+                                    key
+                                        .replace(
+                                            /([A-Z])/g,
+                                            " $1"
+                                        )
+                                        .replace(
+                                            /^./,
+                                            function (
+                                                character
+                                            ) {
+
+                                                return character.toUpperCase();
+
+                                            }
+                                        );
+
+
+                                return `
+                                    <div class="mb-3">
+
+                                        <div class="d-flex justify-content-between mb-1">
+
+                                            <span>
+                                                ${escapeHtml(label)}
+                                            </span>
+
+                                            <strong>
+                                                ${value.toFixed(1)}%
+                                            </strong>
+
+                                        </div>
+
+                                        <div
+                                            class="progress"
+                                            style="height: 7px;"
+                                        >
+
+                                            <div
+                                                class="progress-bar"
+                                                role="progressbar"
+                                                style="width: ${Math.max(
+                                                    0,
+                                                    Math.min(
+                                                        100,
+                                                        value
+                                                    )
+                                                )}%"
+                                            ></div>
+
+                                        </div>
+
+                                    </div>
+                                `;
+
+                            }
+                        )
+                        .join("");
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Electricity mix error:",
+                    error
+                );
+
+
+                mixContainer.innerHTML =
+                    `
+                    <div class="text-muted text-center py-5">
+                        Electricity mix unavailable.
+                    </div>
+                    `;
+
+            }
+
+        }
+
+
+        /* =================================================
+           LIVE STATUS
+        ================================================= */
+
+        function setLiveStatus(
+            online
+        ) {
+
+            if (liveStatus) {
+
+                liveStatus.textContent =
+                    online
+                        ? "Live"
+                        : "Offline";
+
+
+                liveStatus.classList.toggle(
+                    "bg-success",
+                    online
+                );
+
+
+                liveStatus.classList.toggle(
+                    "bg-danger",
+                    !online
+                );
+
+
+                liveStatus.classList.remove(
+                    "bg-secondary"
+                );
+
+            }
+
+
+            if (backendDot) {
+
+                backendDot.classList.toggle(
+                    "online",
+                    online
+                );
+
+            }
+
+        }
+
+
+        /* =================================================
+           HEALTH CHECK
+        ================================================= */
+
+        async function checkBackend() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE}/api/health`,
+                        {
+                            method: "GET",
+                            headers: {
+                                "Accept":
+                                    "application/json"
+                            }
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Backend unavailable"
+                    );
+
+                }
+
+
+                setLiveStatus(
+                    true
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Backend health error:",
+                    error
+                );
+
+
+                setLiveStatus(
+                    false
+                );
+
+            }
+
+        }
+
+
+        /* =================================================
+           SEARCH EVENTS
+        ================================================= */
+
+        if (searchInput) {
+
+            searchInput.addEventListener(
+                "input",
+                function () {
+
+                    searchLocations(
+                        searchInput.value
+                    );
+
+                }
+            );
+
+
+            searchInput.addEventListener(
+                "keydown",
+                function (event) {
+
+                    if (
+                        event.key ===
+                        "Enter"
+                    ) {
+
+                        event.preventDefault();
+
+
+                        const value =
+                            searchInput.value.trim();
+
+
+                        if (value) {
+
+                            searchLocations(
+                                value
+                            );
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        if (searchButton) {
+
+            searchButton.addEventListener(
+                "click",
+                function () {
+
+                    if (
+                        searchInput &&
+                        searchInput.value.trim()
+                    ) {
+
+                        searchLocations(
+                            searchInput.value
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    suggestions &&
+                    searchInput &&
+                    !suggestions.contains(
+                        event.target
+                    ) &&
+                    event.target !== searchInput
+                ) {
+
+                    suggestions.style.display =
+                        "none";
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           MAP CLICK
+        ================================================= */
+
+        energyMap.on(
+            "click",
+            function (event) {
+
+                const nearestZone =
+                    findNearestZone(
+                        event.latlng.lat,
+                        event.latlng.lng
+                    );
+
+
+                if (
+                    nearestZone
+                ) {
+
+                    selectMapLocation(
+                        nearestZone.zone,
+                        nearestZone.name
+                    );
+
+                }
+
+            }
+        );
+
+
+        function findNearestZone(
+            latitude,
+            longitude
+        ) {
+
+            let closest =
+                null;
+
+
+            let closestDistance =
+                Infinity;
+
+
+            Object.entries(
+                countryCenters
+            )
+            .forEach(
+                function (
+                    entry
+                ) {
+
+                    const zone =
+                        entry[0];
+
+
+                    const coordinates =
+                        entry[1];
+
+
+                    const distance =
+                        Math.sqrt(
+                            Math.pow(
+                                latitude -
+                                coordinates[0],
+                                2
+                            ) +
+                            Math.pow(
+                                longitude -
+                                coordinates[1],
+                                2
+                            )
+                        );
+
+
+                    if (
+                        distance <
+                        closestDistance
+                    ) {
+
+                        closestDistance =
+                            distance;
+
+
+                        closest = {
+
+                            zone:
+                                zone,
+
+                            name:
+                                zone
+
+                        };
+
+                    }
+
+                }
+            );
+
+
+            if (
+                closestDistance >
+                12
+            ) {
+
+                return null;
+
+            }
+
+
+            return closest;
+
+        }
+
+
+        /* =================================================
+           REFRESH HISTORY
+        ================================================= */
+
+        const refreshHistory =
+            document.getElementById(
+                "btn-refresh-map-history"
+            );
+
+
+        if (refreshHistory) {
+
+            refreshHistory.addEventListener(
+                "click",
+                function () {
+
+                    if (
+                        selectedZone
+                    ) {
+
+                        updateHistory(
+                            selectedZone
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* =================================================
+           NAVBAR SEARCH
+        ================================================= */
+
+        const mainSearch =
+            document.getElementById(
+                "main-search"
+            );
+
+
+        const mainSearchButton =
+            document.getElementById(
+                "main-search-button"
+            );
+
+
+        function performMainSearch() {
+
+            if (
+                mainSearch &&
+                mainSearch.value.trim()
+            ) {
+
+                if (searchInput) {
+
+                    searchInput.value =
+                        mainSearch.value;
+
+                }
+
+
+                searchLocations(
+                    mainSearch.value
+                );
+
+                document
+                    .getElementById(
+                        "global-energy-map"
+                    )
+                    ?.scrollIntoView(
+                        {
+                            behavior:
+                                "smooth"
+                        }
+                    );
+
+            }
+
+        }
+
+
+        if (mainSearch) {
+
+            mainSearch.addEventListener(
+                "keydown",
+                function (event) {
+
+                    if (
+                        event.key ===
+                        "Enter"
+                    ) {
+
+                        event.preventDefault();
+
+                        performMainSearch();
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        if (mainSearchButton) {
+
+            mainSearchButton.addEventListener(
+                "click",
+                performMainSearch
+            );
+
+        }
+
+
+        /* =================================================
+           INITIALIZE
+        ================================================= */
+
+        checkBackend();
+
+
+        setTimeout(
+            function () {
+
+                energyMap.invalidateSize();
+
+            },
+            300
+        );
+
+
+    }
+
+);
+
+</script>
+
+
+<!-- =====================================================
+     AI ASSISTANT JAVASCRIPT
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const aiButton =
+            document.getElementById(
+                "ai-assistant-link"
+            );
+
+
+        const aiPanel =
+            document.getElementById(
+                "ai-assistant-panel"
+            );
+
+
+        const closeButton =
+            document.getElementById(
+                "close-ai-assistant"
+            );
+
+
+        const input =
+            document.getElementById(
+                "ai-chat-input"
+            );
+
+
+        const sendButton =
+            document.getElementById(
+                "ai-chat-send"
+            );
+
+
+        const messages =
+            document.getElementById(
+                "ai-chat-messages"
+            );
+
+
+        const API_BASE_URL =
+            window.GREENPULSE_API_BASE;
+
+
+        function openAssistant(
+            event
+        ) {
+
+            if (event) {
+
+                event.preventDefault();
+
+            }
+
+
+            if (aiPanel) {
+
+                aiPanel.style.display =
+                    "flex";
+
+            }
+
+
+            if (input) {
+
+                setTimeout(
+                    function () {
+
+                        input.focus();
+
+                    },
+                    100
+                );
+
+            }
+
+        }
+
+
+        function closeAssistant() {
+
+            if (aiPanel) {
+
+                aiPanel.style.display =
+                    "none";
+
+            }
+
+        }
+
+
+        function addMessage(
+            text,
+            isUser
+        ) {
+
+            if (!messages) {
+
+                return;
+
+            }
+
+
+            const message =
+                document.createElement(
+                    "div"
+                );
+
+
+            message.className =
+                isUser
+                    ? "ai-message ai-user-message"
+                    : "ai-message";
+
+
+            message.textContent =
+                text;
+
+
+            messages.appendChild(
+                message
+            );
+
+
+            messages.scrollTop =
+                messages.scrollHeight;
+
+        }
+
+
+        function addLoadingMessage() {
+
+            if (!messages) {
+
+                return;
+
+            }
+
+
+            removeLoadingMessage();
+
+
+            const message =
+                document.createElement(
+                    "div"
+                );
+
+
+            message.className =
+                "ai-message";
+
+
+            message.id =
+                "ai-loading-message";
+
+
+            message.textContent =
+                "GreenPulse is analysing your workload...";
+
+
+            messages.appendChild(
+                message
+            );
+
+
+            messages.scrollTop =
+                messages.scrollHeight;
+
+        }
+
+
+        function removeLoadingMessage() {
+
+            const loadingMessage =
+                document.getElementById(
+                    "ai-loading-message"
+                );
+
+
+            if (loadingMessage) {
+
+                loadingMessage.remove();
+
+            }
+
+        }
+
+
+        async function sendMessage() {
+
+            if (
+                !input ||
+                !messages ||
+                !sendButton
+            ) {
+
+                return;
+
+            }
+
+
+            const text =
+                input.value.trim();
+
+
+            if (!text) {
+
+                return;
+
+            }
+
+
+            addMessage(
+                text,
+                true
+            );
+
+
+            input.value =
+                "";
+
+
+            addLoadingMessage();
+
+
+            sendButton.disabled =
+                true;
+
+
+            try {
+
+                const token =
+                    sessionStorage.getItem(
+                        "greenpulseToken"
+                    );
+
+
+                const response =
+                    await fetch(
+                        `${API_BASE_URL}/api/chat`,
+                        {
+
+                            method:
+                                "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json",
+
+                                "Accept":
+                                    "application/json",
+
+                                "Authorization":
+                                    `Bearer ${token || ""}`
+
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    message:
+                                        text,
+
+                                    simulate_grid_failure:
+                                        false,
+
+                                    carbon_budget:
+                                        120
+
+                                })
+
+                        }
+                    );
+
+
+                let data;
+
+
+                try {
+
+                    data =
+                        await response.json();
+
+                }
+
+                catch (jsonError) {
+
+                    data = {};
+
+                }
+
+
+                removeLoadingMessage();
+
+
+                if (!response.ok) {
+
+                    const errorMessage =
+                        data.detail ||
+                        data.message ||
+                        "GreenPulse backend returned an error.";
+
+
+                    addMessage(
+                        "Error: " +
+                        errorMessage,
+                        false
+                    );
+
+
+                    return;
+
+                }
+
+
+                if (
+                    data.assistant_message
+                ) {
+
+                    addMessage(
+                        data.assistant_message,
+                        false
+                    );
+
+                }
+
+                else if (
+                    data.message
+                ) {
+
+                    addMessage(
+                        data.message,
+                        false
+                    );
+
+                }
+
+                else {
+
+                    addMessage(
+                        "GreenPulse returned an unexpected response.",
+                        false
+                    );
+
+                }
+
+            }
+
+            catch (error) {
+
+                removeLoadingMessage();
+
+
+                console.error(
+                    "GreenPulse API error:",
+                    error
+                );
+
+
+                addMessage(
+                    "I couldn't connect to the GreenPulse backend. Please make sure the FastAPI server is running.",
+                    false
+                );
+
+            }
+
+            finally {
+
+                sendButton.disabled =
+                    false;
+
+
+                if (input) {
+
+                    input.focus();
+
+                }
+
+            }
+
+        }
+
+
+        if (
+            aiButton &&
+            aiPanel
+        ) {
+
+            aiButton.addEventListener(
+                "click",
+                openAssistant
+            );
+
+        }
+
+
+        if (closeButton) {
+
+            closeButton.addEventListener(
+                "click",
+                closeAssistant
+            );
+
+        }
+
+
+        if (sendButton) {
+
+            sendButton.addEventListener(
+                "click",
+                sendMessage
+            );
+
+        }
+
+
+        if (input) {
+
+            input.addEventListener(
+                "keydown",
+                function (event) {
+
+                    if (
+                        event.key ===
+                        "Enter"
+                    ) {
+
+                        event.preventDefault();
+
+                        sendMessage();
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Escape" &&
+                    aiPanel &&
+                    aiPanel.style.display === "flex"
+                ) {
+
+                    closeAssistant();
+
+                }
+
+            }
+        );
+
+    }
+
+);
+
+</script>
+
+
+<!-- =====================================================
+     LOCATION PERMISSION JAVASCRIPT
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const modal =
+            document.getElementById(
+                "location-permission-modal"
+            );
+
+
+        const allowButton =
+            document.getElementById(
+                "allow-location-btn"
+            );
+
+
+        function formatLocation(
+            latitude,
+            longitude
+        ) {
+
+            const latDirection =
+                latitude >= 0
+                    ? "N"
+                    : "S";
+
+
+            const lonDirection =
+                longitude >= 0
+                    ? "E"
+                    : "W";
+
+
+            return (
+                `Your Location: ` +
+                `${Math.abs(latitude).toFixed(4)}° ${latDirection}, ` +
+                `${Math.abs(longitude).toFixed(4)}° ${lonDirection}`
+            );
+
+        }
+
+
+        function showLocation(
+            latitude,
+            longitude
+        ) {
+
+            const locationText =
+                document.getElementById(
+                    "user-location-text"
+                );
+
+
+            if (locationText) {
+
+                locationText.textContent =
+                    formatLocation(
+                        Number(latitude),
+                        Number(longitude)
+                    );
+
+            }
+
+        }
+
+
+        if (!navigator.geolocation) {
+
+            console.log(
+                "Geolocation is not supported by this browser."
+            );
+
+
+            return;
+
+        }
+
+
+        const savedLatitude =
+            sessionStorage.getItem(
+                "greenpulseLatitude"
+            );
+
+
+        const savedLongitude =
+            sessionStorage.getItem(
+                "greenpulseLongitude"
+            );
+
+
+        if (
+            savedLatitude &&
+            savedLongitude
+        ) {
+
+            return;
+
+        }
+
+
+        if (!modal || !allowButton) {
+
+            return;
+
+        }
+
+
+        modal.style.display =
+            "flex";
+
+
+        allowButton.addEventListener(
+            "click",
+            function () {
+
+
+                allowButton.disabled =
+                    true;
+
+
+                allowButton.innerHTML =
+                    '<i class="bi bi-hourglass-split"></i> Getting Location...';
+
+
+                navigator.geolocation.getCurrentPosition(
+
+                    function (position) {
+
+                        const latitude =
+                            position.coords.latitude;
+
+
+                        const longitude =
+                            position.coords.longitude;
+
+
+                        sessionStorage.setItem(
+                            "greenpulseLatitude",
+                            latitude
+                        );
+
+
+                        sessionStorage.setItem(
+                            "greenpulseLongitude",
+                            longitude
+                        );
+
+
+                        showLocation(
+                            latitude,
+                            longitude
+                        );
+
+
+                        modal.style.display =
+                            "none";
+
+
+                        allowButton.disabled =
+                            false;
+
+
+                        allowButton.innerHTML =
+                            '<i class="bi bi-geo-alt-fill"></i> Allow Location';
+
+                    },
+
+
+                    function (error) {
+
+                        console.error(
+                            "GreenPulse location error:",
+                            error
+                        );
+
+
+                        allowButton.disabled =
+                            false;
+
+
+                        allowButton.innerHTML =
+                            '<i class="bi bi-geo-alt-fill"></i> Allow Location';
+
+                    },
+
+
+                    {
+
+                        enableHighAccuracy:
+                            true,
+
+                        timeout:
+                            15000,
+
+                        maximumAge:
+                            0
+
+                    }
+
+                );
+
+            }
+        );
+
+    }
+
+);
+
+</script>
+
+
+<!-- =====================================================
+     BEST LOCATION / DECISION BUTTONS
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const decisionButtons = [
+
+            "btn-run-decision",
+            "btn-run-decision-alert",
+            "btn-run-decision-menu",
+            "btn-run-decision-bottom"
+
+        ];
+
+
+        decisionButtons.forEach(
+            function (buttonId) {
+
+                const button =
+                    document.getElementById(
+                        buttonId
+                    );
+
+
+                if (!button) {
+
+                    return;
+
+                }
+
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        window.location.href =
+                            "dashboard.html";
+
+                    }
+                );
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
