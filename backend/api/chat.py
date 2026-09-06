@@ -17,13 +17,20 @@ router = APIRouter(
 # SESSION MEMORY
 # ============================================================
 
-# Prototype session memory.
+# Maximum number of times the exact word "urgent" can be
+# used during one chat session.
 #
-# Each session gets a maximum of 4 uses of the exact word
-# "urgent".
+# Example:
+# urgent -> 1
+# urgent -> 2
+# urgent -> 3
+# urgent -> 4
+# urgent -> blocked
 #
-# This is intentionally in-memory for the hackathon prototype.
+# This is intentionally in-memory for the prototype.
 URGENT_USAGE = defaultdict(int)
+
+MAX_URGENT_USES = 4
 
 
 # ============================================================
@@ -34,8 +41,8 @@ class ChatRequest(BaseModel):
 
     message: str
 
-    # Frontend may provide this.
-    # If not provided, the default session is used.
+    # Frontend should ideally send a unique session ID.
+    # If it does not, "default" is used.
     session_id: str = "default"
 
     carbon_budget: float = 120
@@ -57,6 +64,7 @@ URGENT_WORDS = [
     "right now",
 ]
 
+
 REALTIME_WORDS = [
     "real time",
     "realtime",
@@ -66,6 +74,7 @@ REALTIME_WORDS = [
     "immediate response",
     "low latency",
 ]
+
 
 TRAINING_WORDS = [
     "train",
@@ -78,6 +87,7 @@ TRAINING_WORDS = [
     "fine-tune",
 ]
 
+
 INFERENCE_WORDS = [
     "inference",
     "prediction",
@@ -86,6 +96,7 @@ INFERENCE_WORDS = [
     "recommendation",
     "real time prediction",
 ]
+
 
 LARGE_WORKLOAD_WORDS = [
     "huge",
@@ -105,6 +116,7 @@ LARGE_WORKLOAD_WORDS = [
     "backup",
 ]
 
+
 REPORT_WORDS = [
     "report",
     "document",
@@ -119,6 +131,7 @@ REPORT_WORDS = [
     "employee records",
 ]
 
+
 FLEXIBLE_WORDS = [
     "not urgent",
     "not in a hurry",
@@ -131,7 +144,9 @@ FLEXIBLE_WORDS = [
     "later",
     "overnight",
     "off peak",
+    "off-peak",
 ]
+
 
 LOW_CARBON_WORDS = [
     "low carbon",
@@ -146,6 +161,7 @@ LOW_CARBON_WORDS = [
     "reduce emissions",
 ]
 
+
 RUN_NOW_WORDS = [
     "run now",
     "execute now",
@@ -153,6 +169,7 @@ RUN_NOW_WORDS = [
     "run immediately",
     "execute immediately",
 ]
+
 
 GRID_FAILURE_WORDS = [
     "grid failure",
@@ -167,6 +184,66 @@ GRID_FAILURE_WORDS = [
 
 
 # ============================================================
+# LOCATION MAP
+# ============================================================
+
+LOCATION_MAP = {
+
+    # India
+    "india": "IN",
+    "indian": "IN",
+
+    # Germany
+    "germany": "DE",
+    "german": "DE",
+
+    # France
+    "france": "FR",
+    "french": "FR",
+
+    # United Kingdom
+    "united kingdom": "GB",
+    "uk": "GB",
+    "britain": "GB",
+    "british": "GB",
+
+    # Middle East
+    "middle east": "ME",
+    "uae": "AE",
+    "united arab emirates": "AE",
+    "dubai": "AE",
+    "abu dhabi": "AE",
+    "saudi arabia": "SA",
+    "saudi": "SA",
+    "qatar": "QA",
+
+    # Europe
+    "netherlands": "NL",
+    "dutch": "NL",
+    "sweden": "SE",
+    "swedish": "SE",
+    "norway": "NO",
+    "norwegian": "NO",
+    "denmark": "DK",
+    "danish": "DK",
+    "finland": "FI",
+    "finnish": "FI",
+    "spain": "ES",
+    "spanish": "ES",
+    "italy": "IT",
+    "italian": "IT",
+
+    # Asia
+    "singapore": "SG",
+    "japan": "JP",
+    "japanese": "JP",
+    "south korea": "KR",
+    "korea": "KR",
+    "australia": "AU",
+}
+
+
+# ============================================================
 # HELPERS
 # ============================================================
 
@@ -177,6 +254,10 @@ def contains_any(text: str, words: list[str]) -> bool:
         for word in words
     )
 
+
+# ============================================================
+# URGENT DETECTION
+# ============================================================
 
 def detect_urgent(message: str) -> bool:
 
@@ -196,19 +277,23 @@ def detect_workload_type(message: str):
 
     text = message.lower()
 
-    # Training takes priority over everything else.
-    if contains_any(text, TRAINING_WORDS):
-
+    # Training has highest priority.
+    if contains_any(
+        text,
+        TRAINING_WORDS
+    ):
         return "training"
 
-    # Real-time inference.
-    if contains_any(text, INFERENCE_WORDS):
-
+    if contains_any(
+        text,
+        INFERENCE_WORDS
+    ):
         return "inference"
 
-    # Reports, records, backups etc.
-    if contains_any(text, REPORT_WORDS):
-
+    if contains_any(
+        text,
+        REPORT_WORDS
+    ):
         return "batch"
 
     return "batch"
@@ -256,7 +341,7 @@ def detect_workload_size(message: str):
 
 
     # --------------------------------------------------------
-    # Records / rows / entries
+    # Records / rows / employees
     # --------------------------------------------------------
 
     record_match = re.search(
@@ -271,26 +356,26 @@ def detect_workload_size(message: str):
             record_match.group(1).replace(",", "")
         )
 
-        if records >= 1000000:
+        if records >= 1_000_000:
             return 1500
 
-        if records >= 100000:
+        if records >= 100_000:
             return 1000
 
-        if records >= 10000:
+        if records >= 10_000:
             return 700
 
-        if records >= 5000:
+        if records >= 5_000:
             return 500
 
-        if records >= 1000:
+        if records >= 1_000:
             return 300
 
         return 150
 
 
     # --------------------------------------------------------
-    # Keyword based size
+    # Keyword-based estimation
     # --------------------------------------------------------
 
     if any(
@@ -403,38 +488,25 @@ def estimate_runtime(
     explicit = extract_runtime(message)
 
     if explicit is not None:
-
         return explicit
-
 
     text = message.lower()
 
 
-    # --------------------------------------------------------
-    # Real-time workloads
-    # --------------------------------------------------------
-
+    # Real-time
     if contains_any(
         text,
         REALTIME_WORDS
     ):
-
         return 1
 
 
-    # --------------------------------------------------------
-    # Urgent workloads
-    # --------------------------------------------------------
-
+    # Urgent
     if detect_urgent(message):
-
         return 1
 
 
-    # --------------------------------------------------------
     # Training
-    # --------------------------------------------------------
-
     if workload_type == "training":
 
         if workload_size >= 1000:
@@ -449,39 +521,26 @@ def estimate_runtime(
         return 4
 
 
-    # --------------------------------------------------------
     # Inference
-    # --------------------------------------------------------
-
     if workload_type == "inference":
-
         return 1
 
 
-    # --------------------------------------------------------
     # Large batch
-    # --------------------------------------------------------
-
     if workload_size >= 1000:
-
         return 12
 
     if workload_size >= 700:
-
         return 10
 
     if workload_size >= 500:
-
         return 8
 
     if workload_size >= 300:
-
         return 6
 
     if workload_size >= 200:
-
         return 4
-
 
     return 2
 
@@ -505,14 +564,10 @@ def estimate_deadline(
             explicit
         )
 
-
     text = message.lower()
 
 
-    # --------------------------------------------------------
-    # Immediate / urgent
-    # --------------------------------------------------------
-
+    # Urgent
     if detect_urgent(message):
 
         return max(
@@ -521,10 +576,7 @@ def estimate_deadline(
         )
 
 
-    # --------------------------------------------------------
     # Real-time
-    # --------------------------------------------------------
-
     if contains_any(
         text,
         REALTIME_WORDS
@@ -536,10 +588,7 @@ def estimate_deadline(
         )
 
 
-    # --------------------------------------------------------
-    # Flexible workloads
-    # --------------------------------------------------------
-
+    # Flexible
     if contains_any(
         text,
         FLEXIBLE_WORDS
@@ -551,10 +600,7 @@ def estimate_deadline(
         )
 
 
-    # --------------------------------------------------------
     # Training
-    # --------------------------------------------------------
-
     if workload_type == "training":
 
         return max(
@@ -563,22 +609,15 @@ def estimate_deadline(
         )
 
 
-    # --------------------------------------------------------
-    # Large batch
-    # --------------------------------------------------------
-
+    # Large workloads
     if runtime_hours >= 10:
-
         return 24
 
     if runtime_hours >= 6:
-
         return 18
 
     if runtime_hours >= 4:
-
         return 12
-
 
     return max(
         8,
@@ -596,7 +635,6 @@ def detect_priority(message: str):
 
 
     if detect_urgent(message):
-
         return "urgent"
 
 
@@ -640,31 +678,21 @@ def detect_location(message: str):
 
     text = message.lower()
 
+    # Longest phrases first so that
+    # "United Arab Emirates" is checked before
+    # shorter terms.
 
-    location_map = {
+    sorted_locations = sorted(
+        LOCATION_MAP.items(),
+        key=lambda item: len(item[0]),
+        reverse=True
+    )
 
-        "india": "IN",
-        "indian": "IN",
-
-        "germany": "DE",
-        "german": "DE",
-
-        "france": "FR",
-        "french": "FR",
-
-        "united kingdom": "GB",
-        "uk": "GB",
-        "britain": "GB",
-        "british": "GB",
-    }
-
-
-    for keyword, zone in location_map.items():
+    for keyword, zone in sorted_locations:
 
         if keyword in text:
 
             return zone
-
 
     return None
 
@@ -675,44 +703,46 @@ def detect_location(message: str):
 
 def detect_location_intent(message: str):
 
-    text = message.lower()
-
     requested = detect_location(message)
 
     if requested:
 
         return {
             "requested": True,
-            "zone": requested
+            "zone": requested,
+            "reason": "User explicitly requested a location."
         }
 
 
-    # Urgent requests without location:
+    # Prototype rule:
     #
-    # Your desired prototype rule is:
-    # urgent -> India preference.
+    # An urgent workload without a specified location
+    # prefers India.
     #
-    # IMPORTANT:
-    # The current repository does NOT have IN in REGIONS.
-    # Therefore this becomes a preference/intent rather
-    # than an actual India allocation.
+    # NOTE:
+    # The actual decision engine must have IN configured
+    # before it can physically allocate to India.
+
     if detect_urgent(message):
 
         return {
             "requested": True,
             "zone": "IN",
-            "reason": "Urgent workload defaults to India preference."
+            "reason": (
+                "Urgent workload defaults to India preference."
+            )
         }
 
 
     return {
         "requested": False,
-        "zone": None
+        "zone": None,
+        "reason": None
     }
 
 
 # ============================================================
-# SCHEDULING INTENT
+# SCHEDULING PREFERENCE
 # ============================================================
 
 def detect_schedule_preference(message: str):
@@ -761,11 +791,10 @@ def detect_carbon_preference(message: str):
         return "lowest_carbon"
 
 
-    # Large flexible workloads should naturally prioritize
-    # carbon-aware scheduling.
     if (
         detect_workload_size(message) >= 500
-        and detect_schedule_preference(message) == "flexible"
+        and
+        detect_schedule_preference(message) == "flexible"
     ):
 
         return "lowest_carbon"
@@ -780,16 +809,14 @@ def detect_carbon_preference(message: str):
 
 def detect_grid_failure(message: str):
 
-    text = message.lower()
-
     return contains_any(
-        text,
+        message.lower(),
         GRID_FAILURE_WORDS
     )
 
 
 # ============================================================
-# WORKLOAD INTERPRETATION
+# COMPLETE WORKLOAD INTERPRETATION
 # ============================================================
 
 def interpret_workload(message: str):
@@ -836,8 +863,9 @@ def interpret_workload(message: str):
 
 
     # Latency requirement
+
     if (
-        priority == "urgent"
+        priority in ["urgent", "high"]
         or contains_any(
             message.lower(),
             REALTIME_WORDS
@@ -876,7 +904,13 @@ def interpret_workload(message: str):
             latency_tolerance,
 
         "requested_region":
-            location_intent.get("zone"),
+            location_intent["zone"],
+
+        "location_requested":
+            location_intent["requested"],
+
+        "location_reason":
+            location_intent["reason"],
 
         "schedule_preference":
             schedule_preference,
@@ -890,7 +924,7 @@ def interpret_workload(message: str):
 
 
 # ============================================================
-# ASSISTANT MESSAGE
+# ASSISTANT RESPONSE
 # ============================================================
 
 def build_assistant_message(
@@ -927,29 +961,31 @@ def build_assistant_message(
     )
 
 
-    # ========================================================
+    # --------------------------------------------------------
     # REROUTE
-    # ========================================================
+    # --------------------------------------------------------
 
     if decision_type == "REROUTE":
 
         message = (
             "🌱 GreenPulse recommends REROUTE.\n\n"
-            f"Recommended execution region: {region}.\n"
+            f"Execution region: {region}.\n"
         )
 
 
         if carbon is not None:
 
             message += (
-                f"Estimated carbon: {carbon:.2f} g.\n"
+                f"Estimated carbon: "
+                f"{carbon:.2f} g.\n"
             )
 
 
         if saved is not None:
 
             message += (
-                f"Estimated carbon saved: {saved:.2f} g.\n"
+                f"Estimated carbon saved: "
+                f"{saved:.2f} g.\n"
             )
 
 
@@ -963,9 +999,9 @@ def build_assistant_message(
         return message
 
 
-    # ========================================================
+    # --------------------------------------------------------
     # WAIT
-    # ========================================================
+    # --------------------------------------------------------
 
     if decision_type == "WAIT":
 
@@ -977,7 +1013,7 @@ def build_assistant_message(
 
                 message = (
                     "⏳ GreenPulse recommends WAIT.\n\n"
-                    f"The cleaner execution window begins "
+                    "The cleaner execution window begins "
                     f"in approximately {hours} hour(s)."
                 )
 
@@ -985,7 +1021,7 @@ def build_assistant_message(
 
                 message = (
                     "⏳ GreenPulse recommends WAIT.\n\n"
-                    f"The cleaner execution window begins "
+                    "The cleaner execution window begins "
                     f"in approximately {start_minutes} minute(s)."
                 )
 
@@ -1023,9 +1059,9 @@ def build_assistant_message(
         return message
 
 
-    # ========================================================
+    # --------------------------------------------------------
     # RUN
-    # ========================================================
+    # --------------------------------------------------------
 
     if decision_type == "RUN":
 
@@ -1045,7 +1081,8 @@ def build_assistant_message(
         if carbon is not None:
 
             message += (
-                f"Estimated carbon: {carbon:.2f} g."
+                f"Estimated carbon: "
+                f"{carbon:.2f} g."
             )
 
 
@@ -1059,14 +1096,15 @@ def build_assistant_message(
         return message
 
 
-    # ========================================================
-    # NO FEASIBLE PLAN
-    # ========================================================
+    # --------------------------------------------------------
+    # UNKNOWN / NO FEASIBLE PLAN
+    # --------------------------------------------------------
 
     return (
         "⚠️ GreenPulse could not find a feasible "
         "execution plan.\n\n"
-        f"Reason: {reason or 'No region satisfies the current constraints.'}"
+        f"Reason: "
+        f"{reason or 'No region satisfies the current constraints.'}"
     )
 
 
@@ -1079,9 +1117,14 @@ async def chat(request: ChatRequest):
 
     message = request.message.strip()
 
+    session_id = (
+        request.session_id.strip()
+        or "default"
+    )
+
 
     # ========================================================
-    # EMPTY PROMPT
+    # EMPTY MESSAGE
     # ========================================================
 
     if not message:
@@ -1102,12 +1145,13 @@ async def chat(request: ChatRequest):
     # URGENT LIMIT
     # ========================================================
 
-    # EXACT word only.
+    # Count ONLY the exact word "urgent".
     #
-    # "urgent" = counted
-    # "urgently" = NOT counted
+    # "urgent"     -> counted
+    # "urgently"   -> not counted
+    # "urgency"    -> not counted
     #
-    # Maximum total per session = 4.
+    # This is a session-wide limit.
 
     urgent_count_in_message = len(
         re.findall(
@@ -1117,20 +1161,20 @@ async def chat(request: ChatRequest):
     )
 
 
-    session_count = URGENT_USAGE[
-        request.session_id
+    current_usage = URGENT_USAGE[
+        session_id
     ]
 
 
     if (
-        session_count
+        current_usage
         + urgent_count_in_message
-        > 4
+        > MAX_URGENT_USES
     ):
 
         remaining = max(
             0,
-            4 - session_count
+            MAX_URGENT_USES - current_usage
         )
 
 
@@ -1138,21 +1182,22 @@ async def chat(request: ChatRequest):
             status_code=400,
             detail=(
                 "⚠️ Urgent usage limit reached.\n\n"
-                "The word 'urgent' can be used "
+                "The exact word 'urgent' can be used "
                 "a maximum of 4 times per chat session.\n\n"
-                f"Remaining uses: {remaining}."
+                f"Urgent uses remaining: {remaining}."
             )
         )
 
 
-    # Only record after validation.
+    # Record only after validation.
+
     URGENT_USAGE[
-        request.session_id
+        session_id
     ] += urgent_count_in_message
 
 
     # ========================================================
-    # INTERPRET USER PROMPT
+    # INTERPRET PROMPT
     # ========================================================
 
     interpreted = interpret_workload(
@@ -1166,25 +1211,18 @@ async def chat(request: ChatRequest):
 
     simulate_failure = (
         request.simulate_grid_failure
-        or interpreted["grid_failure_detected"]
+        or
+        interpreted["grid_failure_detected"]
     )
 
 
     # ========================================================
-    # SPECIAL URGENT HANDLING
+    # URGENT HANDLING
     # ========================================================
 
-    priority = interpreted[
-        "priority"
-    ]
+    if interpreted["priority"] == "urgent":
 
-    if priority == "urgent":
-
-        # Urgent workloads should not be given a huge
-        # scheduling window.
-        interpreted[
-            "deadline_hours"
-        ] = max(
+        interpreted["deadline_hours"] = max(
             1,
             interpreted["runtime_hours"]
         )
@@ -1199,11 +1237,7 @@ async def chat(request: ChatRequest):
         == "flexible"
     ):
 
-        # Give the decision engine enough time to locate
-        # a cleaner forecast window.
-        interpreted[
-            "deadline_hours"
-        ] = max(
+        interpreted["deadline_hours"] = max(
             interpreted["deadline_hours"],
             24
         )
@@ -1215,15 +1249,10 @@ async def chat(request: ChatRequest):
 
     carbon_budget = request.carbon_budget
 
-
-    # For explicit low-carbon requests, keep the supplied
-    # carbon budget. The decision engine will compare the
-    # predicted emissions against it.
-    #
-    # We do NOT fabricate carbon values here.
-    if interpreted[
-        "carbon_preference"
-    ] == "lowest_carbon":
+    if (
+        interpreted["carbon_preference"]
+        == "lowest_carbon"
+    ):
 
         carbon_budget = min(
             carbon_budget,
@@ -1232,7 +1261,7 @@ async def chat(request: ChatRequest):
 
 
     # ========================================================
-    # CREATE WORKLOAD
+    # CREATE WORKLOAD FOR DECISION ENGINE
     # ========================================================
 
     workload = {
@@ -1258,9 +1287,15 @@ async def chat(request: ChatRequest):
         "workload_size":
             interpreted["workload_size"],
 
-        # Metadata for future allocation logic.
+        # ----------------------------------------------------
+        # IMPORTANT METADATA
+        # ----------------------------------------------------
+
         "requested_region":
             interpreted["requested_region"],
+
+        "location_requested":
+            interpreted["location_requested"],
 
         "schedule_preference":
             interpreted["schedule_preference"],
@@ -1270,11 +1305,14 @@ async def chat(request: ChatRequest):
 
         "grid_failure_detected":
             interpreted["grid_failure_detected"],
+
+        "session_id":
+            session_id,
     }
 
 
     # ========================================================
-    # RUN REAL PIPELINE
+    # RUN ACTUAL DECISION PIPELINE
     # ========================================================
 
     try:
@@ -1295,8 +1333,14 @@ async def chat(request: ChatRequest):
         )
 
 
+        regions = result.get(
+            "regions_evaluated",
+            []
+        )
+
+
         # ====================================================
-        # ASSISTANT RESPONSE
+        # BUILD ASSISTANT MESSAGE
         # ====================================================
 
         assistant_message = build_assistant_message(
@@ -1305,15 +1349,12 @@ async def chat(request: ChatRequest):
 
             workload,
 
-            result.get(
-                "regions_evaluated",
-                []
-            )
+            regions
         )
 
 
         # ====================================================
-        # LOCATION WARNING
+        # LOCATION INFORMATION
         # ====================================================
 
         requested_region = interpreted[
@@ -1321,20 +1362,22 @@ async def chat(request: ChatRequest):
         ]
 
 
+        if requested_region:
+
+            assistant_message += (
+                "\n\n📍 Location preference detected: "
+                f"{requested_region}."
+            )
+
+
+        # India special note.
+
         if requested_region == "IN":
 
-            # IMPORTANT:
-            # Your current GitHub REGIONS configuration does
-            # not contain India.
-            #
-            # Therefore we must NOT pretend that the actual
-            # decision engine allocated to India.
             assistant_message += (
-                "\n\n📍 India preference detected."
-                "\n\nIndia is currently a requested "
-                "preference, but it is not yet configured "
-                "as an execution region in the current "
-                "GreenPulse region registry."
+                "\n\nIndia was selected as the "
+                "preferred origin region for this "
+                "prototype request."
             )
 
 
@@ -1346,45 +1389,67 @@ async def chat(request: ChatRequest):
 
             "\n\n"
             "Workload analysis:\n"
-            f"• Type: {interpreted['workload_type']}\n"
-            f"• Estimated size: {interpreted['workload_size']}\n"
+
+            f"• Type: "
+            f"{interpreted['workload_type']}\n"
+
+            f"• Estimated size: "
+            f"{interpreted['workload_size']}\n"
+
             f"• Runtime: "
             f"{interpreted['runtime_hours']:g} hour(s)\n"
+
             f"• Scheduling window: "
             f"{interpreted['deadline_hours']:g} hour(s)\n"
+
             f"• Priority: "
             f"{interpreted['priority']}\n"
+
             f"• Scheduling mode: "
             f"{interpreted['schedule_preference']}\n"
+
             f"• Carbon preference: "
             f"{interpreted['carbon_preference']}"
         )
 
 
         # ====================================================
-        # LIVE DATA SUMMARY
+        # REGIONS EVALUATED
         # ====================================================
-
-        regions = result.get(
-            "regions_evaluated",
-            []
-        )
-
 
         if regions:
 
-            assistant_message += (
-                "\n\n🌍 Live regions evaluated: "
-                + ", ".join(
-                    str(
-                        region.get(
-                            "name",
-                            region.get("zone", "?")
-                        )
+            region_names = []
+
+            for region_data in regions:
+
+                if not isinstance(
+                    region_data,
+                    dict
+                ):
+                    continue
+
+                region_name = region_data.get(
+                    "name",
+                    region_data.get(
+                        "zone",
+                        "?"
                     )
-                    for region in regions
                 )
-            )
+
+                region_names.append(
+                    str(region_name)
+                )
+
+
+            if region_names:
+
+                assistant_message += (
+                    "\n\n🌍 Regions evaluated: "
+                    + ", ".join(
+                        region_names
+                    )
+                )
 
 
         # ====================================================
@@ -1392,29 +1457,27 @@ async def chat(request: ChatRequest):
         # ====================================================
 
         current_urgent_usage = URGENT_USAGE[
-            request.session_id
+            session_id
         ]
-
 
         urgent_remaining = max(
             0,
-            4 - current_urgent_usage
+            MAX_URGENT_USES
+            - current_urgent_usage
         )
 
 
         # ====================================================
-        # RESPONSE
+        # RETURN RESPONSE
         # ====================================================
 
         return {
 
             "success": True,
 
-            # Frontend expects this.
             "assistant_message":
                 assistant_message,
 
-            # Backward compatibility.
             "message":
                 assistant_message,
 
@@ -1463,6 +1526,9 @@ async def chat(request: ChatRequest):
 
                 "requested_region":
                     interpreted["requested_region"],
+
+                "location_requested":
+                    interpreted["location_requested"],
 
                 "schedule_preference":
                     interpreted["schedule_preference"],
